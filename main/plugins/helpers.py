@@ -1,8 +1,10 @@
 #Github.com/Vasusen-code
 
+from .. import MONGODB_URI
+
 from main.Database.database import Database
 
-from pyrogram import Client, filters, idle
+from pyrogram import Client
 from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant, BadRequest
 
 from decouple import config
@@ -15,14 +17,12 @@ from telethon import errors, events
 #Multi client-------------------------------------------------------------------------------------------------------------
 
 async def login(sender, i, h, s):
-    MONGODB_URI = config("MONGODB_URI", default=None)
     db = Database(MONGODB_URI, 'saverestricted')
     await db.update_api_id(sender, i)
     await db.update_api_hash(sender, h)
     await db.update_session(sender, s)
     
 async def logout(sender):
-    MONGODB_URI = config("MONGODB_URI", default=None)
     db = Database(MONGODB_URI, 'saverestricted')
     await db.rem_api_id(sender)
     await db.rem_api_hash(sender)
