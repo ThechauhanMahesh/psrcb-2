@@ -2,6 +2,7 @@
 
 from .. import bot as Drone
 from .. import MONGODB_URI, Bot
+from .. import FORCESUB as fs
 
 from main.plugins.helpers import get_link, join, set_timer, check_timer, screenshot
 from main.plugins.progress import progress_for_pyrogram
@@ -13,8 +14,11 @@ from pyrogram import Client, filters, idle
 from ethon.pyfunc import video_metadata
 from ethon.telefunc import force_sub
 from telethon import events
+from ethon.telefunc import force_sub
 
 import re, time, asyncio
+
+ft = f"To use this bot you've to join @{fs}."
 
 process=[]
 timer=[]
