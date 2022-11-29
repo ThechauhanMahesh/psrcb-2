@@ -3,13 +3,14 @@
 from main.Database.database import Database
 
 from pyrogram import Client, filters, idle
-from pyrogram.errors import FloodWait, BadRequest
-from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant
+from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant, BadRequest
 
-import asyncio, subprocess, re, os, time
 from decouple import config
+from pathlib import Path
+from datetime import datetime as dt
+import asyncio, subprocess, re, os, time
 
-forcesub_text = 'You have to join @Dronebots to use this bot.'
+from telethon import errors, events
 
 #Multi client-------------------------------------------------------------------------------------------------------------
 
@@ -33,26 +34,16 @@ async def join(client, invite_link):
     try:
         await client.join_chat(invite_link)
         return "Successfully joined the Channel"
+    except UserAlreadyParticipant:
+        return "User is already a participant."
+    except (InviteHashInvalid, InviteHashExpired):
+        return "Could not join. Maybe your link is expired or Invalid."
     except FloodWait:
         return "Too many requests, try again later."
     except Exception as e:
-        return f"{str(e)}"
-           
-#forcesub-------------------------------------------------------------------------------------------------------------
-
-async def forcesub(bot, sender):
-    FORCESUB = config("FORCESUB", default=None)
-    if not str(FORCESUB).startswith("-100"):
-        FORCESUB = int("-100" + str(FORCESUB))
-    try:
-        user = await bot.get_chat_member(FORCESUB, sender)
-        if user.status == "kicked":
-            return True
-    except UserNotParticipant:
-        return True
-    except Exception as e:
         print(e)
-        return True
+        return "Could not join, try joining manually."
+           
         
 #Regex---------------------------------------------------------------------------------------------------------------
 #to get the url from event
@@ -93,24 +84,30 @@ def check_timer(sender, list1, list2):
 
 #Screenshot---------------------------------------------------------------------------------------------------------------
 
-async def screenshot(video, time_stamp, sender):
-    if os.path.isfile(f'{sender}.jpg'):
+async def screenshot(video, duration, sender):
+    if os.path.exists(f'{sender}.jpg'):
         return f'{sender}.jpg'
-    out = str(video).split(".")[0] + ".jpg"
-    cmd = (f"ffmpeg -ss {time_stamp} -i {video} -vframes 1 {out}").split(" ")
+    time_stamp = hhmmss(int(duration)/2)
+    out = dt.now().isoformat("_", "seconds") + ".jpg"
+    cmd = ["ffmpeg",
+           "-ss",
+           f"{time_stamp}", 
+           "-i",
+           f"{video}",
+           "-frames:v",
+           "1", 
+           f"{out}",
+           "-y"
+          ]
     process = await asyncio.create_subprocess_exec(
-         *cmd,
-         stdout=asyncio.subprocess.PIPE,
-         stderr=asyncio.subprocess.PIPE)
-        
+        *cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
+    )
     stdout, stderr = await process.communicate()
     x = stderr.decode().strip()
     y = stdout.decode().strip()
-    print(x)
-    print(y)
     if os.path.isfile(out):
         return out
     else:
-        None
-        
-        
+        None       
