@@ -42,12 +42,17 @@ async def clone(event):
         await event.reply(r)
         return
     edit = await event.reply("Processing!")
+    x, t = await check_timer(event, process, timer) 
+    if x == False:
+        return await edit.edit(t)
     if 't.me/+' in link:
         q = await join(userbot, link)
         await edit.edit(q)
+        await set_timer(event, process, timer) 
         return 
     if 't.me' in link and not 't.me/c/' in link:
         await get_msg(None, Bot, event.sender_id, edit.id, link, 0)
+        await set_timer(event, process, timer) 
     if 't.me/c/' in link:
         userbot = ""
         db = Database(MONGODB_URI, 'saverestricted')
@@ -64,4 +69,4 @@ async def clone(event):
         else:
             return await edit.edit("Your login credentials not found.")
         await get_msg(userbot, Bot, event.sender_id, edit.id, link, 0)
-        
+        await set_timer(event, process, timer) 
