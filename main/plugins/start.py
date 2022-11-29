@@ -1,13 +1,12 @@
 #Github.com/Vasusen-code
 
 import os
-from .. import bot, ACCESS
+from .. import bot, ACCESS, MONGODB_URI
 
-from telethon import events, Button, TelegramClient
+from telethon import events, Button
 from decouple import config
 from pyrogram import Client
 
-from main.plugins.main import Bot
 from main.plugins.helpers import login, logout
 from main.Database.database import Database
 
@@ -44,14 +43,6 @@ async def start(event):
                               ])
     tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
     await event.client.send_message(int(ACCESS), f'{tag} started the BOT\nUserID: {event.sender_id}') 
-    try:
-        await Bot.start()
-        await idle()
-    except Exception as e:
-        if 'Client is already connected' in str(e):
-            pass
-        else:
-            return
     
 @bot.on(events.callbackquery.CallbackQuery(data="sett"))
 async def sett(event):    
