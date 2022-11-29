@@ -1,9 +1,9 @@
 #ChauhanMahesh/Vasusen/DroneBots/COL
 
+from pyrogram import Client
 from telethon import TelegramClient
 from decouple import config
-import logging
-import time
+import logging, time, sys
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -18,3 +18,16 @@ MONGODB_URI = config("MONGODB_URI", default=None)
 AUTH_USERS = config("AUTH_USERS", default=None, cast=int)
 
 bot = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN) 
+
+Bot = Client(
+    "SaveRestricted",
+    bot_token=BOT_TOKEN,
+    api_id=int(API_ID),
+    api_hash=API_HASH
+)    
+
+try:
+    Bot.start()
+except Exception as e:
+    print(e)
+    sys.exit(1)
