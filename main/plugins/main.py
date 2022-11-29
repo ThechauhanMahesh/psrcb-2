@@ -42,7 +42,7 @@ async def clone(event):
         await event.reply(r)
         return
     edit = await event.reply("Processing!")
-    x, t = await check_timer(event, process, timer) 
+    x, t = check_timer(event.sender_id, process, timer) 
     if x == False:
         return await edit.edit(t)
     if 't.me/+' in link:
