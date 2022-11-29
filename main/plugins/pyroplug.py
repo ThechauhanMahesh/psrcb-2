@@ -15,7 +15,7 @@ def thumbnail(sender):
         return f'{sender}.jpg'
     else:
          return None
-      
+    
 async def check(userbot, client, link):
     msg_id = int(link.split("/")[-1])
     if 't.me/c/' in link:
@@ -35,7 +35,7 @@ async def check(userbot, client, link):
         except Exception:
             return False, "Maybe bot is banned from the chat, or your link is invalid!"
             
-async def get_msg(userbot, client, sender, edit_id, msg_link, i):
+async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
     edit = ""
     chat = ""
     msg_id = int(msg_link.split("/")[-1]) + int(i)
@@ -71,28 +71,25 @@ async def get_msg(userbot, client, sender, edit_id, msg_link, i):
             caption = str(file)
             if msg.caption is not None:
                 caption = msg.caption
-            if str(file).split(".")[-1] in ['mkv', 'mp4', 'webm']:
-                if str(file).split(".")[-1] in ['webm', 'mkv']:
+            if str(file).split(".")[-1] in ['mkv', 'mp4', 'webm', 'mpe4', 'mpeg']:
+                if str(file).split(".")[-1] in ['webm', 'mkv', 'mpe4', 'mpeg']:
                     path = str(file).split(".")[0] + ".mp4"
                     os.rename(file, path) 
                     file = str(file).split(".")[0] + ".mp4"
                 data = video_metadata(file)
                 duration = data["duration"]
+                width = data["width"]
+                height = data["height"]
                 thumb_path = await screenshot(file, duration, sender)
-                await client.send_video(
-                    chat_id=sender,
-                    video=file,
-                    caption=caption,
-                    supports_streaming=True,
-                    duration=duration,
-                    thumb=thumb_path,
-                    progress=progress_for_pyrogram,
-                    progress_args=(
-                        client,
-                        '**UPLOADING:**\n',
-                        edit,
-                        time.time()
-                    )
+                UT = time.time()
+                uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                await bot.send_file(
+                    event.chat_id, 
+                    uploader, 
+                    caption=caption, 
+                    thumb=thumb_path, 
+                    attributes=attributes, 
+                    force_document=False
                 )
                 os.remove(file)
             elif str(file).split(".")[-1] in ['jpg', 'jpeg', 'png', 'webp']:
@@ -101,18 +98,14 @@ async def get_msg(userbot, client, sender, edit_id, msg_link, i):
                 os.remove(file)
             else:
                 thumb_path=thumbnail(sender)
-                await client.send_document(
-                    sender,
-                    file, 
-                    caption=caption,
-                    thumb=thumb_path,
-                    progress=progress_for_pyrogram,
-                    progress_args=(
-                        client,
-                        '**UPLOADING:**\n',
-                        edit,
-                        time.time()
-                    )
+                UT = time.time()
+                uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                await bot.send_file(
+                    event.chat_id, 
+                    uploader, 
+                    caption=caption, 
+                    thumb=thumb_path, 
+                    force_document=True
                 )
                 os.remove(file)
             await edit.delete()
