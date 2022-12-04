@@ -42,18 +42,24 @@ async def clone(event):
         await event.reply(r)
         return
     edit = await event.reply("Processing!")
-    x, t = check_timer(event.sender_id, process, timer) 
-    if x == False:
-        return await edit.edit(t)
     if 't.me/+' in link:
+        x, t = check_timer(event.sender_id, process, timer, 10) 
+        if x == False:
+            return await edit.edit(t)
         q = await join(userbot, link)
         await edit.edit(q)
-        await set_timer(Drone, event.sender_id, process, timer) 
+        await set_timer(Drone, event.sender_id, process, timer, 10) 
         return 
     if 't.me' in link and not 't.me/c/' in link:
+        x, t = check_timer(event.sender_id, process, timer, 10) 
+        if x == False:
+            return await edit.edit(t)
         await get_msg(None, Bot, Drone, event.sender_id, edit.id, link, 0)
         await set_timer(Drone, event.sender_id, process, timer, 10) 
     if 't.me/c/' in link:
+        x, t = check_timer(event.sender_id, process, timer, 60) 
+        if x == False:
+            return await edit.edit(t)
         userbot = ""
         db = Database(MONGODB_URI, 'saverestricted')
         i, h, s = await db.get_credentials(event.chat.id)
