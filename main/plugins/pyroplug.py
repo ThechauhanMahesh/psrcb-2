@@ -115,6 +115,7 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
             await client.edit_message_text(sender, edit_id, "Have you joined the channel?")
             return 
         except Exception as e:
+            print(e)
             await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`')
             os.remove(file)
             return 
