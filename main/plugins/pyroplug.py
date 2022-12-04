@@ -85,6 +85,7 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                 thumb_path = await screenshot(file, duration, sender)
                 UT = time.time()
                 uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
                 await bot.send_file(
                     sender, 
                     uploader, 
