@@ -1,6 +1,7 @@
 #Github.com/Vasusen-code
 
 from .. import MONGODB_URI
+from .. import FORCESUB as FSUB
 
 from main.Database.database import Database
 
@@ -13,6 +14,26 @@ from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
 
 from telethon import errors, events
+from telethon.errors.rpcerrorlist import UserNotParticipantError
+from telethon.tl.functions.channels import GetParticipantRequest
+
+#Forcesub-----------------------------------------------------------------------------------
+
+async def force_sub(id):
+    FORCESUB = int(FSUB)
+    if not str(FORCESUB).startswith("-100"):
+        FORCESUB = int("-100" + str(FORCESUB))
+    ok = False
+    try:
+        x = await Drone(GetParticipantRequest(channel=int(FORCESUB), participant=int(id)))
+        left = x.stringify()
+        if 'left' in left:
+            ok = True
+        else:
+            ok = False
+    except UserNotParticipantError:
+        ok = True 
+    return ok   
 
 #Multi client-------------------------------------------------------------------------------------------------------------
 
