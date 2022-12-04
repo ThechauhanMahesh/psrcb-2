@@ -86,7 +86,7 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                 UT = time.time()
                 uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                 await bot.send_file(
-                    event.chat_id, 
+                    sender, 
                     uploader, 
                     caption=caption, 
                     thumb=thumb_path, 
@@ -103,7 +103,7 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                 UT = time.time()
                 uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                 await bot.send_file(
-                    event.chat_id, 
+                    sender, 
                     uploader, 
                     caption=caption, 
                     thumb=thumb_path, 
