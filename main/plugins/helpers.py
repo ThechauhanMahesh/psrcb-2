@@ -20,12 +20,8 @@ from telethon.tl.functions.channels import GetParticipantRequest
 #Forcesub-----------------------------------------------------------------------------------
 
 async def force_sub(id):
-    FORCESUB = int(FSUB)
-    if not str(FORCESUB).startswith("-100"):
-        FORCESUB = int("-100" + str(FORCESUB))
-    ok = False
     try:
-        x = await bot(GetParticipantRequest(channel=int(FORCESUB), participant=int(id)))
+        x = await bot(GetParticipantRequest(channel=int(FORCESUB), participant=id))
         left = x.stringify()
         if 'left' in left:
             ok = True
