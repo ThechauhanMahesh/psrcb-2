@@ -101,6 +101,10 @@ def check_timer(sender, list1, list2, t):
 
 #Screenshot---------------------------------------------------------------------------------------------------------------
 
+def hhmmss(seconds):
+    x = time.strftime('%H:%M:%S',time.gmtime(seconds))
+    return x
+
 async def screenshot(video, duration, sender):
     if os.path.exists(f'{sender}.jpg'):
         return f'{sender}.jpg'
