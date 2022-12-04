@@ -4,7 +4,7 @@ from .. import bot as Drone
 from .. import MONGODB_URI, Bot
 from .. import FORCESUB as fs
 
-from main.plugins.helpers import get_link, join, set_timer, check_timer, screenshot
+from main.plugins.helpers import get_link, join, set_timer, check_timer, screenshot, force_sub
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import Database
 from main.plugins.pyroplug import get_msg
@@ -12,7 +12,6 @@ from main.plugins.pyroplug import get_msg
 from pyrogram.errors import FloodWait, BadRequest
 from pyrogram import Client, filters, idle
 from ethon.pyfunc import video_metadata
-from ethon.telefunc import force_sub
 from telethon import events
 
 import re, time, asyncio
