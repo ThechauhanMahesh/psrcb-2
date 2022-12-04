@@ -37,9 +37,9 @@ async def clone(event):
             return
     except TypeError:
         return
-    s, r = await force_sub(event.client, fs, event.sender_id, ft)
+    s = await force_sub(event.client, fs, event.sender_id, ft)
     if s == True:
-        await event.reply(r)
+        await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
         return
     edit = await event.reply("Processing!")
     if 't.me/+' in link:
