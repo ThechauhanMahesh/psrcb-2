@@ -36,7 +36,7 @@ async def clone(event):
             return
     except TypeError:
         return
-    s = await force_sub(event.client, fs, event.sender_id, ft)
+    s = await force_sub(event.sender_id)
     if s == True:
         await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
         return
