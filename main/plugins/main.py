@@ -21,6 +21,7 @@ ft = f"To use this bot you've to join @{fs}."
 
 process=[]
 timer=[]
+user = []
 
 errorC = """Error: Couldn't start client by Login credentials. Check these:
 
@@ -41,23 +42,37 @@ async def clone(event):
         await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
         return
     edit = await event.reply("Processing!")
+    if f'{int(event.sender_id)}' in user:
+        return await edit.edit("Please don't spam links, wait until ongoing process is done.")
+    user.append(f'{int(event.sender_id)}')
     if 't.me/+' in link:
         x, t = check_timer(event.sender_id, process, timer, 10) 
         if x == False:
-            return await edit.edit(t)
+            await edit.edit(t)
+            ind = user.index(f'{int(event.sender_id)}')
+            return user.pop(int(ind))
         q = await join(userbot, link)
         await edit.edit(q)
         await set_timer(Drone, event.sender_id, process, timer, 10) 
+        ind = user.index(f'{int(event.sender_id)}')
+        user.pop(int(ind))
         return 
     if 't.me' in link and not 't.me/c/' in link:
         x, t = check_timer(event.sender_id, process, timer, 10) 
         if x == False:
-            return await edit.edit(t)
+            await edit.edit(t)
+            ind = user.index(f'{int(event.sender_id)}')
+            return user.pop(int(ind))
         await get_msg(None, Bot, Drone, event.sender_id, edit.id, link, 0)
         await set_timer(Drone, event.sender_id, process, timer, 10) 
+        ind = user.index(f'{int(event.sender_id)}')
+        user.pop(int(ind))
+        return
     if 't.me/c/' in link:
         x, t = check_timer(event.sender_id, process, timer, 60) 
         if x == False:
+            ind = user.index(f'{int(event.sender_id)}')
+            user.pop(int(ind))
             return await edit.edit(t)
         userbot = ""
         db = Database(MONGODB_URI, 'saverestricted')
@@ -67,11 +82,19 @@ async def clone(event):
                 userbot = Client(session_name=s, api_hash=h, api_id=int(i))      
                 await userbot.start()
             except ValueError:
+                ind = user.index(f'{int(event.sender_id)}')
+                user.pop(int(ind))
                 return await edit.edit("**INVALID API ID:** Logout and Login back with correct API ID.")
             except Exception as e:
                 print(e)
+                ind = user.index(f'{int(event.sender_id)}')
+                user.pop(int(ind))
                 return await edit.edit(errorC)
         else:
+            ind = user.index(f'{int(event.sender_id)}')
+            user.pop(int(ind))
             return await edit.edit("Your login credentials not found.")
         await get_msg(userbot, Bot, Drone,event.sender_id, edit.id, link, 0)
         await set_timer(Drone, event.sender_id, process, timer, 60) 
+        ind = user.index(f'{int(event.sender_id)}')
+        user.pop(int(ind))
