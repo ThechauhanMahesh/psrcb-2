@@ -9,9 +9,9 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
                     level=logging.WARNING)
 
 # variables
-API_ID = 25391807
-API_HASH = "c3aac9db5221dd2ca5aeb60ad8e0c712"
-BOT_TOKEN = "5710340586:AAGbLqvTRmhWDVjiIHQboSIWr2NkE0aNbVw"
+API_ID = 28533415
+API_HASH = "96332cd303a9277980b5dd0274568b36"
+BOT_TOKEN = "5710340586:AAGlpICIHiEENDAOCWblFVeTnEjkJk8rgPs"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001885911868")
 MONGODB_URI = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
