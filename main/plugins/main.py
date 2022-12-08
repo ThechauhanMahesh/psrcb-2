@@ -96,5 +96,10 @@ async def clone(event):
             return await edit.edit("Your login credentials not found.")
         await get_msg(userbot, Bot, Drone,event.sender_id, edit.id, link, 0)
         await set_timer(Drone, event.sender_id, process, timer, 60) 
+        try:
+            await userbot.stop()
+        except exception as e:
+            print(e)
+            pass
         ind = user.index(f'{int(event.sender_id)}')
         user.pop(int(ind))
