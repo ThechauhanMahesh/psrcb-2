@@ -63,7 +63,11 @@ async def clone(event):
             await edit.edit(t)
             ind = user.index(f'{int(event.sender_id)}')
             return user.pop(int(ind))
-        await get_msg(None, Bot, Drone, event.sender_id, edit.id, link, 0)
+        try:
+            await get_msg(None, Bot, Drone, event.sender_id, edit.id, link, 0)
+        except Exception as e:
+            print(e)
+            pass
         await set_timer(Drone, event.sender_id, process, timer, 10) 
         ind = user.index(f'{int(event.sender_id)}')
         user.pop(int(ind))
@@ -94,7 +98,11 @@ async def clone(event):
             ind = user.index(f'{int(event.sender_id)}')
             user.pop(int(ind))
             return await edit.edit("Your login credentials not found.")
-        await get_msg(userbot, Bot, Drone,event.sender_id, edit.id, link, 0)
+        try: 
+            await get_msg(userbot, Bot, Drone,event.sender_id, edit.id, link, 0)
+        except Exception as e:
+            print(e)
+            pass
         await set_timer(Drone, event.sender_id, process, timer, 60) 
         try:
             await userbot.stop()
