@@ -104,7 +104,8 @@ async def lin(event):
                 Button.request_phone('Send my contact number '),
                 Button.text('Cancel', resize=True, single_use=True)])
             contact = await conv.get_response()
-            number = contact.text
+            print(contact.text) 
+            number = ' '.join(str(contact.text))
         except Exception as e: 
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
@@ -116,9 +117,8 @@ async def lin(event):
             await client.connect()
         code_alert = await conv.send_message("Sending code...")
         try:
-            print(number)
-           code = await client.send_code(' '.join(str(number)))
-           await asyncio.sleep(1)
+            code = await client.send_code(number)
+            await asyncio.sleep(1)
         except FloodWait as e:
             await conv.send_message(f"Can't send code, you have Floodwait of {e.x} Seconds.")
             return
