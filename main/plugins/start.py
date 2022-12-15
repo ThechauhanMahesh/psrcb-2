@@ -1,7 +1,7 @@
 #Github.com/Vasusen-code
 
 import os
-from .. import bot, ACCESS, MONGODB_URI
+from .. import bot, ACCESS, MONGODB_URI, API_ID, API_HASH
 
 from telethon import events, Button
 from decouple import config
