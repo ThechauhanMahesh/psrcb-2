@@ -1,6 +1,6 @@
 #Github.com/Vasusen-code
 
-import os
+import os, asyncio
 from .. import bot, ACCESS, MONGODB_URI, API_ID, API_HASH
 
 from telethon import events, Button
@@ -100,9 +100,7 @@ async def lin(event):
     passcode = ""
     async with Drone.conversation(event.chat_id) as conv: 
         try:
-            xx = await conv.send_message("Send me your contact number to login.", buttons=[
-                Button.request_phone('Send my contact number '),
-                Button.text('Cancel', resize=True, single_use=True)])
+            xx = await conv.send_message("Send me your contact number with country code(eg +1 or +91) to login.")
             contact = await conv.get_response()
             print(contact.text) 
             number = ' '.join(str(contact.text))
