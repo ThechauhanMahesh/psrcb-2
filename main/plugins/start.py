@@ -116,7 +116,8 @@ async def lin(event):
             await client.connect()
         code_alert = await conv.send_message("Sending code...")
         try:
-           code = await client.send_code(number)
+            print(number)
+           code = await client.send_code(' '.join(str(number)))
            await asyncio.sleep(1)
         except FloodWait as e:
             await conv.send_message(f"Can't send code, you have Floodwait of {e.x} Seconds.")
