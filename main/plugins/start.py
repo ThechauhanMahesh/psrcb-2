@@ -163,6 +163,7 @@ async def lin(event):
             return
         await login(event.sender_id, API_ID, API_HASH, session) 
         await Drone.send_message(event.chat_id, "Login credentials saved.")
+        await client.disconnect()
         
 @bot.on(events.callbackquery.CallbackQuery(data="logout"))
 async def out(event):
