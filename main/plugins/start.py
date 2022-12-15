@@ -6,6 +6,7 @@ from .. import bot, ACCESS, MONGODB_URI
 from telethon import events, Button
 from decouple import config
 from pyrogram import Client
+from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
 
 from main.plugins.helpers import login, logout
 from main.Database.database import Database
@@ -113,8 +114,9 @@ async def lin(event):
         except ConnectionError:
             await client.disconnect()
             await client.connect()
+        code_alert = await conv.send_message("Sending code...")
         try:
-           code = await client.send_code(phone)
+           code = await client.send_code(number)
            await asyncio.sleep(1)
         except FloodWait as e:
             await conv.send_message(f"Can't send code, you have Floodwait of {e.x} Seconds.")
@@ -124,6 +126,7 @@ async def lin(event):
             await conv.send_message(f"**Error**: {str(e)}")
             return
         try:
+            await code_alert.delete()
             ask_code = await conv.send_message(otp_text)  
             otp_ = await conv.get_response()
             otp = otp_.text
@@ -155,11 +158,11 @@ async def lin(event):
             await conv.send_message(f"**ERROR:** {str(e)}")
             return
         try:
-            session_string = await client.export_session_string()
+            session = await client.export_session_string()
         except Exception as e:
             await conv.send_message(f"**ERROR:** {str(e)}")
             return
-        await login(event.sender_id, API_ID, API_HASH, session_string) 
+        await login(event.sender_id, API_ID, API_HASH, session) 
         await Drone.send_message(event.chat_id, "Login credentials saved.")
         
 @bot.on(events.callbackquery.CallbackQuery(data="logout"))
