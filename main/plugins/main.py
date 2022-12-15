@@ -1,7 +1,7 @@
 # Github.com/Vasusen-code
 
 from .. import bot as Drone
-from .. import MONGODB_URI, Bot
+from .. import MONGODB_URI, Bot, AUTH_USERS 
 from .. import FORCESUB as fs
 
 from main.plugins.helpers import get_link, join, set_timer, check_timer, screenshot, force_sub
