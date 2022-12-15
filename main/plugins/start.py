@@ -30,6 +30,10 @@ or https://replit.com/@dashezup/generate-pyrogram-session-string
 
 - send /start and click on Login."""
 
+otp_text = """An OTP has been sent to your number. 
+
+Please send the OTP with space, example: `1 2 3 4 5`."""
+
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
     await event.reply(f'{st}', 
@@ -89,27 +93,43 @@ async def lin(event):
     button = await event.get_message()
     msg = await button.get_reply_message()  
     await event.delete()
+    number = 0
+    otp = 0
+    session = ""
+    passcode = ""
     async with Drone.conversation(event.chat_id) as conv: 
         try:
-            xx = await conv.send_message("send me your `API_ID` as a reply to this.")
-            x = await conv.get_reply()
-            i = x.text
-            await xx.delete()                    
-            if not i:               
-                return await xx.edit("No response found.")
+            xx = await conv.send_message("Send me your contact number to login.", buttons=[
+                Button.request_phone('Send my contact number '),
+                Button.text('Cancel', resize=True, single_use=True)])
+            contact = await conv.get_response()
+            number = contact.text
         except Exception as e: 
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
+        client = Client("my_account", api_id=API_ID, api_hash=API_HASH)
         try:
-            xy = await conv.send_message("send me your `API_HASH` as a reply to this.")  
-            y = await conv.get_reply()
-            h = y.text
-            await xy.delete()                    
-            if not h:                
-                return await xy.edit("No response found.")
+            await client.connect()
+        except ConnectionError:
+            await client.disconnect()
+            await client.connect()
+        try:
+           code = await client.send_code(phone)
+           await asyncio.sleep(1)
+        except FloodWait as e:
+            await conv.send_message(f"Can't send code, you have Floodwait of {e.x} Seconds.")
+            return
+        except Exception as e:
+            print(e)
+            await conv.send_message(f"**Error**: {e}")
+            return
+        try:
+            ask_code = await conv.send_message(otp_text)  
+            otp_ = await conv.get_response()
+            otp = otp_.text
         except Exception as e: 
             print(e)
-            return await xy.edit("An error occured while waiting for the response.")
+            return await ask_code.edit("An error occured while waiting for the response.")
         try:
             xz = await conv.send_message("send me your `SESSION` as a reply to this.")  
             z = await conv.get_reply()
