@@ -121,7 +121,7 @@ async def lin(event):
             return
         except Exception as e:
             print(e)
-            await conv.send_message(f"**Error**: {e}")
+            await conv.send_message(f"**Error**: {str(e)}")
             return
         try:
             ask_code = await conv.send_message(otp_text)  
@@ -131,16 +131,35 @@ async def lin(event):
             print(e)
             return await ask_code.edit("An error occured while waiting for the response.")
         try:
-            xz = await conv.send_message("send me your `SESSION` as a reply to this.")  
-            z = await conv.get_reply()
-            s = z.text
-            await xz.delete()                    
-            if not s:                
-                return await xz.edit("No response found.")
-        except Exception as e: 
-            print(e)
-            return await xz.edit("An error occured while waiting for the response.")
-        await login(event.sender_id, i, h, s) 
+            await client.sign_in(number, code.phone_code_hash, phone_code=' '.join(str(otp)))
+        except PhoneCodeInvalid:
+            await conv.send_message("Invalid Code, try again.")
+            return
+        except PhoneCodeExpired:
+            await conv.send_message("Code has expired, try again.")
+            return
+        except SessionPasswordNeeded:
+            try:
+                xz = await conv.send_message("Send your Two-Step Verification password.") 
+                z = await conv.get_response()
+                passcode = z.text
+            except Exception as e: 
+                print(e)
+                return await xz.edit("An error occured while waiting for the response.")
+            try:
+                await client.check_password(passcode)
+            except Exception as e:
+                await conv.send_message(f"**ERROR:** {str(e)}")
+                return
+        except Exception as e:
+            await conv.send_message(f"**ERROR:** {str(e)}")
+            return
+        try:
+            session_string = await client.export_session_string()
+        except Exception as e:
+            await conv.send_message(f"**ERROR:** {str(e)}")
+            return
+        await login(event.sender_id, API_ID, API_HASH, session_string) 
         await Drone.send_message(event.chat_id, "Login credentials saved.")
         
 @bot.on(events.callbackquery.CallbackQuery(data="logout"))
