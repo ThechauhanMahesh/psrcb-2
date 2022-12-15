@@ -29,6 +29,12 @@ errorC = """Error: Couldn't start client by Login credentials. Check these:
 - Did you send "Pyrogram" string session? 
 - Do not send string in bold, italic or any other fonts."""
 
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS, pattern="^/free (.*)"))
+async def free(event):
+    id = event.pattern_match.group(1)
+    ind = user.index(f'{int(id)}')
+    return user.pop(int(ind))
+
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def clone(event):
     try:
