@@ -93,9 +93,7 @@ async def clone(event):
                 print(e)
                 ind = user.index(f'{int(event.sender_id)}')
                 user.pop(int(ind))
-                await edit.edit(f'{errorC}\n\n**Error:** {str(e)})
-                if f'{event.sender_id}' in connection:
-                    connection.pop(int(connection.index(f'{int(event.sender_id)}')))
+                await edit.edit(f'{errorC}\n\n**Error:** {str(e)}')
                 return
         else:
             ind = user.index(f'{int(event.sender_id)}')
