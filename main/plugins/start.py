@@ -93,6 +93,8 @@ async def lin(event):
     otp = 0
     session = ""
     passcode = ""
+    ai = ''
+    ah = ''
     async with Drone.conversation(event.chat_id) as conv: 
         try:
             xx = await conv.send_message("Send me your contact number with country code(eg +1 or +91) to login.")
@@ -103,6 +105,8 @@ async def lin(event):
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
         client = Client("my_account", api_id=APIID[0], api_hash=APIHASH[0])
+        ai = APIID[0]
+        ah = APIHASH[0]
         try:
             await client.connect()
         except ConnectionError:
@@ -115,6 +119,8 @@ async def lin(event):
         except FloodWait as e:
             await client.disconnect()
             client = Client("my_account", api_id=APIID[-1], api_hash=APIHASH[-1])
+            ai = APIID[-1]
+            ah = APIHASH[-1]
             try:
                 await client.connect()
             except ConnectionError:
@@ -167,7 +173,7 @@ async def lin(event):
         except Exception as e:
             await conv.send_message(f"**ERROR:** {str(e)}")
             return
-        await login(event.sender_id, API_ID, API_HASH, session) 
+        await login(event.sender_id, ai, ah, session) 
         await Drone.send_message(event.chat_id, "Login credentials saved.")
         await client.disconnect()
         
