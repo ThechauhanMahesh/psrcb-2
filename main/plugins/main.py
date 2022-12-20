@@ -107,3 +107,4 @@ async def clone(event):
         await set_timer(Drone, event.sender_id, process, timer, 60) 
         ind = user.index(f'{int(event.sender_id)}')
         user.pop(int(ind))
+        await userbot.stop()
