@@ -23,11 +23,9 @@ process=[]
 timer=[]
 user = []
 
-errorC = """Error: Couldn't start client by Login credentials. Check these:
+connection = []
 
-- is your API details entered right? 
-- Did you send "Pyrogram" string session? 
-- Do not send string in bold, italic or any other fonts."""
+errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS, pattern="^/free (.*)"))
 async def free(event):
@@ -89,8 +87,10 @@ async def clone(event):
         i, h, s = await db.get_credentials(event.chat.id)
         if i and h and s is not None:
             try:
-                userbot = Client(session_name=s, api_hash=h, api_id=int(i))      
-                await userbot.start()
+                userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
+                if not f'{event.sender_id}' in connection:
+                    await userbot.start()
+                    connection.append(f'{event.sender_id}')
             except ValueError:
                 ind = user.index(f'{int(event.sender_id)}')
                 user.pop(int(ind))
@@ -99,7 +99,10 @@ async def clone(event):
                 print(e)
                 ind = user.index(f'{int(event.sender_id)}')
                 user.pop(int(ind))
-                return await edit.edit(errorC)
+                await edit.edit(errorC)
+                if f'{event.sender_id}' in connection:
+                    connection.pop(int(connection.index(f'{int(event.sender_id)}')))
+                return
         else:
             ind = user.index(f'{int(event.sender_id)}')
             user.pop(int(ind))
