@@ -20,7 +20,9 @@ ht = """Help:
 
 **FOR PRIVATE CHANNEL:**
 - Login 
-- Then send Link of message of any channel you've joined. 
+- Then send Link of message of any channel you've joined.
+
+- [Click here](https://replit.com/@dashezup/generate-pyrogram-session-string) to generate session.
 """
 
 otp_text = """An OTP has been sent to your number. 
@@ -82,9 +84,30 @@ async def remt(event):
     except Exception:
         await event.edit("No thumbnail saved.")                        
     
-   
 @bot.on(events.callbackquery.CallbackQuery(data="login"))
 async def lin(event):
+    await event.edit("Choose your **login method**.\n\nNote: Login by session is more stable." buttons=[[Button.inline("SESSION", data="SESSION"), Button.inline("PHONE NO", data="Phone No.")]])
+    
+@bot.on(events.callbackquery.CallbackQuery(data="SESSION"))
+async def lin_ss(event):
+    Drone = event.client
+    button = await event.get_message()
+    msg = await button.get_reply_message()  
+    await event.delete()
+    s = ''
+    async with Drone.conversation(event.chat_id) as conv: 
+        try:
+            xz = await conv.send_message("send me your Pyrogram `String SESSION`.")  
+            z = await conv.get_response()
+            s = z.text
+        except Exception as e: 
+            print(e)
+            return await xz.edit("An error occured while waiting for the response.")
+        await login(event.sender_id, API_ID, API_HASH, s) 
+        await Drone.send_message(event.chat_id, "Login credentials saved.")
+        
+@bot.on(events.callbackquery.CallbackQuery(data="Phone No."))
+async def lin_ph(event):
     Drone = event.client
     button = await event.get_message()
     msg = await button.get_reply_message()  
