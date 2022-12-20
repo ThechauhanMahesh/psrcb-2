@@ -88,18 +88,12 @@ async def clone(event):
         if i and h and s is not None:
             try:
                 userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
-                if f'{event.sender_id}' not in connection:
-                    await userbot.start()
-                    connection.append(f'{event.sender_id}')
-            except ValueError:
-                ind = user.index(f'{int(event.sender_id)}')
-                user.pop(int(ind))
-                return await edit.edit("**INVALID API ID:** Logout and Login back with correct API ID.")
+                await userbot.start()
             except Exception as e:
                 print(e)
                 ind = user.index(f'{int(event.sender_id)}')
                 user.pop(int(ind))
-                await edit.edit(errorC)
+                await edit.edit(f'{errorC}\n\n**Error:** {str(e)})
                 if f'{event.sender_id}' in connection:
                     connection.pop(int(connection.index(f'{int(event.sender_id)}')))
                 return
