@@ -88,7 +88,7 @@ async def clone(event):
         if i and h and s is not None:
             try:
                 userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
-                if not f'{event.sender_id}' in connection:
+                if f'{event.sender_id}' not in connection:
                     await userbot.start()
                     connection.append(f'{event.sender_id}')
             except ValueError:
