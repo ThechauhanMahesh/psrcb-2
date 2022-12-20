@@ -19,21 +19,16 @@ ht = """Help:
 - Send me direct link of message. 
 
 **FOR PRIVATE CHANNEL:**
-- Login by API and pyrogram String session
+- Login 
 - Then send Link of message of any channel you've joined. 
-
-__>> How to Login?__
-
-- Get API details using @UseTGSbot or you can manually get it from official site my.telegram.org (login and click on api development tools) 
-
-- Get Pyrogram string session from @SessionStringGeneratorZBot 
-or https://replit.com/@dashezup/generate-pyrogram-session-string
-
-- send /start and click on Login."""
+"""
 
 otp_text = """An OTP has been sent to your number. 
 
 Please send the OTP with space, example: `1 2 3 4 5`."""
+
+APIID = [API_ID, 29841594]
+APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
 @bot.on(events.NewMessage(incoming=True,func=lambda e: e.is_private))
 async def access(event):
@@ -107,7 +102,7 @@ async def lin(event):
         except Exception as e: 
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
-        client = Client("my_account", api_id=API_ID, api_hash=API_HASH)
+        client = Client("my_account", api_id=APIID[0], api_hash=APIHASH[0])
         try:
             await client.connect()
         except ConnectionError:
@@ -118,8 +113,19 @@ async def lin(event):
             code = await client.send_code(number)
             await asyncio.sleep(1)
         except FloodWait as e:
-            await conv.send_message(f"Can't send code, you have Floodwait of {e.x} Seconds.")
-            return
+            await client.disconnect()
+            client = Client("my_account", api_id=APIID[-1], api_hash=APIHASH[-1])
+            try:
+                await client.connect()
+            except ConnectionError:
+                await client.disconnect()
+                await client.connect()
+            try:
+                code = await client.send_code(number)
+                await asyncio.sleep(1)
+            except FloodWait:
+                await conv.send_message(f"Can't send code, you have Floodwait of {e.x} Seconds.")
+                return
         except Exception as e:
             print(e)
             await conv.send_message(f"**Error**: {str(e)}")
