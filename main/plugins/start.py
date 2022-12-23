@@ -86,7 +86,7 @@ async def remt(event):
     
 @bot.on(events.callbackquery.CallbackQuery(data="login"))
 async def lin(event):
-    await event.edit("Choose your **login method**.\n\nNote: Login by session is more stable." buttons=[[Button.inline("SESSION", data="SESSION"), Button.inline("PHONE NO", data="Phone No.")]])
+    await event.edit("Choose your **login method**.\n\nNote: Login by session is more stable.", buttons=[[Button.inline("SESSION", data="SESSION"), Button.inline("PHONE NO", data="Phone No.")]])
     
 @bot.on(events.callbackquery.CallbackQuery(data="SESSION"))
 async def lin_ss(event):
