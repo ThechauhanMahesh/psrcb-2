@@ -162,7 +162,10 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
         except Exception as e:
             print(e)
             await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`')
-            os.remove(file)
+            try:
+                os.remove(file)
+            except Exception:
+                return
             return 
     else:
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
