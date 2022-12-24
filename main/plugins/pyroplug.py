@@ -74,6 +74,49 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
             if msg.caption is not None:
                 caption = msg.caption
             if str(file).split(".")[-1] in ['mkv', 'mp4', 'webm', 'mpe4', 'mpeg']:
+                path = str(file).split(".")[0] + ".mp4"
+                    os.rename(file, path) 
+                    file = str(file).split(".")[0] + ".mp4"
+                data = video_metadata(file)
+                duration = data["duration"]
+                try:
+                    thumb_path = await screenshot(file, duration, sender)
+                except Exception:
+                    thumb_path = None
+                await client.send_video(
+                    chat_id=sender,
+                    video=file,
+                    caption=caption,
+                    supports_streaming=True,
+                    duration=duration,
+                    thumb=thumb_path,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        '**UPLOADING:**\n',
+                        edit,
+                        time.time()
+                    )
+                )
+            elif str(file).split(".")[-1] in ['jpg', 'jpeg', 'png', 'webp']:
+                await edit.edit("Uploading photo.")
+                await bot.send_file(sender, file, caption=caption)
+            else:
+                thumb_path=thumbnail(sender)
+                await client.send_document(
+                    sender,
+                    file, 
+                    caption=caption,
+                    thumb=thumb_path,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        '**UPLOADING:**\n',
+                        edit,
+                        time.time()
+                    )
+                )
+                """
                 if str(file).split(".")[-1] in ['webm', 'mkv', 'mpe4', 'mpeg']:
                     path = str(file).split(".")[0] + ".mp4"
                     os.rename(file, path) 
@@ -111,6 +154,7 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                     force_document=True
                 )
                 os.remove(file)
+                """
             await edit.delete()
         except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
             await client.edit_message_text(sender, edit_id, "Have you joined the channel?")
