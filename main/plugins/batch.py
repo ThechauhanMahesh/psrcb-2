@@ -26,6 +26,7 @@ ft = f"To use this bot you've to join @{fs}."
 
 batch = []
 pros = []
+monthly = []
 
 async def get_pvt_content(event, chat, id):
     msg = await userbot.get_messages(chat, ids=id)
@@ -38,6 +39,13 @@ async def pro_s(event):
     for id in str(msg.text).split(" "):
         pros.append(id)
 
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/monthly'))
+async def pro_s(event):
+    msg = await event.get_reply_message()
+    monthly.clear()
+    for id in str(msg.text).split(" "):
+        monthly.append(id)
+        
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/batch'))
 async def _batch(event):
     if not event.is_private:
@@ -89,9 +97,14 @@ async def _batch(event):
 async def run_batch(userbot, client, sender, link, _range):
     for i in range(_range):
         timer = 60
+        if not 't.me/c/' in link:
+            timer = 10
         try:
             await get_bulk_msg(userbot, client, sender, link, i) 
         except FloodWait as fw:
+            if int(fw.x) > 299:
+                await await client.send_message(sender, "Cancelling batch since you have floodwait more than 5 minutes.")
+                break
             await asyncio.sleep(fw.x + 5)
             await get_bulk_msg(userbot, client, sender, link, i)
         protection = await client.send_message(sender, f"Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
