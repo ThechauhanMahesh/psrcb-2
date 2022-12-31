@@ -48,10 +48,6 @@ async def _batch(event):
     if s == True:
         await event.reply(r)
         return 
-    if len(batch) > 3 and f'{event.sender_id}' not in pros:
-        return await event.reply(f"Already {len(batch)} batch running please wait.")
-    if len(batch) > 7 and f'{event.sender_id}' in pros:
-        return await event.reply(f"Already {len(batch)} batch running please wait.")
     if f'{event.sender_id}' in batch:
         return await event.reply("You've already started one batch, wait for it to complete!")
     async with Drone.conversation(event.chat_id) as conv: 
@@ -75,7 +71,10 @@ async def _batch(event):
             try:
                 value = int(_range.text)
                 if value > 10:
-                    return await conv.send_message("You can only get upto 10 files in a single batch.")
+                    if f'{event.sender_id}' not in pros:
+                        return await conv.send_message("You can only get upto 10 files in a single batch.")
+                    elif value > 50:
+                        return await conv.send_message("You can only get upto 50 files in a single batch.")
             except ValueError:
                 return await conv.send_message("Range must be an integer!")
             s, r = await check(userbot, Bot, _link)
