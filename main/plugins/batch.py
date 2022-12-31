@@ -25,11 +25,19 @@ from ethon.telefunc import force_sub
 ft = f"To use this bot you've to join @{fs}."
 
 batch = []
+pros = []
 
 async def get_pvt_content(event, chat, id):
     msg = await userbot.get_messages(chat, ids=id)
     await event.client.send_message(event.chat_id, msg) 
     
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/pros'))
+async def pro_s(event):
+    msg = await event.get_reply_message()
+    pros.clear()
+    for id in str(msg.text).split(" "):
+        pros.append(id)
+
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/batch'))
 async def _batch(event):
     if not event.is_private:
@@ -40,8 +48,10 @@ async def _batch(event):
     if s == True:
         await event.reply(r)
         return 
-    if len(batch) > 4:
-        return await event.reply("Already 4 batch running please wait.")
+    if len(batch) > 3 and f'{event.sender_id}' not in pros:
+        return await event.reply(f"Already {len(batch)} batch running please wait.")
+    if len(batch) > 7 and f'{event.sender_id}' in pros:
+        return await event.reply(f"Already {len(batch)} batch running please wait.")
     if f'{event.sender_id}' in batch:
         return await event.reply("You've already started one batch, wait for it to complete!")
     async with Drone.conversation(event.chat_id) as conv: 
