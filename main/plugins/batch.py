@@ -7,11 +7,10 @@ Plugin for both public & private channels!
 
 import time, os, asyncio
 
-from .. import bot as Drone
-from .. import userbot, Bot, AUTH
-from .. import FORCESUB as fs
+from .. import bot as Drone, MONGODB_URI, Bot, FORCESUB as fs
 from main.plugins.pyroplug import check, get_bulk_msg
 from main.plugins.helpers import get_link, screenshot
+from main.Database.database import Database
 
 from telethon import events, Button, errors
 from telethon.tl.types import DocumentAttributeVideo
@@ -46,7 +45,7 @@ async def pro_s(event):
     for id in str(msg.text).split(" "):
         monthly.append(id)
         
-@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/batch'))
+@Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
 async def _batch(event):
     if not event.is_private:
         return
@@ -85,6 +84,22 @@ async def _batch(event):
                         return await conv.send_message("You can only get upto 50 files in a single batch.")
             except ValueError:
                 return await conv.send_message("Range must be an integer!")
+            db = Database(MONGODB_URI, 'saverestricted')
+            i, h, s = await db.get_credentials(event.chat.id)
+            if i and h and s is not None:
+                try:
+                    userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
+                    await userbot.start()
+                except Exception as e:
+                    print(e)
+                    ind = batch.index(f'{int(event.sender_id)}')
+                    batch.pop(int(ind))
+                    await await conv.send_message(f'{errorC}\n\n**Error:** {str(e)}')
+                    return
+            else:
+                ind = batch.index(f'{int(event.sender_id)}')
+                batch.pop(int(ind))
+                return await edit.edit("Your login credentials not found.")
             s, r = await check(userbot, Bot, _link)
             if s != True:
                 await conv.send_message(r)
