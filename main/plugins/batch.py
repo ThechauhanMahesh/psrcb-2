@@ -94,7 +94,7 @@ async def _batch(event):
                     print(e)
                     ind = batch.index(f'{int(event.sender_id)}')
                     batch.pop(int(ind))
-                    await await conv.send_message(f'{errorC}\n\n**Error:** {str(e)}')
+                    await conv.send_message(f'{errorC}\n\n**Error:** {str(e)}')
                     return
             else:
                 ind = batch.index(f'{int(event.sender_id)}')
