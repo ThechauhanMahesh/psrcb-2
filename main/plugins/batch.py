@@ -8,7 +8,7 @@ Plugin for both public & private channels!
 import time, os, asyncio
 
 from .. import bot as Drone, MONGODB_URI, Bot, FORCESUB as fs
-from main.plugins.pyroplug import check, get_bulk_msg
+from main.plugins.pyroplug import check, get_bulk_msg, force_sub
 from main.plugins.helpers import get_link, screenshot
 from main.Database.database import Database
 
@@ -19,7 +19,6 @@ from pyrogram import Client
 from pyrogram.errors import FloodWait
 
 from ethon.pyfunc import video_metadata
-from ethon.telefunc import force_sub
 
 ft = f"To use this bot you've to join @{fs}."
 
@@ -51,9 +50,9 @@ async def _batch(event):
         return
     # wtf is the use of fsub here if the command is meant for the owner? 
     # well am too lazy to clean 
-    s, r = await force_sub(event.client, fs, event.sender_id, ft) 
+    s = await force_sub(event.sender_id) 
     if s == True:
-        await event.reply(r)
+        await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
         return 
     if f'{event.sender_id}' in batch:
         return await event.reply("You've already started one batch, wait for it to complete!")
