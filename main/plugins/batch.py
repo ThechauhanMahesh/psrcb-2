@@ -39,7 +39,9 @@ async def _batch(event):
     s, r = await force_sub(event.client, fs, event.sender_id, ft) 
     if s == True:
         await event.reply(r)
-        return       
+        return 
+    if len(batch) > 4:
+        return await event.reply("Already 4 batch running please wait.")
     if f'{event.sender_id}' in batch:
         return await event.reply("You've already started one batch, wait for it to complete!")
     async with Drone.conversation(event.chat_id) as conv: 
