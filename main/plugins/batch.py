@@ -44,7 +44,7 @@ async def pro_s(event):
     for id in str(msg.text).split(" "):
         monthly.append(id)
         
-@Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
+@Drone.on(events.NewMessage(incoming=True, pattern='/nobatch'))
 async def _batch(event):
     if not event.is_private:
         return
