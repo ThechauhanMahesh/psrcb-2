@@ -17,6 +17,8 @@ from telethon import events
 import re, time, asyncio
 from decouple import config
 
+message = "Send me the message link you want to start saving from, as a reply to this message."
+   
 ft = f"To use this bot you've to join @{fs}."
 
 process=[]
@@ -35,6 +37,10 @@ async def free(event):
 
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def clone(event):
+    if event.is_reply:
+        reply = await event.get_reply_message()
+        if reply.text == message:
+            return
     try:
         link = get_link(event.text)
         if not link:
