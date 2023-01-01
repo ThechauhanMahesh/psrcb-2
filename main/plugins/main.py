@@ -144,7 +144,7 @@ async def clone(event):
         except Exception as e:
             print(e)
             pass
-        await set_timer(Drone, event.sender_id, process, timer, 60) 
+        await set_timer(Drone, event.sender_id, process, timer, 30) 
         ind = user.index(f'{int(event.sender_id)}')
         user.pop(int(ind))
         await userbot.stop()
