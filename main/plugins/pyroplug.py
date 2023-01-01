@@ -1,5 +1,6 @@
 # Github.com/Vasusen-code
 
+from .. import bot as Drone
 import asyncio, time, os
 
 from main.plugins.progress import progress_for_pyrogram
@@ -179,4 +180,4 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
         
 async def get_bulk_msg(userbot, client, sender, msg_link, i):
     x = await client.send_message(sender, "Processing!")
-    await get_msg(userbot, client, sender, x.message_id, msg_link, i)
+    await get_msg(userbot, client, Drone, sender, x.message_id, msg_link, i)
