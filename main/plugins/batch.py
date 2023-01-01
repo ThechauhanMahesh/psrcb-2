@@ -7,7 +7,7 @@ Plugin for both public & private channels!
 
 import time, os, asyncio
 
-from .. import bot as Drone, MONGODB_URI, Bot, FORCESUB as fs
+from .. import bot as Drone, MONGODB_URI, Bot, FORCESUB as fs, AUTH_USERS  as AUTH
 from main.plugins.pyroplug import check, get_bulk_msg
 from main.plugins.helpers import get_link, screenshot, force_sub
 from main.Database.database import Database
