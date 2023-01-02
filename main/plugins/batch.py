@@ -31,20 +31,24 @@ async def get_pvt_content(event, chat, id):
     await event.client.send_message(event.chat_id, msg) 
     
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/pros'))
-async def pro_s(event):
+async def pro(event):
+    edit = await event.reply("Processing...")
     msg = await event.get_reply_message()
     pros.clear()
     for id in str(msg.text).split(" "):
         pros.append(id)
+    await edit.edit(f"{pros}")
 
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/monthly'))
-async def pro_s(event):
+async def mo(event):
+    edit = await event.reply("Processing...")
     msg = await event.get_reply_message()
     monthly.clear()
     for id in str(msg.text).split(" "):
         monthly.append(id)
-        
-@Drone.on(events.NewMessage(incoming=True, pattern='/nobatch'))
+    await edit.edit(f"{pros}")
+
+@Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
 async def _batch(event):
     if not event.is_private:
         return
