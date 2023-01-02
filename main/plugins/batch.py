@@ -50,6 +50,8 @@ async def _batch(event):
         return
     # wtf is the use of fsub here if the command is meant for the owner? 
     # well am too lazy to clean 
+    if f'{event.sender_id}' not in monthly or if f'{event.sender_id}' not in pros:
+        await event.reply("Buy Monthly subscription or Pro subscription.")
     s = await force_sub(event.sender_id) 
     if s == True:
         await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
@@ -85,24 +87,13 @@ async def _batch(event):
                 return await conv.send_message("Range must be an integer!")
             db = Database(MONGODB_URI, 'saverestricted')
             i, h, s = await db.get_credentials(event.chat.id)
+            userbot = None
             if i and h and s is not None:
-                try:
-                    userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
-                    await userbot.start()
-                except Exception as e:
-                    print(e)
-                    ind = batch.index(f'{int(event.sender_id)}')
-                    batch.pop(int(ind))
-                    await conv.send_message(f'{errorC}\n\n**Error:** {str(e)}')
-                    return
+                userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
             else:
                 ind = batch.index(f'{int(event.sender_id)}')
                 batch.pop(int(ind))
                 return await edit.edit("Your login credentials not found.")
-            s, r = await check(userbot, Bot, _link)
-            if s != True:
-                await conv.send_message(r)
-                return
             batch.append(f'{event.sender_id}')
             await run_batch(userbot, Bot, event.sender_id, _link, value) 
             conv.cancel()
@@ -113,6 +104,12 @@ async def run_batch(userbot, client, sender, link, _range):
         timer = 60
         if not 't.me/c/' in link:
             timer = 10
+        try: 
+            await userbot.start()
+        except Exception as e:
+            print(e)
+            await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
+            break
         try:
             await get_bulk_msg(userbot, client, sender, link, i) 
         except FloodWait as fw:
@@ -121,7 +118,8 @@ async def run_batch(userbot, client, sender, link, _range):
                 break
             await asyncio.sleep(fw.x + 5)
             await get_bulk_msg(userbot, client, sender, link, i)
+        await userbot.stop()
         protection = await client.send_message(sender, f"Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
-        time.sleep(timer)
+        await asyncio.sleep(timer)
         await protection.delete()
             
