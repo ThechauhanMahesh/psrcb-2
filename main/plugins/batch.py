@@ -46,7 +46,7 @@ async def mo(event):
     monthly.clear()
     for id in str(msg.text).split(" "):
         monthly.append(id)
-    await edit.edit(f"{pros}")
+    await edit.edit(f"{monthly}")
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
 async def _batch(event):
