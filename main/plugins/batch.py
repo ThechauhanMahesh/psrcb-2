@@ -54,7 +54,7 @@ async def _batch(event):
         return
     # wtf is the use of fsub here if the command is meant for the owner? 
     # well am too lazy to clean 
-    if f'{event.sender_id}' not in monthly or if f'{event.sender_id}' not in pros:
+    if f'{event.sender_id}' not in monthly or f'{event.sender_id}' not in pros:
         await event.reply("Buy Monthly subscription or Pro subscription.")
         return
     s = await force_sub(event.sender_id) 
