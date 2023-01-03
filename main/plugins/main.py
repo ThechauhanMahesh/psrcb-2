@@ -125,6 +125,7 @@ async def clone(event):
         userbot = ""
         db = Database(MONGODB_URI, 'saverestricted')
         i, h, s = await db.get_credentials(event.chat.id)
+        userbot = None
         if i and h and s is not None:
             try:
                 userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
