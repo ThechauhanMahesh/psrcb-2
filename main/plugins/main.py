@@ -89,18 +89,6 @@ async def clone(event):
         user.pop(int(ind))
         await userbot.stop()
         return
-    if 't.me/+' in link:
-        x, t = check_timer(event.sender_id, process, timer, 10) 
-        if x == False:
-            await edit.edit(t)
-            ind = user.index(f'{int(event.sender_id)}')
-            return user.pop(int(ind))
-        q = await join(userbot, link)
-        await edit.edit(q)
-        await set_timer(Drone, event.sender_id, process, timer, 10) 
-        ind = user.index(f'{int(event.sender_id)}')
-        user.pop(int(ind))
-        return 
     if 't.me' in link and not 't.me/c/' in link:
         x, t = check_timer(event.sender_id, process, timer, 10) 
         if x == False:
