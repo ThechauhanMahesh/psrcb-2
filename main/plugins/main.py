@@ -116,6 +116,35 @@ async def clone(event):
         ind = user.index(f'{int(event.sender_id)}')
         user.pop(int(ind))
         return
+    if 't.me/+' in link:
+        x, t = check_timer(event.sender_id, process, timer, 60) 
+        if x == False:
+            ind = user.index(f'{int(event.sender_id)}')
+            user.pop(int(ind))
+            return await edit.edit(t)
+        userbot = ""
+        db = Database(MONGODB_URI, 'saverestricted')
+        i, h, s = await db.get_credentials(event.chat.id)
+        if i and h and s is not None:
+            try:
+                userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
+                await userbot.start()
+            except Exception as e:
+                print(e)
+                ind = user.index(f'{int(event.sender_id)}')
+                user.pop(int(ind))
+                await edit.edit(f'{errorC}\n\n**Error:** {str(e)}')
+                return
+        else:
+            ind = user.index(f'{int(event.sender_id)}')
+            user.pop(int(ind))
+            return await edit.edit("Your login credentials not found.")
+        try: 
+            j = await join(userbot, link)
+            await edit.edit(j)
+        except Exception as e:
+            print(e)
+            pass
     if 't.me/c/' in link:
         x, t = check_timer(event.sender_id, process, timer, 60) 
         if x == False:
