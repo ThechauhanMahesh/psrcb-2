@@ -156,12 +156,23 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                 )
                 os.remove(file)
                 """
+            os.remove(file)
             await edit.delete()
         except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
             await client.edit_message_text(sender, edit_id, "Have you joined the channel?")
             return 
         except Exception as e:
             print(e)
+            if "ENTITY_BOUNDS_INVALID" or "messages.SendMedia" in str(e):
+                if ".mp4" in file:
+                    data = video_metadata(file)
+                    duration = data["duration"]
+                    width = data["width"]
+                    height = data["height"]
+                    UT = time.time()
+                    uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                    attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+                    await bot.send_file(sender, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
             await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`')
             try:
                 os.remove(file)
