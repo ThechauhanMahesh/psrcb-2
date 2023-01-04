@@ -34,9 +34,10 @@ async def get_pvt_content(event, chat, id):
 
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/cancel'))
 async def cancel(event):
-    if f'{event.sender_id}' in batch:
-        batch.clear()
-        await event.reply("Done.")
+    if not f'{event.sender_id}' in batch:
+        return
+    batch.clear()
+    await event.reply("Done.")
 
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/pros'))
 async def pro(event):
@@ -121,7 +122,12 @@ async def run_batch(userbot, client, sender, link, _range):
             timer = 60
         if not 't.me/c/' in link:
             timer = 10
-        if not f'{sender}' in batch:
+        try: 
+            if not f'{sender}' in batch:
+                await client.send_message(sender, "Batch completed.")
+                break
+        except Exception as e:
+            print(e)
             await client.send_message(sender, "Batch completed.")
             break
         try: 
