@@ -112,7 +112,8 @@ async def _batch(event):
             batch.append(f'{event.sender_id}')
             await run_batch(userbot, Bot, event.sender_id, _link, value) 
             conv.cancel()
-            batch.pop(int(batch.index(f'{event.sender_id}')))
+            if f'{sender}' in batch:
+                batch.pop(int(batch.index(f'{event.sender_id}')))
                   
 async def run_batch(userbot, client, sender, link, _range):
     for i in range(_range):
