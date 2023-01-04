@@ -64,7 +64,7 @@ async def _batch(event):
         if f'{event.sender_id}' not in pros:
             await event.reply("Buy Monthly subscription or Pro subscription.")
             return
-    s = await force_sub(event.sender_id) 
+    s = await force_sub(event.sender_id)
     if s == True:
         await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
         return 
@@ -113,9 +113,15 @@ async def _batch(event):
                   
 async def run_batch(userbot, client, sender, link, _range):
     for i in range(_range):
-        timer = 60
+        if i < 25:
+            timer = 40
+        else:
+            timer = 60
         if not 't.me/c/' in link:
             timer = 10
+        if not f'{event.sender_id}' in batch:
+            await client.send_message(sender, "Batch completed.")
+            break
         try: 
             await userbot.start()
         except Exception as e:
