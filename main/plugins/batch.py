@@ -22,6 +22,8 @@ from ethon.pyfunc import video_metadata
 
 ft = f"To use this bot you've to join @{fs}."
 
+errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
+
 batch = []
 pros = []
 monthly = []
@@ -31,7 +33,7 @@ async def get_pvt_content(event, chat, id):
     await event.client.send_message(event.chat_id, msg) 
 
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/cancel'))
-async def pro(event):
+async def cancel(event):
     if f'{event.sender_id}' in batch:
         batch.clear()
         await event.reply("Done.")
