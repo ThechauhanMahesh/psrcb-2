@@ -29,7 +29,13 @@ monthly = []
 async def get_pvt_content(event, chat, id):
     msg = await userbot.get_messages(chat, ids=id)
     await event.client.send_message(event.chat_id, msg) 
-    
+
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/cancel'))
+async def pro(event):
+    if f'{event.sender_id}' in batch:
+        batch.clear()
+        await event.reply("Done.")
+
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/pros'))
 async def pro(event):
     edit = await event.reply("Processing...")
