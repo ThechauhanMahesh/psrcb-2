@@ -156,30 +156,41 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                 )
                 os.remove(file)
                 """
-            os.remove(file)
+            if os.path.isfile(file) == True:
+                os.remove(file)
             await edit.delete()
         except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
             await client.edit_message_text(sender, edit_id, "Have you joined the channel?")
             return 
         except Exception as e:
             print(e)
-            if "ENTITY_BOUNDS_INVALID" or "messages.SendMedia" in str(e):
-                if "mp4" in file.split("."):
-                    data = video_metadata(file)
-                    duration = data["duration"]
-                    width = data["width"]
-                    height = data["height"]
-                    UT = time.time()
-                    uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                    attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
-                    await bot.send_file(sender, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
-                else:
-                    UT = time.time()
-                    uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                    await bot.send_file(sender, uploader, caption=caption, thumb=thumb_path, force_document=True)
-                os.remove(file)
+            if "messages.SendMedia" in str(e):
+                try: 
+                    if "mp4" in file.split("."):
+                        data = video_metadata(file)
+                        duration = data["duration"]
+                        width = data["width"]
+                        height = data["height"]
+                        UT = time.time()
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+                        await bot.send_file(sender, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
+                    else:
+                        UT = time.time()
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        await bot.send_file(sender, uploader, caption=caption, thumb=thumb_path, force_document=True)
+                    if os.path.isfile(file) == True:
+                        os.remove(file)
+                except Exception as e:
+                    print(e)
+                    await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+                    try:
+                        os.remove(file)
+                    except Exception:
+                        return
+                    return 
             else:
-                await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`')
+                await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
                 try:
                     os.remove(file)
                 except Exception:
@@ -192,7 +203,7 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
             await client.copy_message(int(sender), chat, msg_id)
         except Exception as e:
             print(e)
-            return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`')
+            return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
         await edit.delete()
         
 async def get_bulk_msg(userbot, client, sender, msg_link, i):
