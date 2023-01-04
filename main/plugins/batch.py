@@ -121,7 +121,7 @@ async def run_batch(userbot, client, sender, link, _range):
             timer = 60
         if not 't.me/c/' in link:
             timer = 10
-        if not f'{event.sender_id}' in batch:
+        if not f'{sender}' in batch:
             await client.send_message(sender, "Batch completed.")
             break
         try: 
