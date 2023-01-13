@@ -66,6 +66,8 @@ async def join(client, invite_link):
 #to get the url from event
 
 def get_link(string):
+    if (str(link)).lower().startswith("tg://openmessage?user_id="):
+    return string
     regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
     url = re.findall(regex,string)   
     try:
