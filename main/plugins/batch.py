@@ -36,7 +36,7 @@ async def get_pvt_content(event, chat, id):
 async def cancel(event):
     if not f'{event.sender_id}' in batch:
         return
-    batch.clear()
+    batch.pop(int(batch.index(f'{event.sender_id}')))
     await event.reply("Done.")
 
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/pros'))
