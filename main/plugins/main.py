@@ -55,6 +55,7 @@ async def clone(event):
     if f'{int(event.sender_id)}' in user:
         return await edit.edit("Please don't spam links, wait until ongoing process is done.")
     user.append(f'{int(event.sender_id)}')
+    """
     if (str(link)).lower().startswith("tg://openmessage?user_id="):
         x, t = check_timer(event.sender_id, process, timer, 60) 
         if x == False:
@@ -89,6 +90,7 @@ async def clone(event):
         user.pop(int(ind))
         await userbot.stop()
         return
+"""
     if 't.me' in link and not 't.me/c/' in link:
         x, t = check_timer(event.sender_id, process, timer, 10) 
         if x == False:
