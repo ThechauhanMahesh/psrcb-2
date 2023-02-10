@@ -24,8 +24,8 @@ ft = f"To use this bot you've to join @{fs}."
 process=[]
 timer=[]
 user = []
-
 connection = []
+from main.plugins.batch import monthly, pros
 
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
@@ -91,8 +91,13 @@ async def clone(event):
         await userbot.stop()
         return
 """
+    pt = 20
+    ut = 10
+    if f'{event.sender_id}' in pros:
+        ut = 2
+        pt = 2
     if 't.me' in link and not 't.me/c/' in link:
-        x, t = check_timer(event.sender_id, process, timer, 10) 
+        x, t = check_timer(event.sender_id, process, timer, ut) 
         if x == False:
             await edit.edit(t)
             ind = user.index(f'{int(event.sender_id)}')
@@ -102,12 +107,12 @@ async def clone(event):
         except Exception as e:
             print(e)
             pass
-        await set_timer(Drone, event.sender_id, process, timer, 10) 
+        await set_timer(Drone, event.sender_id, process, timer, ut) 
         ind = user.index(f'{int(event.sender_id)}')
         user.pop(int(ind))
         return
     if 't.me/+' in link:
-        x, t = check_timer(event.sender_id, process, timer, 60) 
+        x, t = check_timer(event.sender_id, process, timer, 60)
         if x == False:
             ind = user.index(f'{int(event.sender_id)}')
             user.pop(int(ind))
@@ -137,7 +142,7 @@ async def clone(event):
             print(e)
             pass
     if 't.me/c/' in link:
-        x, t = check_timer(event.sender_id, process, timer, 60) 
+        x, t = check_timer(event.sender_id, process, timer, pt) 
         if x == False:
             ind = user.index(f'{int(event.sender_id)}')
             user.pop(int(ind))
@@ -164,7 +169,7 @@ async def clone(event):
         except Exception as e:
             print(e)
             pass
-        await set_timer(Drone, event.sender_id, process, timer, 30) 
+        await set_timer(Drone, event.sender_id, process, timer, pt) 
         ind = user.index(f'{int(event.sender_id)}')
         user.pop(int(ind))
         await userbot.stop()
