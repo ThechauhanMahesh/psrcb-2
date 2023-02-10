@@ -32,7 +32,7 @@ async def get_pvt_content(event, chat, id):
     msg = await userbot.get_messages(chat, ids=id)
     await event.client.send_message(event.chat_id, msg) 
 
-@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/cancel'))
+@Drone.on(events.NewMessage(incoming=True, pattern='/cancel'))
 async def cancel(event):
     if not f'{event.sender_id}' in batch:
         return
