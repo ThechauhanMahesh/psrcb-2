@@ -96,7 +96,7 @@ async def clone(event):
     if f'{event.sender_id}' in pros:
         ut = 2
         pt = 2
-    if 't.me' in link and not 't.me/c/' in link:
+    if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link:
         x, t = check_timer(event.sender_id, process, timer, ut) 
         if x == False:
             await edit.edit(t)
@@ -141,7 +141,7 @@ async def clone(event):
         except Exception as e:
             print(e)
             pass
-    if 't.me/c/' in link:
+    if 't.me/c/' in link or 't.me/b/' in link:
         x, t = check_timer(event.sender_id, process, timer, pt) 
         if x == False:
             ind = user.index(f'{int(event.sender_id)}')
