@@ -117,12 +117,18 @@ async def _batch(event):
                   
 async def run_batch(userbot, client, sender, link, _range):
     for i in range(_range):
-        if i < 25:
-            timer = 40
-        else:
-            timer = 60
+        if i < 50:
+            timer = 20
+        elif i > 50 and i < 100:
+            timer = 30
+        elif i > 50 and i < 100:
+            timer = 30
+        elif i > 100:
+            timer = 30
         if not 't.me/c/' in link:
             timer = 10
+        if f'{sender}' in pros:
+            timer = 2
         try: 
             if not f'{sender}' in batch:
                 await client.send_message(sender, "Batch completed.")
