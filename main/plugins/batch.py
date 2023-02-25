@@ -93,11 +93,11 @@ async def _batch(event):
                 return await conv.send_message("Cannot wait more longer for your response!")
             try:
                 value = int(_range.text)
-                if value > 10:
+                if value > 20:
                     if f'{event.sender_id}' not in pros:
-                        return await conv.send_message("You can only get upto 10 files in a single batch.")
-                    elif value > 50:
-                        return await conv.send_message("You can only get upto 50 files in a single batch.")
+                        return await conv.send_message("You can only get upto 20 files in a single batch.")
+                    elif value > 100:
+                        return await conv.send_message("You can only get upto 100 files in a single batch.")
             except ValueError:
                 return await conv.send_message("Range must be an integer!")
             db = Database(MONGODB_URI, 'saverestricted')
