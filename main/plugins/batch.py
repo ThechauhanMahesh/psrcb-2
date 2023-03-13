@@ -102,6 +102,9 @@ async def _batch(event):
                 return await conv.send_message("Range must be an integer!")
             db = Database(MONGODB_URI, 'saverestricted')
             i, h, s = await db.get_credentials(event.chat.id)
+            chat = await db.get_Chat(event.chat.id)
+            if chat == None:
+                chat = event.sender_id
             userbot = None
             if i and h and s is not None:
                 userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
@@ -110,12 +113,12 @@ async def _batch(event):
                 batch.pop(int(ind))
                 return await edit.edit("Your login credentials not found.")
             batch.append(f'{event.sender_id}')
-            await run_batch(userbot, Bot, event.sender_id, _link, value) 
+            await run_batch(userbot, Bot, event.sender_id, chat, _link, value) 
             conv.cancel()
             if f'{event.sender_id}' in batch:
                 batch.pop(int(batch.index(f'{event.sender_id}')))
                   
-async def run_batch(userbot, client, sender, link, _range):
+async def run_batch(userbot, client, sender, chat, link, _range):
     for i in range(_range):
         if i < 50:
             timer = 20
@@ -144,15 +147,15 @@ async def run_batch(userbot, client, sender, link, _range):
             await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
             break
         try:
-            await get_bulk_msg(userbot, client, sender, link, i) 
+            await get_bulk_msg(userbot, client, sender, chat, link, i) 
         except FloodWait as fw:
             if int(fw.x) > 299:
                 await client.send_message(sender, "Cancelling batch since you have floodwait more than 5 minutes.")
                 break
             await asyncio.sleep(fw.x + 5)
-            await get_bulk_msg(userbot, client, sender, link, i)
+            await get_bulk_msg(userbot, client, sender, chat link, i)
         await userbot.stop()
-        protection = await client.send_message(sender, f"Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
+        protection = await client.send_message(chat, f"Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
         await asyncio.sleep(timer)
         await protection.delete()
             
