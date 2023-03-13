@@ -64,6 +64,12 @@ class Database:
     
     async def rem_api_hash(self, id):
         await self.col.update_one({'id': id}, {'$set': {'api_hash': None}})
+   
+    async def update_chat(self, id, chat):
+        await self.col.update_one({'id': id}, {'$set': {'chat': chat}})
+    
+    async def rem_chat(self, id, sender):
+        await self.col.update_one({'id': id}, {'$set': {'chat': sender}})
         
     async def get_credentials(self, id):
         user = await self.col.find_one({'id':int(id)})
@@ -71,5 +77,7 @@ class Database:
         h = user.get('api_hash', None)
         s = user.get('session', None)
         return i, h, s 
-   
-    
+
+    async def get_chat(self, id):
+        user = await self.col.find_one({'id':int(id)})
+        return user.get('chat', None)
