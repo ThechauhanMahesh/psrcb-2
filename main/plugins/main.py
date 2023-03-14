@@ -96,6 +96,10 @@ async def clone(event):
     if f'{event.sender_id}' in pros:
         ut = 2
         pt = 2
+    db = Database(MONGODB_URI, 'saverestricted')
+    to = await db.get_Chat(event.chat.id)
+    if to == None:
+        to = event.sender_id
     if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link:
         x, t = check_timer(event.sender_id, process, timer, ut) 
         if x == False:
@@ -103,7 +107,7 @@ async def clone(event):
             ind = user.index(f'{int(event.sender_id)}')
             return user.pop(int(ind))
         try:
-            await get_msg(None, Bot, Drone, event.sender_id, edit.id, link, 0)
+            await get_msg(None, Bot, Drone, event.sender_id, to, edit.id, link, 0)
         except Exception as e:
             print(e)
             pass
@@ -165,7 +169,7 @@ async def clone(event):
             user.pop(int(ind))
             return await edit.edit("Your login credentials not found.")
         try: 
-            await get_msg(userbot, Bot, Drone,event.sender_id, edit.id, link, 0)
+            await get_msg(userbot, Bot, Drone,event.sender_id, to, edit.id, link, 0)
         except Exception as e:
             print(e)
             pass
