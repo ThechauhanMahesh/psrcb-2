@@ -18,7 +18,7 @@ class Database:
 #collection handling---------------------------------------------------------
 
     def new_user(self, id):
-        return dict(id=id, banned=False, api_id=None, api_hash=None, session=None)
+        return dict(id=id, banned=False, api_id=None, api_hash=None, chat=None, session=None)
            
     async def add_user(self,id):
         user = self.new_user(id)
