@@ -38,7 +38,7 @@ async def check(userbot, client, link):
         except Exception:
             return False, "Maybe bot is banned from the chat, or your link is invalid!"
             
-async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
+async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
     edit = ""
     chat = ""
     msg_id = int(msg_link.split("/")[-1]) + int(i)
@@ -53,13 +53,13 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
             if msg.media:
                 if 'web_page' in msg.media:
                     edit = await client.edit_message_text(sender, edit_id, "Cloning.")
-                    await client.send_message(sender, msg.text.markdown)
+                    await client.send_message(to, msg.text.markdown)
                     await edit.delete()
                     return
             if not msg.media:
                 if msg.text:
                     edit = await client.edit_message_text(sender, edit_id, "Cloning.")
-                    await client.send_message(sender, msg.text.markdown)
+                    await client.send_message(to, msg.text.markdown)
                     await edit.delete()
                     return
             edit = await client.edit_message_text(sender, edit_id, "Trying to Download.")
@@ -74,7 +74,7 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                 )
             )
             await edit.edit('Preparing to Upload!')
-            caption = str(file)
+            caption = None
             if msg.caption is not None:
                 caption = msg.caption
             if str(file).split(".")[-1] in ['mkv', 'mp4', 'webm', 'mpe4', 'mpeg']:
@@ -88,7 +88,7 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                 except Exception:
                     thumb_path = None
                 await client.send_video(
-                    chat_id=sender,
+                    chat_id=to,
                     video=file,
                     caption=caption,
                     supports_streaming=True,
@@ -104,11 +104,11 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                 )
             elif str(file).split(".")[-1] in ['jpg', 'jpeg', 'png', 'webp']:
                 await edit.edit("Uploading photo.")
-                await bot.send_file(sender, file, caption=caption)
+                await bot.send_file(to, file, caption=caption)
             else:
                 thumb_path=thumbnail(sender)
                 await client.send_document(
-                    sender,
+                    to,
                     file, 
                     caption=caption,
                     thumb=thumb_path,
@@ -177,11 +177,11 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
-                        await bot.send_file(sender, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
+                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        await bot.send_file(sender, uploader, caption=caption, thumb=thumb_path, force_document=True)
+                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
                     if os.path.isfile(file) == True:
                         os.remove(file)
                 except Exception as e:
@@ -203,12 +203,12 @@ async def get_msg(userbot, client, bot, sender, edit_id, msg_link, i):
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
         chat =  msg_link.split("/")[-2]
         try:
-            await client.copy_message(int(sender), chat, msg_id)
+            await client.copy_message(to, chat, msg_id)
         except Exception as e:
             print(e)
             return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
         await edit.delete()
         
-async def get_bulk_msg(userbot, client, sender, msg_link, i):
+async def get_bulk_msg(userbot, client, sender, chat, msg_link, i):
     x = await client.send_message(sender, "Processing!")
-    await get_msg(userbot, client, Drone, sender, x.message_id, msg_link, i)
+    await get_msg(userbot, client, Drone, sender, chat, x.message_id, msg_link, i)
