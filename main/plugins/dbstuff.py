@@ -70,7 +70,7 @@ async def bcast(event):
 @Drone.on(events.NewMessage(incoming=True, pattern="^/setchat (.*)" ))
 async def update_chat(event):
     c = event.pattern_match.group(1)
-    await db.update_chat(int(C))
+    await db.update_chat(int(c))
     await event.reply(f"Done.")
 
 @Drone.on(events.NewMessage(incoming=True, pattern="/remchat" ))
