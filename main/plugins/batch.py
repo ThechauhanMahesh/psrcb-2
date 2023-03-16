@@ -102,7 +102,7 @@ async def _batch(event):
                 return await conv.send_message("Range must be an integer!")
             db = Database(MONGODB_URI, 'saverestricted')
             i, h, s = await db.get_credentials(event.chat.id)
-            chat = await db.get_Chat(event.chat.id)
+            chat = await db.get_chat(event.chat.id)
             if chat == None:
                 chat = event.sender_id
             userbot = None
