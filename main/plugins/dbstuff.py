@@ -70,12 +70,12 @@ async def bcast(event):
 @Drone.on(events.NewMessage(incoming=True, pattern="^/setchat (.*)" ))
 async def update_chat(event):
     c = event.pattern_match.group(1)
-    await db.update_chat(int(c))
+    await db.update_chat(event.sender_id, int(c))
     await event.reply(f"Done.")
 
 @Drone.on(events.NewMessage(incoming=True, pattern="/remchat" ))
 async def rem_chat(event):
-    await db.rem_chat(event.sender_id)
+    await db.rem_chat(event.sender_id, event.sender_id)
     await event.reply(f"Done.")
 
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="^/disallow (.*)" ))
