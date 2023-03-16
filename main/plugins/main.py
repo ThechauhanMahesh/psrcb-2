@@ -97,7 +97,7 @@ async def clone(event):
         ut = 2
         pt = 2
     db = Database(MONGODB_URI, 'saverestricted')
-    to = await db.get_Chat(event.chat.id)
+    to = await db.get_chat(event.chat.id)
     if to == None:
         to = event.sender_id
     if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link:
