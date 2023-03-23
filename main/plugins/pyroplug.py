@@ -83,6 +83,8 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 file = str(file).split(".")[0] + ".mp4"
                 data = video_metadata(file)
                 duration = data["duration"]
+                width = data["width"]
+                height = data["height"]
                 try:
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
@@ -93,6 +95,8 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     caption=caption,
                     supports_streaming=True,
                     duration=duration,
+                    width=width,
+                    height=height,
                     thumb=thumb_path,
                     progress=progress_for_pyrogram,
                     progress_args=(
@@ -170,10 +174,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             if "messages.SendMedia" in str(e):
                 try: 
                     if "mp4" in file.split("."):
-                        data = video_metadata(file)
-                        duration = data["duration"]
-                        width = data["width"]
-                        height = data["height"]
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
