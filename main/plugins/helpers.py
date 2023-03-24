@@ -109,7 +109,7 @@ async def screenshot(video, duration, sender):
     if os.path.exists(f'{sender}.jpg'):
         return f'{sender}.jpg'
     time_stamp = hhmmss(int(duration)/2)
-    out = dt.now().isoformat("_", "seconds") + ".jpg"
+    out = f'{sender}-' + dt.now().isoformat("_", "seconds") + ".jpg"
     cmd = ["ffmpeg",
            "-ss",
            f"{time_stamp}", 
