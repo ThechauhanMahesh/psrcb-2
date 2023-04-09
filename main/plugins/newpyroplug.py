@@ -113,6 +113,7 @@ def get_thumb_file_id(message: Message):
 
 async def big_uploader(
     c,
+    sender,
     m: Message,
     file_id: Union[
         "raw.types.InputFileBig",
