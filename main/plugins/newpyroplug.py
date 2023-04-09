@@ -205,6 +205,8 @@ async def big_uploader(
         return await edit.edit("I can't rename it!")
 
     caption = ""
+    if m.caption is not None:
+        caption = m.caption
     parse_mode = "Markdown"
 
     try:
@@ -224,6 +226,7 @@ async def big_uploader(
     except Exception as _err:
         await edit.edit(str(_err))
         print(_err)
+        return
     else:
         await edit.delete()
     
