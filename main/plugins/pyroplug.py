@@ -175,6 +175,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             if "messages.SendMedia" in str(e) or "'NoneType' object is not subscriptable" in str(e):
                 try: 
                     if "mp4" in file.split("."):
+                        data = video_metadata(file)
+                        duration = data["duration"]
+                        width = data["width"]
+                        height = data["height"]
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
