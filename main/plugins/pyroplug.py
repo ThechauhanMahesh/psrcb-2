@@ -5,7 +5,7 @@ import asyncio, time, os
 
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot
-from main.plugins.progress import *
+from main.plugins.newpyroplug import *
 
 from pyrogram import Client, filters
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
@@ -202,6 +202,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     return
                 return 
          """
+            edit = await client.edit_message_text(sender, edit_id, "Processing...")
             _raw_file_name = get_media_file_name(msg)
             if not _raw_file_name:
                 _file_ext = mimetypes.guess_extension(get_file_attr(msg).mime_type)
