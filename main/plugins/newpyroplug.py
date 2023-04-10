@@ -113,22 +113,18 @@ def get_thumb_file_id(message: Message):
 
 async def big_uploader(
     c,
-    sender,
     m: Message,
     file_id: Union[
         "raw.types.InputFileBig",
         "raw.types.InputFile"
     ],
     file_name: str,
-    file_size: int,
-    edit: Message,
+    editable: Message,
     file_type: str
 ):
-    await edit.edit("Sending to you ...")
-    caption = ""
-    if m.caption is not None:
-        caption = m.caption
-    parse_mode = "Markdown"
+    await editable.edit("Sending to you ...")
+    upload_as_doc = await db.get_upload_as_doc(m.from_user.id)
+
     if file_type == "video":
         ttl_seconds = None
         supports_streaming = m.video.supports_streaming \
@@ -146,14 +142,12 @@ async def big_uploader(
         mime_type = m.video.mime_type \
             if m.video.mime_type \
             else "video/mp4"
-        thumb = None
+        thumb=None
         media = raw.types.InputMediaUploadedDocument(
-            file=raw.types.InputFile(id=file_id, parts=1, name=file_name),
             mime_type=mime_type,
+            file=file_id,
             ttl_seconds=ttl_seconds,
             thumb=thumb,
-            caption=caption,
-            file_size=file_size,
             attributes=[
                 raw.types.DocumentAttributeVideo(
                     supports_streaming=supports_streaming,
@@ -179,14 +173,11 @@ async def big_uploader(
         title = m.audio.title \
             if m.audio.title \
             else None
-
         media = raw.types.InputMediaUploadedDocument(
             mime_type=mime_type,
-            file=raw.types.InputFile(id=file_id, parts=1, name=file_name),
+            file=file_id,
             force_file=None,
             thumb=thumb,
-            caption=caption,
-            file_size=file_size,
             attributes=[
                 raw.types.DocumentAttributeAudio(
                     duration=duration,
@@ -197,24 +188,34 @@ async def big_uploader(
             ]
         )
 
-    elif file_type == "document":
-        thumb = None
-        mime_type = get_media_mime_type(m) or "application/zip"
-
+    elif (upload_as_doc is True) or (file_type == "document"):
+        mime_type = get_media_mime_type(m.reply_to_message) or "application/zip"
+        thumb=None
         media = raw.types.InputMediaUploadedDocument(
             mime_type=mime_type,
-            file=raw.types.InputFile(id=file_id, parts=1, name=file_name),
+            file=file_id,
             force_file=True,
-            caption=caption,
-            file_size=file_size,
             thumb=thumb,
             attributes=[
                 raw.types.DocumentAttributeFilename(file_name=file_name)
             ]
         )
-
     else:
-        return None
-    return media
+        return await editable.edit("I can't rename it!")
 
-    
+    caption=""
+    try:
+        r = await c.send(
+            raw.functions.messages.SendMedia(
+                peer=await c.resolve_peer(m.chat.id),
+                media=media,
+                silent=None,
+                reply_to_msg_id=None,
+                random_id=c.rnd_id(),
+                schedule_date=None,
+            )
+        )
+    except Exception as _err:
+        print(_err)
+    else:
+        await editable.edit("Uploaded Successfully!")
