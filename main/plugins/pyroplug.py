@@ -6,6 +6,7 @@ import asyncio, time, os, mimetypes, traceback
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot
 from main.plugins.newpyroplug import *
+from main.plugins.custom_uploader import *
 
 from pyrogram import Client, filters
 from pyrogram.file_id import FileId
