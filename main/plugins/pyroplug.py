@@ -78,6 +78,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             caption = None
             if msg.caption is not None:
                 caption = msg.caption
+            '''
             if str(file).split(".")[-1] in ['mkv', 'mp4', 'webm', 'mpe4', 'mpeg']:
                 path = str(file).split(".")[0] + ".mp4"
                 os.rename(file, path) 
@@ -144,7 +145,8 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     force_document=False
                 )
                 os.remove(file)
-            elif str(file).split(".")[-1] in ['jpg', 'jpeg', 'png', 'webp']:
+            '''
+            if str(file).split(".")[-1] in ['jpg', 'jpeg', 'png', 'webp']:
                 await edit.edit("Uploading photo.")
                 await bot.send_file(sender, file, caption=caption)
                 os.remove(file)
