@@ -82,11 +82,11 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 path = str(file).split(".")[0] + ".mp4"
                 os.rename(file, path) 
                 file = str(file).split(".")[0] + ".mp4"
-                data = video_metadata(file)
-                duration = data["duration"]
-                width = data["width"]
-                height = data["height"]
                 try:
+                    data = video_metadata(file)
+                    duration = data["duration"]
+                    width = data["width"]
+                    height = data["height"]
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
                     thumb_path = None
