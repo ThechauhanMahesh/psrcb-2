@@ -172,7 +172,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             return 
         except Exception as e:
             print(e)
-            if "messages.SendMedia" in str(e) or "NoneType" in str(e):
+            if "messages.SendMedia" in str(e)  
                 try: 
                     if "mp4" in file.split("."):
                         data = video_metadata(file)
@@ -190,6 +190,32 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if os.path.isfile(file) == True:
                         os.remove(file)
                 except Exception as e:
+                    print(e)
+                    await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+                    try:
+                        os.remove(file)
+                    except Exception:
+                        return
+                    return 
+            elif "NoneType" in str(e):
+                try: 
+                    if "mp4" in file.split("."):
+                        data = video_metadata(file)
+                        duration = data["duration"]
+                        width = data["width"]
+                        height = data["height"]
+                        UT = time.time()
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
+                    else:
+                        UT = time.time()
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
+                    if os.path.isfile(file) == True:
+                        os.remove(file)
+                except Exception as e:
+                    print("Telethon tried but failed!")
                     print(e)
                     await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
                     try:
