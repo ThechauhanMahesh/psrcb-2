@@ -123,7 +123,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         time.time()
                     )
                 )
-                """
+                
                 if str(file).split(".")[-1] in ['webm', 'mkv', 'mpe4', 'mpeg']:
                     path = str(file).split(".")[0] + ".mp4"
                     os.rename(file, path) 
@@ -162,7 +162,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     force_document=True
                 )
                 os.remove(file)
-                """
+                
             if os.path.isfile(file) == True:
                 os.remove(file)
             await edit.delete()
