@@ -8,6 +8,7 @@ from main.plugins.helpers import screenshot
 from main.plugins.newpyroplug import *
 
 from pyrogram import Client, filters
+from pyrogram.file_id import FileId
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
 from ethon.pyfunc import video_metadata
 from ethon.telefunc import fast_upload
