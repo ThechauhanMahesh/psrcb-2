@@ -5,6 +5,7 @@ import asyncio, time, os
 
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot
+from main.plugins.progress import *
 
 from pyrogram import Client, filters
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
@@ -201,7 +202,29 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     return
                 return 
          """
-        await big_uploader(userbot, client, msg,
+        _raw_file_name = get_media_file_name(msg)
+        if not _raw_file_name:
+            _file_ext = mimetypes.guess_extension(get_file_attr(msg).mime_type)
+            _raw_file_name = "UnknownFileName" + _file_ext 
+        file_name = _raw_file_name
+        file_type = get_file_type(msg)
+        f_id = FileId.decode(get_media_file_id(msg))
+        file_id = await c.custom_upload(
+            file_id=f_id,
+            file_size=get_media_file_size(msg),
+            file_name=file_name,
+            progress=progress_for_pyrogram,
+            progress_args=(
+               userbot,
+               "**DOWNLOADING:**\n",
+               edit,
+               time.time()
+            )
+        )
+        if not file_id:
+            return await edit.edit("Failed to Rename!\n\n"
+                                       "Maybe your file corrupted :(")
+        await big_uploader(userbot, 5832484897, msg, file_id, file_name, edit, file_type)
     else:
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
         chat =  msg_link.split("/")[-2]
