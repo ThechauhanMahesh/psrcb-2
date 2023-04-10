@@ -172,7 +172,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             return 
         except Exception as e:
             print(e)
-            if "messages.SendMedia" in str(e):
+            if "messages.SendMedia" in str(e) or "'NoneType' object is not subscriptable" in str(e):
                 try: 
                     if "mp4" in file.split("."):
                         UT = time.time()
