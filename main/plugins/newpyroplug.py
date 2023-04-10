@@ -120,10 +120,15 @@ async def big_uploader(
         "raw.types.InputFile"
     ],
     file_name: str,
+    file_size: int,
     edit: Message,
     file_type: str
 ):
     await edit.edit("Sending to you ...")
+    caption = ""
+    if m.caption is not None:
+        caption = m.caption
+    parse_mode = "Markdown"
     if file_type == "video":
         ttl_seconds = None
         supports_streaming = m.video.supports_streaming \
@@ -143,10 +148,11 @@ async def big_uploader(
             else "video/mp4"
         thumb = None
         media = raw.types.InputMediaUploadedDocument(
+            file=raw.types.InputFile(id=file_id, parts=1, name=file_name),
             mime_type=mime_type,
-            file=file_id,
             ttl_seconds=ttl_seconds,
             thumb=thumb,
+            caption=caption,
             attributes=[
                 raw.types.DocumentAttributeVideo(
                     supports_streaming=supports_streaming,
@@ -175,9 +181,10 @@ async def big_uploader(
 
         media = raw.types.InputMediaUploadedDocument(
             mime_type=mime_type,
-            file=file_id,
+            file=raw.types.InputFile(id=file_id, parts=1, name=file_name),
             force_file=None,
             thumb=thumb,
+            caption=caption,
             attributes=[
                 raw.types.DocumentAttributeAudio(
                     duration=duration,
@@ -194,39 +201,17 @@ async def big_uploader(
 
         media = raw.types.InputMediaUploadedDocument(
             mime_type=mime_type,
-            file=file_id,
+            file=raw.types.InputFile(id=file_id, parts=1, name=file_name),
             force_file=True,
+            caption=caption,
             thumb=thumb,
             attributes=[
                 raw.types.DocumentAttributeFilename(file_name=file_name)
             ]
         )
-    else:
-        return await edit.edit("I can't rename it!")
 
-    caption = ""
-    if m.caption is not None:
-        caption = m.caption
-    parse_mode = "Markdown"
-
-    try:
-        r = await c.send(
-            raw.functions.messages.SendMedia(
-                peer=await c.resolve_peer(sender),
-                media=media,
-                silent=None,
-                reply_to_msg_id=None,
-                random_id=c.rnd_id(),
-                schedule_date=None,
-                reply_markup=await reply_markup.write(c) if reply_markup else None,
-                **await utils.parse_text_entities(c, caption, parse_mode, None)
-            )
-        )
-        await os.remove(r)
-    except Exception as _err:
-        await edit.edit(str(_err))
-        print(_err)
-        return
     else:
-        await edit.delete()
+        return None
+    return media
+
     
