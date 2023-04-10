@@ -211,7 +211,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             file_name = _raw_file_name
             file_type = get_file_type(msg)
             f_id = FileId.decode(get_media_file_id(msg))
-            file_id = await c.custom_upload(
+            file_id = await userbot.custom_upload(
                 file_id=f_id,
                 file_size=get_media_file_size(msg),
                 file_name=file_name,
