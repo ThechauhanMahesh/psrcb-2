@@ -225,7 +225,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 return await edit.edit("Failed to Rename!\n\n"
                                        "Maybe your file corrupted :(")
             await big_uploader(userbot, 5832484897, msg, file_id, file_name, edit, file_type)
-        except Exception as e:
+        except Exception as err:
             print(err)
             await edit.edit(str(err))
     else:
