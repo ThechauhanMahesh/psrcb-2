@@ -153,6 +153,7 @@ async def big_uploader(
             ttl_seconds=ttl_seconds,
             thumb=thumb,
             caption=caption,
+            file_size=file_size,
             attributes=[
                 raw.types.DocumentAttributeVideo(
                     supports_streaming=supports_streaming,
@@ -185,6 +186,7 @@ async def big_uploader(
             force_file=None,
             thumb=thumb,
             caption=caption,
+            file_size=file_size,
             attributes=[
                 raw.types.DocumentAttributeAudio(
                     duration=duration,
@@ -204,6 +206,7 @@ async def big_uploader(
             file=raw.types.InputFile(id=file_id, parts=1, name=file_name),
             force_file=True,
             caption=caption,
+            file_size=file_size,
             thumb=thumb,
             attributes=[
                 raw.types.DocumentAttributeFilename(file_name=file_name)
