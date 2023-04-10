@@ -1,7 +1,7 @@
 # Github.com/Vasusen-code
 
 from .. import bot as Drone
-import asyncio, time, os
+import asyncio, time, os, mimetypes, traceback
 
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot
