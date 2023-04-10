@@ -211,10 +211,24 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 _raw_file_name = "UnknownFileName" + _file_ext 
             file_name = _raw_file_name
             file_type = get_file_type(msg)
-            file_id = FileId.decode(get_media_file_id(msg))
+            f_id = FileId.decode(get_media_file_id(msg))
             file_size=get_media_file_size(msg)
-            file = await big_uploader(userbot, 5832484897, msg, file_id, file_name, file_size, edit, file_type)
-            await userbot.send_message(5832484897, document=file)
+            file_id = await CustomUploader.custom_upload(
+                raw_client,
+                file_id=f_id,
+                file_size=get_media_file_size(file_p),
+                file_name=file_name,
+                progress=progress_for_pyrogram,
+                progress_args=(
+                    "Uploading ...\n"
+                    edit,
+                    time.time()
+                )
+            )
+        if not file_id:
+            return await edit.edit("Failed to Rename!\n\n"
+                                       "Maybe your file corrupted :(")
+        await big_uploader(userbot, m, file_id, file_name, edit, file_type)
         except Exception as err:
             print(err)
             await edit.edit(str(err))
