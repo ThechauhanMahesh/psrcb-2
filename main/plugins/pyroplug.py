@@ -10,6 +10,7 @@ from pyrogram import Client, filters
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
 from ethon.pyfunc import video_metadata
 from ethon.telefunc import fast_upload
+from moviepy.editor import VideoFileClip
 from telethon.tl.types import DocumentAttributeVideo
 from telethon import events
 
@@ -83,6 +84,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 os.rename(file, path) 
                 file = str(file).split(".")[0] + ".mp4"
                 print("Trying to get metadata")
+                """
                 data = video_metadata(file)
                 print(f'Printing metadata\n {data}')
                 duration = data["duration"]
@@ -91,6 +93,11 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 print(f'width: {width}')
                 height = data["height"]
                 print(f'height: {height}')
+                """
+                clip = VideoFileClip(file)
+                duration = clip.duration
+                width, height = clip.size
+                print(f'd: {duration}, w: {width}, h:{height})
                 try:
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
@@ -100,7 +107,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     video=file,
                     caption=caption,
                     supports_streaming=True,
-                    height=90, width=90, duration=duration, 
+                    height=height, width=width, duration=duration, 
                     thumb=thumb_path,
                     progress=progress_for_pyrogram,
                     progress_args=(
