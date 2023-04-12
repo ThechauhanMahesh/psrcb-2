@@ -97,7 +97,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 clip = VideoFileClip(file)
                 duration = clip.duration
                 width, height = clip.size
-                print(f'd: {duration}, w: {width}, h:{height})
+                print(f'd: {duration}, w: {width}, h:{height}')
                 try:
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
@@ -187,10 +187,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             if "messages.SendMedia" in str(e): 
                 try: 
                     if "mp4" in file.split("."):
-                        data = video_metadata(file)
-                        duration = data["duration"]
-                        width = data["width"]
-                        height = data["height"]
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
@@ -212,10 +208,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             elif "NoneType" in str(e):
                 try: 
                     if "mp4" in file.split("."):
-                        data = video_metadata(file)
-                        duration = data["duration"]
-                        width = data["width"]
-                        height = data["height"]
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
