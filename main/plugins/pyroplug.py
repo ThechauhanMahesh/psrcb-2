@@ -95,7 +95,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 print(f'height: {height}')
                 """
                 clip = VideoFileClip(file)
-                duration = clip.duration
+                duration = int(round(clip.duration))
                 width, height = clip.size
                 print(f'd: {duration}, w: {width}, h:{height}')
                 try:
