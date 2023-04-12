@@ -94,10 +94,13 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 height = data["height"]
                 print(f'height: {height}')
                 """
+                
                 clip = VideoFileClip(file)
                 duration = int(round(clip.duration))
                 width, height = clip.size
                 print(f'd: {duration}, w: {width}, h:{height}')
+
+                
                 try:
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
@@ -109,6 +112,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     supports_streaming=True,
                     height=height, width=width, duration=duration, 
                     thumb=thumb_path,
+                    time_out=600,
                     progress=progress_for_pyrogram,
                     progress_args=(
                         client,
@@ -136,7 +140,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         time.time()
                     )
                 )
-                '''
+                """
                 if str(file).split(".")[-1] in ['webm', 'mkv', 'mpe4', 'mpeg']:
                     path = str(file).split(".")[0] + ".mp4"
                     os.rename(file, path) 
@@ -174,10 +178,14 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     thumb=thumb_path, 
                     force_document=True
                 )
+              # 
+            """
+            try:
                 os.remove(file)
-            '''   
-            if os.path.isfile(file) == True:
-                os.remove(file)
+                if os.path.isfile(file) == True:
+                    os.remove(file)
+            except Exception as e:
+                print(e)
             await edit.delete()
         except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
             await client.edit_message_text(sender, edit_id, "Have you joined the channel?")
@@ -205,7 +213,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     except Exception:
                         return
                     return 
-            elif "NoneType" in str(e):
+            elif "NoneTySaveBigFilePartRequest" in str(e):
                 try: 
                     if "mp4" in file.split("."):
                         UT = time.time()
