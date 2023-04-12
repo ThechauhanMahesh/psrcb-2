@@ -112,7 +112,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     supports_streaming=True,
                     height=height, width=width, duration=duration, 
                     thumb=thumb_path,
-                    time_out=600,
                     progress=progress_for_pyrogram,
                     progress_args=(
                         client,
@@ -213,7 +212,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     except Exception:
                         return
                     return 
-            elif "NoneTySaveBigFilePartRequest" in str(e):
+            elif "SaveBigFilePartRequest" in str(e):
                 try: 
                     if "mp4" in file.split("."):
                         UT = time.time()
