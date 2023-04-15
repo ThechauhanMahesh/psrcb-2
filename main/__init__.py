@@ -14,6 +14,7 @@ API_HASH = "235b12e862d71234ea222082052822fd"
 BOT_TOKEN = "5926923294:AAFadzHaxWNQFNrofJUHk1wT5A8IJyvdVgI"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
+ACCESS2 = int("-1001879806908")
 MONGODB_URI = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
 AUTH_USERS = 5351121397
 
