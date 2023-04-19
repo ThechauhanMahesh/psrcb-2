@@ -68,7 +68,7 @@ async def clone(event):
         i, h, s = await db.get_credentials(event.chat.id)
         if i and h and s is not None:
             try:
-                userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
+                userbot = Client(name="saverestricted", session_string=s, api_hash=h, api_id=int(i))     
                 await userbot.start()
             except Exception as e:
                 print(e)
@@ -127,7 +127,7 @@ async def clone(event):
         userbot = None
         if i and h and s is not None:
             try:
-                userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
+                userbot = Client(name="saverestricted", session_string=s, api_hash=h, api_id=int(i))     
                 await userbot.start()
             except Exception as e:
                 print(e)
@@ -156,7 +156,7 @@ async def clone(event):
         i, h, s = await db.get_credentials(event.chat.id)
         if i and h and s is not None:
             try:
-                userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
+                userbot = Client(name="saverestricted", session_string=s, api_hash=h, api_id=int(i))     
                 await userbot.start()
             except Exception as e:
                 print(e)
