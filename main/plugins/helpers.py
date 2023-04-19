@@ -136,6 +136,7 @@ async def screenshot(video, duration, sender):
 #pyUltroid -------------
 
 import json
+from urllib.parse import unquote
 from telethon.tl.types import DocumentAttributeAudio
 
 def _unquote_text(text):
