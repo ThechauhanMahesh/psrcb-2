@@ -43,6 +43,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
     edit = ""
     chat = ""
     msg_id = int(msg_link.split("/")[-1]) + int(i)
+    height, width, duration, thumb_path = 90, 90, 0, None
     if 't.me/c/' in msg_link or 't.me/b/' in msg_link:
         if 't.me/b/' in msg_link:
             chat = str(msg_link.split("/")[-2])
@@ -189,6 +190,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             return 
         except Exception as e:
             print(e)
+            
             if "messages.SendMedia" in str(e): 
                 try: 
                     if "mp4" in file.split("."):
@@ -226,6 +228,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                     """
+                    thumb_path=thumbnail(sender)
                     UT = time.time()
                     uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                     await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
