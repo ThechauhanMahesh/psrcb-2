@@ -13,7 +13,7 @@ from ethon.telefunc import fast_upload
 from moviepy.editor import VideoFileClip
 from telethon.tl.types import DocumentAttributeVideo
 from telethon import events
-from pyUltroid.fns.tools import set_attributes, metadata
+from pyUltroid.functions.tools import set_attributes, metadata
 
 def thumbnail(sender):
     if os.path.exists(f'{sender}.jpg'):
