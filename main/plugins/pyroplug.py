@@ -122,8 +122,8 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         os.remove(file)
                         if os.path.isfile(file) == True:
                             os.remove(file)
-                        except Exception as e:
-                            print(e)
+                    except Exception as e:
+                        print(e)
                     await edit.delete()
                     return
                 duration = data.get("duration", 0),
