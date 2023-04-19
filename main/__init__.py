@@ -11,7 +11,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "5832484897:AAHIUa1VSxJUPGzr_9pQDE7X4iccRFx_iEI"
+BOT_TOKEN = "6071286747:AAGw8ZfKZk6Gx0s4qwlIaBaPgL6rMYi4SVo"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
