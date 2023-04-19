@@ -138,6 +138,9 @@ async def screenshot(video, duration, sender):
 import json
 from telethon.tl.types import DocumentAttributeAudio
 
+def _unquote_text(text):
+    return text.replace("'", unquote("%5C%27")).replace('"', unquote("%5C%22"))
+
 async def bash(cmd, run_code=0):
     """
     run any command in subprocess and get output or error."""
