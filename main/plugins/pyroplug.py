@@ -4,7 +4,7 @@ from .. import bot as Drone
 import asyncio, time, os
 
 from main.plugins.progress import progress_for_pyrogram
-from main.plugins.helpers import screenshot
+from main.plugins.helpers import screenshot, set_attributes, metadata
 
 from pyrogram import Client, filters
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
@@ -13,7 +13,6 @@ from ethon.telefunc import fast_upload
 from moviepy.editor import VideoFileClip
 from telethon.tl.types import DocumentAttributeVideo
 from telethon import events
-from pyUltroid.functions.tools import set_attributes, metadata
 
 def thumbnail(sender):
     if os.path.exists(f'{sender}.jpg'):
