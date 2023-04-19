@@ -84,7 +84,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 path = str(file).split(".")[0] + ".mp4"
                 os.rename(file, path) 
                 file = str(file).split(".")[0] + ".mp4"
+
+                
                 print("Trying to get metadata")
+                """
                 data = video_metadata(file)
                 print(f'Printing metadata\n {data}')
                 duration = data["duration"]
@@ -93,13 +96,38 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 print(f'width: {width}')
                 height = data["height"]
                 print(f'height: {height}')
-                """
+                
                 clip = VideoFileClip(file)
                 duration = int(round(clip.duration))
                 width, height = clip.size
                 print(f'd: {duration}, w: {width}, h:{height}')
                 """
                 
+                data = await metadata(file)
+                if not data:
+                    thumb_path=thumbnail(sender)
+                    await client.send_document(
+                        to,
+                        file, 
+                        caption=caption,
+                        thumb=thumb_path,
+                        progress=progress_for_pyrogram,
+                        progress_args=(
+                            client,
+                            '**UPLOADING:**\n',
+                            edit,
+                            time.time()))
+                    try:
+                        os.remove(file)
+                        if os.path.isfile(file) == True:
+                            os.remove(file)
+                        except Exception as e:
+                            print(e)
+                    await edit.delete()
+                    return
+                duration = data.get("duration", 0),
+                width = data.get("width", 512),
+                height = data.get("height", 512)
                 try:
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
