@@ -211,7 +211,8 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         return
                     return 
             elif "subscriptable" in str(e): 
-                try: 
+                try:
+                    """"
                     if "mp4" in file.split("."):
 
                         clip = VideoFileClip(file)
@@ -224,9 +225,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
-                        UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
+                    """
+                    UT = time.time()
+                    uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                    await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
                     if os.path.isfile(file) == True:
                         os.remove(file)
                 except Exception as e:
