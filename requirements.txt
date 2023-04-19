@@ -1,6 +1,6 @@
 ethon
 python-decouple
-Pyrogram==1.4.16
+Pyrogram
 telethon
 tgcrypto
 pymongo
