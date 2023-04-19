@@ -160,7 +160,7 @@ async def bash(cmd, run_code=0):
     return out, err
 
 async def metadata(file):
-    out, _ = await bash(f'mediainfo "{_unquote_text(file)}" --Output=JSON')
+    out, _ = await bash(f'mediainfo """{file}""" --Output=JSON')
     if _ and _.endswith("NOT_FOUND"):
         return _
     data = {}
