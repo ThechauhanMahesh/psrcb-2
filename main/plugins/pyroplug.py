@@ -13,6 +13,7 @@ from ethon.telefunc import fast_upload
 from moviepy.editor import VideoFileClip
 from telethon.tl.types import DocumentAttributeVideo
 from telethon import events
+from pyUltroid.fns.tools import set_attributes, metadata
 
 def thumbnail(sender):
     if os.path.exists(f'{sender}.jpg'):
@@ -224,7 +225,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if "mp4" in file.split("."):
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+                        attributes = await set_attributes(file)
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                         UT = time.time()
@@ -240,7 +241,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     except Exception:
                         return
                     return 
-            elif "subscriptable" in str(e): 
+            elif "Nonetype" in str(e): 
                 try:
                     """"
                     if "mp4" in file.split("."):
@@ -252,7 +253,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+                        attributes = await set_attributes(file)
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                     """
@@ -275,7 +276,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if "mp4" in file.split("."):
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+                        attributes = await set_attributes(file)
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                         UT = time.time()
