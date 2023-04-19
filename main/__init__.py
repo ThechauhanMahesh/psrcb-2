@@ -21,7 +21,7 @@ AUTH_USERS = 5351121397
 bot = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN) 
 
 Bot = Client(
-    "SaveRestricted",
+    name="SaveRestricted",
     bot_token=BOT_TOKEN,
     api_id=int(API_ID),
     api_hash=API_HASH
