@@ -84,7 +84,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 os.rename(file, path) 
                 file = str(file).split(".")[0] + ".mp4"
                 print("Trying to get metadata")
-                """
                 data = video_metadata(file)
                 print(f'Printing metadata\n {data}')
                 duration = data["duration"]
@@ -94,12 +93,11 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 height = data["height"]
                 print(f'height: {height}')
                 """
-                
                 clip = VideoFileClip(file)
                 duration = int(round(clip.duration))
                 width, height = clip.size
                 print(f'd: {duration}, w: {width}, h:{height}')
-
+                """
                 
                 try:
                     thumb_path = await screenshot(file, duration, sender)
@@ -194,6 +192,33 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             if "messages.SendMedia" in str(e): 
                 try: 
                     if "mp4" in file.split("."):
+                        UT = time.time()
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
+                    else:
+                        UT = time.time()
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
+                    if os.path.isfile(file) == True:
+                        os.remove(file)
+                except Exception as e:
+                    print(e)
+                    await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+                    try:
+                        os.remove(file)
+                    except Exception:
+                        return
+                    return 
+            elif "subscriptable" in str(e): 
+                try: 
+                    if "mp4" in file.split("."):
+
+                        clip = VideoFileClip(file)
+                        duration = int(round(clip.duration))
+                        width, height = clip.size
+                        print(f'd: {duration}, w: {width}, h:{height}')
+                
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
