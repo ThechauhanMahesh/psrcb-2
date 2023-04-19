@@ -8,7 +8,7 @@ from decouple import config
 from pyrogram import Client
 from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
 
-from main.plugins.helpers import login, logout
+from main.plugins.helpers import login, logout, force_sub
 from main.Database.database import Database
 
 st = "Send me __Link__ of any __Public__ channel message to clone it here, For __private__ channel message, First __Login__ then send any __message link__ from your chat.\n\n**SUPPORT:** @TeamDrone\n**DEV:** @MaheshChauhan"
@@ -87,6 +87,10 @@ async def remt(event):
     
 @bot.on(events.callbackquery.CallbackQuery(data="login"))
 async def lin(event):
+    s = await force_sub(event.sender_id)
+    if s == True:
+        await event.edit("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
+        return
     await event.edit("Choose your **login method**.\n\nNote: Login by session is more stable.", buttons=[[Button.inline("SESSION", data="SESSION"), Button.inline("PHONE NO", data="Phone No.")]])
     
 @bot.on(events.callbackquery.CallbackQuery(data="SESSION"))
