@@ -216,28 +216,27 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     except Exception:
                         return
                     return 
-            elif "Nonetype" in str(e): 
+            elif "Nonetype" in str(e) or "height" in str(e): 
                 try:
-                    """"
+                    
                     if "mp4" in file.split("."):
 
-                        clip = VideoFileClip(file)
+                        """ clip = VideoFileClip(file)
                         duration = int(round(clip.duration))
                         width, height = clip.size
-                        print(f'd: {duration}, w: {width}, h:{height}')
+                        print(f'd: {duration}, w: {width}, h:{height}') """
                 
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+                        attributes = [DocumentAttributeVideo(duration=duration, w=1280, h=720, supports_streaming=True)]
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
-                    """
-                    thumb_path=thumbnail(sender)
-                    UT = time.time()
-                    uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                    await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
-                    if os.path.isfile(file) == True:
-                        os.remove(file)
+                        thumb_path=thumbnail(sender)
+                        UT = time.time()
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
+                        if os.path.isfile(file) == True:
+                            os.remove(file)
                 except Exception as e:
                     print(e)
                     await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
