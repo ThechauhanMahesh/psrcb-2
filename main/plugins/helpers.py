@@ -133,64 +133,26 @@ async def screenshot(video, duration, sender):
     else:
         None       
 
-#pyUltroid -------------
-
+import subprocess
+import shlex
 import json
-from urllib.parse import unquote
-from telethon.tl.types import DocumentAttributeAudio
 
-def _unquote_text(text):
-    return text.replace("'", unquote("%5C%27")).replace('"', unquote("%5C%22"))
+# function to find the resolution of the input video file
+def findVideoResolution(pathToInputVideo):
+    cmd = "ffprobe -v quiet -print_format json -show_streams"
+    args = shlex.split(cmd)
+    args.append(pathToInputVideo)
+    # run the ffprobe process, decode stdout into utf-8 & convert to JSON
+    ffprobeOutput = subprocess.check_output(args).decode('utf-8')
+    ffprobeOutput = json.loads(ffprobeOutput)
 
-async def bash(cmd, run_code=0):
-    """
-    run any command in subprocess and get output or error."""
-    process = await asyncio.create_subprocess_shell(
-        cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
-    stdout, stderr = await process.communicate()
-    err = stderr.decode().strip() or None
-    out = stdout.decode().strip()
-    if not run_code and err:
-        split = cmd.split()[0]
-        if f"{split}: not found" in err:
-            return out, f"{split.upper()}_NOT_FOUND"
-    return out, err
+    # find height and width
+    height = ffprobeOutput['streams'][0]['height']
+    width = ffprobeOutput['streams'][0]['width']
 
-async def metadata(file):
-    out, _ = await bash(f'mediainfo """{file}""" --Output=JSON')
-    if _ and _.endswith("NOT_FOUND"):
-        return _
-    data = {}
-    _info = json.loads(out)["media"]["track"]
-    info = _info[0]
-    if info.get("Format") in ["GIF", "PNG"]:
-        return {
-            "height": _info[1]["Height"],
-            "width": _info[1]["Width"],
-            "bitrate": _info[1].get("BitRate", 320),
-        }
-    if info.get("VideoCount"):
-        data["height"] = int(float(_info[1].get("Height", 720)))
-        data["width"] = int(float(_info[1].get("Width", 1280)))
-        data["bitrate"] = int(_info[1].get("BitRate", 320))
-    data["duration"] = int(float(info.get("Duration", 0)))
-    return data
+    # find duration
+    out = subprocess.check_output(["ffprobe", "-v", "quiet", "-show_format", "-print_format", "json", input_filename])
+    ffprobe_data = json.loads(out)
+    duration_seconds = float(ffprobe_data["format"]["duration"])
 
-
-async def set_attributes(file):
-    data = await metadata(file)
-    if not data:
-        return None
-    if "width" in data:
-        return [
-            DocumentAttributeVideo(
-                duration=data.get("duration", 0),
-                w=data.get("width", 512),
-                h=data.get("height", 512),
-                supports_streaming=True,
-            )
-        ]
-   
+    return int(height), int(width), int(duration_seconds)
