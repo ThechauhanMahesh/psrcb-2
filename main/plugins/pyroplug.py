@@ -80,7 +80,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             caption = None
             if msg.caption is not None:
                 caption = msg.caption
-            if str(file).split(".")[-1] in ['mkv', 'mp4', 'avi']:
+            if str(file).split(".")[-1] in ['mp4', 'avi']:
                 
                 print("Trying to get metadata")
                 """
