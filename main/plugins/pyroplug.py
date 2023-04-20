@@ -4,7 +4,7 @@ from .. import bot as Drone
 import asyncio, time, os
 
 from main.plugins.progress import progress_for_pyrogram
-from main.plugins.helpers import screenshot, set_attributes, metadata
+from main.plugins.helpers import screenshot, findVideoResolution
 
 from pyrogram import Client, filters
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
@@ -92,12 +92,14 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 print(f'width: {width}')
                 height = data["height"]
                 print(f'height: {height}')
-                """
+                
                 clip = VideoFileClip(file)
                 duration = int(round(clip.duration))
                 width, height = clip.size
+                """
+                height, width, duration = findVideoResolution(file)
                 print(f'd: {duration}, w: {width}, h:{height}')
-                
+
                 path = str(file).split(".")[0] + ".mp4"
                 os.rename(file, path) 
                 file = str(file).split(".")[0] + ".mp4"
