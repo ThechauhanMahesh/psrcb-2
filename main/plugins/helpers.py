@@ -151,7 +151,7 @@ def findVideoResolution(pathToInputVideo):
     width = ffprobeOutput['streams'][0]['width']
 
     # find duration
-    out = subprocess.check_output(["ffprobe", "-v", "quiet", "-show_format", "-print_format", "json", input_filename])
+    out = subprocess.check_output(["ffprobe", "-v", "quiet", "-show_format", "-print_format", "json", pathToInputVideo])
     ffprobe_data = json.loads(out)
     duration_seconds = float(ffprobe_data["format"]["duration"])
 
