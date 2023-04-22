@@ -80,7 +80,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             caption = None
             if msg.caption is not None:
                 caption = msg.caption
-            if file.split(".")[-1] in ["mp4", "mkv", "MKV"]: 
+            if file.split(".")[-1] in ["mp4", "mkv", "MKV", "MP4", "Mp4", "Mkv"]: 
                 print("Trying to get metadata")
                 """
                 data = video_metadata(file)
@@ -191,7 +191,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             
             if "messages.SendMedia" in str(e): 
                 try: 
-                    if file.split(".")[-1] in ["mp4", "mkv", "MKV"]:
+                    if file.split(".")[-1] in ["mp4", "mkv", "MKV", "MP4", "Mp4", "Mkv"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)] 
@@ -213,7 +213,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             elif "Nonetype" in str(e) or "height" in str(e): 
                 try:
                     
-                    if file.split(".")[-1] in ["mp4", "mkv", "MKV"]:
+                    if file.split(".")[-1] in ["mp4", "mkv", "MKV", "MP4", "Mp4", "Mkv"]:
                         """ clip = VideoFileClip(file)
                         duration = int(round(clip.duration))
                         width, height = clip.size
@@ -240,7 +240,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     return 
             elif "SaveBigFilePartRequest" in str(e):
                 try: 
-                    if file.split(".")[-1] in ["mp4", "mkv", "MKV"]:
+                    if file.split(".")[-1] in ["mp4", "mkv", "MKV", "MP4", "Mp4", "Mkv"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = await set_attributes(file)
