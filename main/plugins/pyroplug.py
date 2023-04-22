@@ -80,8 +80,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             caption = None
             if msg.caption is not None:
                 caption = msg.caption
-            if str(file).split(".")[-1] in ['mp4', 'avi']:
-                
+            if file.split(".")[-1] in ["mp4", "mkv", "MKV"]: 
                 print("Trying to get metadata")
                 """
                 data = video_metadata(file)
@@ -99,11 +98,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 """
                 height, width, duration = findVideoResolution(file)
                 print(f'd: {duration}, w: {width}, h:{height}')
-
-                path = str(file).split(".")[0] + ".mp4"
-                os.rename(file, path) 
-                file = str(file).split(".")[0] + ".mp4"
-
                 try:
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
@@ -197,7 +191,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             
             if "messages.SendMedia" in str(e): 
                 try: 
-                    if "mp4" in file.split("."):
+                    if file.split(".")[-1] in ["mp4", "mkv", "MKV"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)] 
@@ -219,8 +213,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             elif "Nonetype" in str(e) or "height" in str(e): 
                 try:
                     
-                    if "mp4" in file.split("."):
-
+                    if file.split(".")[-1] in ["mp4", "mkv", "MKV"]:
                         """ clip = VideoFileClip(file)
                         duration = int(round(clip.duration))
                         width, height = clip.size
@@ -247,7 +240,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     return 
             elif "SaveBigFilePartRequest" in str(e):
                 try: 
-                    if "mp4" in file.split("."):
+                    if file.split(".")[-1] in ["mp4", "mkv", "MKV"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = await set_attributes(file)
