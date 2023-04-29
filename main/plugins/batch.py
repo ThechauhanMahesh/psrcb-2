@@ -57,7 +57,7 @@ async def mo(event):
         monthly.append(id)
     await edit.edit(f"{monthly}")
 
-@Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
+@Drone.on(events.NewMessage(incoming=True, pattern='batch'))
 async def _batch(event):
     if not event.is_private:
         return
