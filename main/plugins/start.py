@@ -47,6 +47,7 @@ async def start(event):
                                Button.inline("LOG OUT", data="logout")],
                               [Button.inline("HELP", data="help"),
                                Button.url("SOURCE", url="github.com/vasusen-code/saverestrictedcontentbot")],
+                              [Button.text("batch", single_use=True)],
                               ])
     tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
     await event.client.send_message(int(ACCESS), f'{tag} started the BOT\nUserID: {event.sender_id}') 
