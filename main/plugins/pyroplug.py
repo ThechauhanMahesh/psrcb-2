@@ -5,6 +5,7 @@ import asyncio, time, os
 
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot, findVideoResolution
+from main.plugins.helpers import duration as dr
 
 from pyrogram import Client, filters
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
@@ -227,7 +228,27 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         duration = int(round(clip.duration))
                         width, height = clip.size
                         print(f'd: {duration}, w: {width}, h:{height}') """
-                
+                        try:
+                            duration = dr(file)
+                        except Exception as e:
+                            print(e)
+                            try:
+                                data = video_metadata(file)
+                                duration = data["duration"]
+                                if duration is None:
+                                    duration = 0
+                            except Exception as e:
+                                print(e)
+                                duration = 0
+                        if duration == 0:
+                            try:
+                                data = video_metadata(file)
+                                duration = data["duration"]
+                                if duration is None:
+                                    duration = 0
+                            except Exception as e:
+                                print(e)
+                                duration = 0
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=1280, h=720, supports_streaming=True)]
