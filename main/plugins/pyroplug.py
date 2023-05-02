@@ -98,7 +98,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 """
                 height, width, duration = findVideoResolution(file)
                 print(f'd: {duration}, w: {width}, h:{height}')
-                if duration = 0:
+                if duration == 0:
                     try:
                         data = video_metadata(file)
                         duration = data["duration"]
