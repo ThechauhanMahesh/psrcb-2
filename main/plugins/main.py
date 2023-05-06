@@ -29,7 +29,16 @@ from main.plugins.batch import monthly, pros
 
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
-@Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS, pattern="^/free (.*)"))
+@Drone.on(events.NewMessage(incoming=True, pattern='/free'))
+async def cancel(event):
+    if not f'{event.sender_id}' in user:
+        return
+    await event.reply("Done, try after 10 minutes.")
+    await asyncio.sleep(600)
+    ind = user.index(f'{int(event.sender_id)}')
+    return user.pop(int(ind))
+
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS, pattern="^/afree (.*)"))
 async def free(event):
     id = event.pattern_match.group(1)
     ind = user.index(f'{int(id)}')
