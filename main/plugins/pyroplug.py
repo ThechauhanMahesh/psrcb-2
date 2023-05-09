@@ -300,7 +300,14 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     os.remove(file)
                 except Exception:
                     return
-                return 
+                return
+        try:
+            os.remove(file)
+            if os.path.isfile(file) == True:
+                os.remove(file)
+        except Exception as e:
+            print(e)
+        await edit.delete()
     else:
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
         chat =  msg_link.split("/")[-2]
