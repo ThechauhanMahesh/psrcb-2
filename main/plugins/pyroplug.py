@@ -81,6 +81,38 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             caption = None
             if msg.caption is not None:
                 caption = msg.caption
+            if not "." in file:
+                print("Trying to get metadata")
+                height, width, duration = findVideoResolution(file)
+                print(f'd: {duration}, w: {width}, h:{height}')
+                if duration == 0:
+                    try:
+                        data = video_metadata(file)
+                        duration = data["duration"]
+                        if duration is None:
+                            duration = 0
+                    except Exception as e:
+                        print(e)
+                        duration = 0
+                try:
+                    thumb_path = await screenshot(file, duration, sender)
+                except Exception:
+                    thumb_path = None
+                await client.send_video(
+                    chat_id=to,
+                    video=file,
+                    caption=caption,
+                    supports_streaming=True,
+                    height=height, width=width, duration=duration, 
+                    thumb=thumb_path,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        '**UPLOADING:**\n',
+                        edit,
+                        time.time()
+                    )
+                )
             if file.split(".")[-1] in ["mp4", "mkv", "MKV", "MP4", "Mp4", "Mkv"]: 
                 print("Trying to get metadata")
                 """
