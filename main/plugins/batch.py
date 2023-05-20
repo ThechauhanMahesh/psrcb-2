@@ -107,7 +107,7 @@ async def _batch(event):
                 chat = event.sender_id
             userbot = None
             if i and h and s is not None:
-                userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
+                userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
             else:
                 ind = batch.index(f'{int(event.sender_id)}')
                 batch.pop(int(ind))
