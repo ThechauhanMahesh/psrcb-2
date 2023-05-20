@@ -136,7 +136,7 @@ async def lin_ph(event):
         except Exception as e: 
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
-        client = Client("my_account", api_id=APIID[0], api_hash=APIHASH[0])
+        client = Client("my_account", api_id=APIID[0], api_hash=APIHASH[0], in_memory=True)
         ai = APIID[0]
         ah = APIHASH[0]
         try:
