@@ -353,4 +353,4 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         
 async def get_bulk_msg(userbot, client, sender, chat, msg_link, i):
     x = await client.send_message(sender, "Processing!")
-    await get_msg(userbot, client, Drone, sender, chat, x.message_id, msg_link, i)
+    await get_msg(userbot, client, Drone, sender, chat, x.id, msg_link, i)
