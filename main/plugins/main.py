@@ -27,6 +27,8 @@ user = []
 connection = []
 from main.plugins.batch import monthly, pros
 
+db = Database(MONGODB_URI, 'saverestricted')
+   
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/free'))
@@ -64,48 +66,11 @@ async def clone(event):
     if f'{int(event.sender_id)}' in user:
         return await edit.edit("Please don't spam links, wait until ongoing process is done.")
     user.append(f'{int(event.sender_id)}')
-    """
-    if (str(link)).lower().startswith("tg://openmessage?user_id="):
-        x, t = check_timer(event.sender_id, process, timer, 60) 
-        if x == False:
-            ind = user.index(f'{int(event.sender_id)}')
-            user.pop(int(ind))
-            return await edit.edit(t)
-        k = (link.split("user_id=")[1]).split("&message_id=")
-        new_link = "https://t.me/c/" + k[0] + "/" + k[1]
-        db = Database(MONGODB_URI, 'saverestricted')
-        i, h, s = await db.get_credentials(event.chat.id)
-        if i and h and s is not None:
-            try:
-                userbot = Client(session_name=s, api_hash=h, api_id=int(i))     
-                await userbot.start()
-            except Exception as e:
-                print(e)
-                ind = user.index(f'{int(event.sender_id)}')
-                user.pop(int(ind))
-                await edit.edit(f'{errorC}\n\n**Error:** {str(e)}')
-                return
-        else:
-            ind = user.index(f'{int(event.sender_id)}')
-            user.pop(int(ind))
-            return await edit.edit("Your login credentials not found.")
-        try: 
-            await get_msg(userbot, Bot, Drone,event.sender_id, edit.id, link, 0)
-        except Exception as e:
-            print(e)
-            pass
-        await set_timer(Drone, event.sender_id, process, timer, 60) 
-        ind = user.index(f'{int(event.sender_id)}')
-        user.pop(int(ind))
-        await userbot.stop()
-        return
-"""
     pt = 20
     ut = 10
     if f'{event.sender_id}' in pros:
         ut = 2
         pt = 2
-    db = Database(MONGODB_URI, 'saverestricted')
     to = await db.get_chat(event.chat.id)
     if to == None:
         to = event.sender_id
@@ -131,7 +96,6 @@ async def clone(event):
             user.pop(int(ind))
             return await edit.edit(t)
         userbot = ""
-        db = Database(MONGODB_URI, 'saverestricted')
         i, h, s = await db.get_credentials(event.chat.id)
         userbot = None
         if i and h and s is not None:
@@ -161,7 +125,6 @@ async def clone(event):
             user.pop(int(ind))
             return await edit.edit(t)
         userbot = ""
-        db = Database(MONGODB_URI, 'saverestricted')
         i, h, s = await db.get_credentials(event.chat.id)
         if i and h and s is not None:
             try:
