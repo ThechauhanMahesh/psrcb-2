@@ -4,7 +4,7 @@ from .. import bot as Drone
 from .. import MONGODB_URI, Bot, AUTH_USERS 
 from .. import FORCESUB as fs
 
-from main.plugins.helpers import get_link, join, set_timer, check_timer, screenshot, force_sub
+from main.plugins.helpers import get_link, join, set_timer, check_timer, rem_timer, screenshot, force_sub
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import Database
 from main.plugins.pyroplug import get_msg
@@ -63,12 +63,12 @@ async def clone(event):
         await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
         return
     edit = await event.reply("Processing!")
-    if f'{int(event.sender_id)}' in user:
+    if (await db.get_process(event.sender_id))["process"] == True:
         return await edit.edit("Please don't spam links, wait until ongoing process is done.")
     user.append(f'{int(event.sender_id)}')
     pt = 20
     ut = 10
-    if f'{event.sender_id}' in pros:
+    if (await db.get_data(event.sender_id))["plan"] == "pro":
         ut = 2
         pt = 2
     to = await db.get_chat(event.chat.id)
