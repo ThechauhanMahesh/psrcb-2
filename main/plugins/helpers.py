@@ -87,18 +87,18 @@ async def set_timer(bot, sender, t):
     await asyncio.sleep(int(t))
     await db.rem_process(sender)
     
-#check time left in timer
-async def check_timer(sender):
-    db = Database(MONGODB_URI, 'PremiumSRCB')
-    process = (await db.get_process(sender))["process"]
-    if process == True:
-        return False
-    else:
-        return True
+# #check time left in timer
+# async def check_timer(sender):
+#     db = Database(MONGODB_URI, 'PremiumSRCB')
+#     process = (await db.get_process(sender))["process"]
+#     if process == True:
+#         return False
+#     else:
+#         return True
     
-async def rem_timer(sender):
-    db = Database(MONGODB_URI, 'PremiumSRCB')
-    await db.rem_process(sender)
+# async def rem_timer(sender):
+#     db = Database(MONGODB_URI, 'PremiumSRCB')
+#     await db.rem_process(sender)
 
 #Screenshot---------------------------------------------------------------------------------------------------------------
 
