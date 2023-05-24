@@ -83,13 +83,14 @@ def get_link(string):
 async def set_timer(bot, sender, t):
     db = Database(MONGODB_URI, 'PremiumSRCB')
     now = time.time()
-    await db.update_process(sender, {"process": True, "timer": now})
+    await db.update_process(sender, now)
     await bot.send_message(sender, f'You can start a new process again after {t} seconds.')
     await asyncio.sleep(int(t))
     await db.rem_process(sender)
     
 #check time left in timer
 async def check_timer(sender, list1, list2, t):
+    db = Database(MONGODB_URI, 'PremiumSRCB')
     process = (await db.get_process(sender))["process"]
     if process == True:
         last = (await db.get_process(sender))["timer"]
