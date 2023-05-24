@@ -4,7 +4,7 @@ from .. import bot as Drone
 from .. import MONGODB_URI, Bot, AUTH_USERS 
 from .. import FORCESUB as fs
 
-from main.plugins.helpers import get_link, join, set_timer, screenshot, force_sub
+from main.plugins.helpers import get_link, join, set_timer, screenshot
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import Database
 from main.plugins.pyroplug import get_msg
@@ -21,10 +21,6 @@ message = "Send me the message link you want to start saving from, as a reply to
    
 ft = f"To use this bot you've to join @{fs}."
 
-process=[]
-timer=[]
-user = []
-connection = []
 from main.plugins.batch import monthly, pros
 
 db = Database(MONGODB_URI, 'saverestricted')
@@ -32,19 +28,17 @@ db = Database(MONGODB_URI, 'saverestricted')
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/free'))
-async def cancel(event):
-    if not f'{event.sender_id}' in user:
+async def free(event):
+    if not (await db.get_process(int(event.sender_id))):
         return
     await event.reply("Done, try after 10 minutes.")
     await asyncio.sleep(600)
-    ind = user.index(f'{int(event.sender_id)}')
-    return user.pop(int(ind))
-
+    return await db.rem_process(int(event.sender_id))
+   
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS, pattern="^/afree (.*)"))
-async def free(event):
+async def afree(event):
     id = event.pattern_match.group(1)
-    ind = user.index(f'{int(id)}')
-    return user.pop(int(ind))
+    await db.rem_process(int(id))
 
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def clone(event):
@@ -58,8 +52,8 @@ async def clone(event):
             return
     except TypeError:
         return
-    s = await force_sub(event.sender_id)
-    if s == True:
+    s = await db.get_data(event.sender_id)
+    if s["dos"] == None:
         await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
         return
     edit = await event.reply("Processing!")
