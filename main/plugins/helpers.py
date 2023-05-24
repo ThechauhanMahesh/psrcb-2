@@ -98,6 +98,10 @@ async def check_timer(sender, list1, list2, t):
         return False, f"You have to wait {int(t)-round(present-float(last))} seconds more to start a new process!"
     else:
         return True, None
+    
+async def rem_timer(sender):
+    db = Database(MONGODB_URI, 'PremiumSRCB')
+    await db.rem_process(sender)
 
 #Screenshot---------------------------------------------------------------------------------------------------------------
 
