@@ -17,6 +17,17 @@ from telethon import errors, events
 from telethon.errors.rpcerrorlist import UserNotParticipantError
 from telethon.tl.functions.channels import GetParticipantRequest
 
+#Subscription-------------------------------------------------------------------------------------------------------------
+
+from datetime import timedelta
+from datetime import date
+
+async set_subscription(user_id, days, plan="basic"):
+    today = date.today()
+    expiry_date = today + timedelta(days=days)
+    data = {"dos":today, "doe":expiry_date, "plan":plan}
+    await db.update_data(data)
+    
 #Forcesub-----------------------------------------------------------------------------------
 
 async def force_sub(id):
