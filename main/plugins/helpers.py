@@ -34,13 +34,13 @@ async def force_sub(id):
 #Multi client-------------------------------------------------------------------------------------------------------------
 
 async def login(sender, i, h, s):
-    db = Database(MONGODB_URI, 'saverestricted')
+    db = Database(MONGODB_URI, 'PremiumSRCB')
     await db.update_api_id(sender, i)
     await db.update_api_hash(sender, h)
     await db.update_session(sender, s)
     
 async def logout(sender):
-    db = Database(MONGODB_URI, 'saverestricted')
+    db = Database(MONGODB_URI, 'PremiumSRCB')
     await db.rem_api_id(sender)
     await db.rem_api_hash(sender)
     await db.rem_session(sender)
@@ -80,20 +80,19 @@ def get_link(string):
 #Anti-Spam---------------------------------------------------------------------------------------------------------------
 
 #Set timer to avoid spam
-async def set_timer(bot, sender, list1, list2, t):
+async def set_timer(bot, sender, t):
+    db = Database(MONGODB_URI, 'PremiumSRCB')
     now = time.time()
-    list2.append(f'{now}')
-    list1.append(f'{sender}')
+    await db.update_process(sender, {"process": True, "timer": now})
     await bot.send_message(sender, f'You can start a new process again after {t} seconds.')
     await asyncio.sleep(int(t))
-    list2.pop(int(list2.index(f'{now}')))
-    list1.pop(int(list1.index(f'{sender}')))
+    await db.rem_process(sender)
     
 #check time left in timer
-def check_timer(sender, list1, list2, t):
-    if f'{sender}' in list1:
-        index = list1.index(f'{sender}')
-        last = list2[int(index)]
+async def check_timer(sender, list1, list2, t):
+    process = (await db.get_process(sender))["process"]
+    if process == True:
+        last = (await db.get_process(sender))["timer"]
         present = time.time()
         return False, f"You have to wait {int(t)-round(present-float(last))} seconds more to start a new process!"
     else:
