@@ -25,8 +25,8 @@ class Database:
           api_hash=None, 
           session=None, 
           chat=None, 
-          process=False, 
-          data={"dos":None, "doe":None, "plan":None},
+          process={"process": False, "timer": 0}, 
+          data={"dos":None, "doe":None, "plan":"basic"},
         )
            
     async def add_user(self,id):
@@ -86,11 +86,11 @@ class Database:
     async def rem_data(self, id, data):
         await self.col.update_one({'id': id}, {'$set': {'done': {"dos":None, "doe":None, "plan":None}}})
     
-    async def update_process(self, id):
-        await self.col.update_one({'id': id}, {'$set': {'process': True}})
+    async def update_process(self, id, timer):
+        await self.col.update_one({'id': id}, {'$set': {'process': {"process": True, "timer": timer}}})
     
     async def rem_process(self, id):
-        await self.col.update_one({'id': id}, {'$set': {'process': False}})
+        await self.col.update_one({'id': id}, {'$set': {'process': {"process": False, "timer": 0}}})
         
     async def get_credentials(self, id):
         user = await self.col.find_one({'id':int(id)})
