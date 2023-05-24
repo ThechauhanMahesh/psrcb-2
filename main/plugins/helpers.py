@@ -82,22 +82,19 @@ def get_link(string):
 #Set timer to avoid spam
 async def set_timer(bot, sender, t):
     db = Database(MONGODB_URI, 'PremiumSRCB')
-    now = time.time()
-    await db.update_process(sender, now)
+    await db.update_process(sender)
     await bot.send_message(sender, f'You can start a new process again after {t} seconds.')
     await asyncio.sleep(int(t))
     await db.rem_process(sender)
     
 #check time left in timer
-async def check_timer(sender, list1, list2, t):
+async def check_timer(sender):
     db = Database(MONGODB_URI, 'PremiumSRCB')
     process = (await db.get_process(sender))["process"]
     if process == True:
-        last = (await db.get_process(sender))["timer"]
-        present = time.time()
-        return False, f"You have to wait {int(t)-round(present-float(last))} seconds more to start a new process!"
+        return False
     else:
-        return True, None
+        return True
     
 async def rem_timer(sender):
     db = Database(MONGODB_URI, 'PremiumSRCB')
