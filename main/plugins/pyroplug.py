@@ -187,7 +187,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if file.split(".")[-1] in ["mp4", "mkv", "MKV", "MP4", "Mp4", "Mkv"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = await set_attributes(file)
+                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                         UT = time.time()
