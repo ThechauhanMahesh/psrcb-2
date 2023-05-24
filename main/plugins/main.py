@@ -4,7 +4,7 @@ from .. import bot as Drone
 from .. import MONGODB_URI, Bot, AUTH_USERS 
 from .. import FORCESUB as fs
 
-from main.plugins.helpers import get_link, join, set_timer, check_timer, rem_timer, screenshot, force_sub
+from main.plugins.helpers import get_link, join, set_timer, screenshot, force_sub
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import Database
 from main.plugins.pyroplug import get_msg
@@ -75,26 +75,14 @@ async def clone(event):
     if to == None:
         to = event.sender_id
     if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link:
-        x, t = check_timer(event.sender_id, process, timer, ut) 
-        if x == False:
-            await edit.edit(t)
-            ind = user.index(f'{int(event.sender_id)}')
-            return user.pop(int(ind))
         try:
             await get_msg(None, Bot, Drone, event.sender_id, to, edit.id, link, 0)
         except Exception as e:
             print(e)
             pass
-        await set_timer(Drone, event.sender_id, process, timer, ut) 
-        ind = user.index(f'{int(event.sender_id)}')
-        user.pop(int(ind))
+        await set_timer(Drone, event.sender_id, ut) 
         return
     if 't.me/+' in link:
-        x, t = check_timer(event.sender_id, process, timer, 60)
-        if x == False:
-            ind = user.index(f'{int(event.sender_id)}')
-            user.pop(int(ind))
-            return await edit.edit(t)
         userbot = ""
         i, h, s = await db.get_credentials(event.chat.id)
         userbot = None
@@ -104,13 +92,8 @@ async def clone(event):
                 await userbot.start()
             except Exception as e:
                 print(e)
-                ind = user.index(f'{int(event.sender_id)}')
-                user.pop(int(ind))
-                await edit.edit(f'{errorC}\n\n**Error:** {str(e)}')
-                return
+                return await edit.edit(str(e))
         else:
-            ind = user.index(f'{int(event.sender_id)}')
-            user.pop(int(ind))
             return await edit.edit("Your login credentials not found.")
         try: 
             j = await join(userbot, link)
@@ -119,11 +102,6 @@ async def clone(event):
             print(e)
             pass
     if 't.me/c/' in link or 't.me/b/' in link:
-        x, t = check_timer(event.sender_id, process, timer, pt) 
-        if x == False:
-            ind = user.index(f'{int(event.sender_id)}')
-            user.pop(int(ind))
-            return await edit.edit(t)
         userbot = ""
         i, h, s = await db.get_credentials(event.chat.id)
         if i and h and s is not None:
@@ -132,20 +110,13 @@ async def clone(event):
                 await userbot.start()
             except Exception as e:
                 print(e)
-                ind = user.index(f'{int(event.sender_id)}')
-                user.pop(int(ind))
-                await edit.edit(f'{errorC}\n\n**Error:** {str(e)}')
-                return
+                return await edit.edit(str(e))
         else:
-            ind = user.index(f'{int(event.sender_id)}')
-            user.pop(int(ind))
             return await edit.edit("Your login credentials not found.")
         try: 
             await get_msg(userbot, Bot, Drone,event.sender_id, to, edit.id, link, 0)
         except Exception as e:
             print(e)
             pass
-        await set_timer(Drone, event.sender_id, process, timer, pt) 
-        ind = user.index(f'{int(event.sender_id)}')
-        user.pop(int(ind))
+        await set_timer(Drone, event.sender_id, ut) 
         await userbot.stop()
