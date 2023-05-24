@@ -84,17 +84,9 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 caption = msg.caption
             if not "." in file:
                 print("Trying to get metadata")
-                height, width, duration = findVideoResolution(file)
+                data = video_metadata(file)
+                height, width, duration = data["height"], data["width"], data["duration"]
                 print(f'd: {duration}, w: {width}, h:{height}')
-                if duration == 0:
-                    try:
-                        data = video_metadata(file)
-                        duration = data["duration"]
-                        if duration is None:
-                            duration = 0
-                    except Exception as e:
-                        print(e)
-                        duration = 0
                 try:
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
@@ -116,31 +108,9 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 )
             if file.split(".")[-1] in ["mp4", "mkv", "MKV", "MP4", "Mp4", "Mkv"]: 
                 print("Trying to get metadata")
-                """
                 data = video_metadata(file)
-                print(f'Printing metadata\n {data}')
-                duration = data["duration"]
-                print(f'duration: {duration}')
-                width = data["width"]
-                print(f'width: {width}')
-                height = data["height"]
-                print(f'height: {height}')
-                
-                clip = VideoFileClip(file)
-                duration = int(round(clip.duration))
-                width, height = clip.size
-                """
-                height, width, duration = findVideoResolution(file)
+                height, width, duration = data["height"], data["width"], data["duration"]
                 print(f'd: {duration}, w: {width}, h:{height}')
-                if duration == 0:
-                    try:
-                        data = video_metadata(file)
-                        duration = data["duration"]
-                        if duration is None:
-                            duration = 0
-                    except Exception as e:
-                        print(e)
-                        duration = 0
                 try:
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
@@ -179,46 +149,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         time.time()
                     )
                 )
-                """
-                if str(file).split(".")[-1] in ['webm', 'mkv', 'mpe4', 'mpeg']:
-                    path = str(file).split(".")[0] + ".mp4"
-                    os.rename(file, path) 
-                    file = str(file).split(".")[0] + ".mp4"
-                data = video_metadata(file)
-                duration = data["duration"]
-                width = data["width"]
-                height = data["height"]
-                thumb_path = await screenshot(file, duration, sender)
-                UT = time.time()
-                uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
-                await bot.send_file(
-                    sender, 
-                    uploader, 
-                    caption=caption, 
-                    thumb=thumb_path, 
-                    attributes=attributes, 
-                    force_document=False
-                )
-                os.remove(file)
-          
-            elif str(file).split(".")[-1] in ['jpg', 'jpeg', 'png', 'webp']:
-                await edit.edit("Uploading photo.")
-                await bot.send_file(sender, file, caption=caption)
-                os.remove(file)
-            else:
-                thumb_path=thumbnail(sender)
-                UT = time.time()
-                uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                await bot.send_file(
-                    sender, 
-                    uploader, 
-                    caption=caption, 
-                    thumb=thumb_path, 
-                    force_document=True
-                )
-              # 
-            """
             try:
                 os.remove(file)
                 if os.path.isfile(file) == True:
@@ -228,10 +158,9 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             await edit.delete()
         except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
             await client.edit_message_text(sender, edit_id, "Have you joined the channel?")
-            return 
+            return
         except Exception as e:
             print(e)
-            
             if "messages.SendMedia" in str(e): 
                 try: 
                     if file.split(".")[-1] in ["mp4", "mkv", "MKV", "MP4", "Mp4", "Mkv"]:
@@ -245,58 +174,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
                     if os.path.isfile(file) == True:
                         os.remove(file)
-                except Exception as e:
-                    print(e)
-                    await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
-                    try:
-                        os.remove(file)
-                    except Exception:
-                        return
-                    return 
-            elif "Nonetype" in str(e) or "height" in str(e): 
-                try:
-                    
-                    if file.split(".")[-1] in ["mp4", "mkv", "MKV", "MP4", "Mp4", "Mkv"]:
-                        """ clip = VideoFileClip(file)
-                        duration = int(round(clip.duration))
-                        width, height = clip.size
-                        print(f'd: {duration}, w: {width}, h:{height}') """
-                        try:
-                            duration = dr(file)
-                        except Exception as e:
-                            print(e)
-                            try:
-                                data = video_metadata(file)
-                                duration = data["duration"]
-                                if duration is None:
-                                    duration = 0
-                            except Exception as e:
-                                print(e)
-                                duration = 0
-                        if duration == 0:
-                            try:
-                                data = video_metadata(file)
-                                duration = data["duration"]
-                                if duration is None:
-                                    duration = 0
-                            except Exception as e:
-                                print(e)
-                                duration = 0
-                        try:
-                            thumb_path = await screenshot(file, duration, sender)
-                        except Exception:
-                            thumb_path = None
-                        UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=1280, h=720, supports_streaming=True)]
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
-                    else:
-                        thumb_path=thumbnail(sender)
-                        UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
-                        if os.path.isfile(file) == True:
-                            os.remove(file)
                 except Exception as e:
                     print(e)
                     await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
