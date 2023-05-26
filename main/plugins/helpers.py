@@ -22,7 +22,10 @@ from telethon.tl.functions.channels import GetParticipantRequest
 from datetime import timedelta
 from datetime import date
 
-async set_subscription(user_id, dos, days, plan):
+async def check_subsciption(id):
+    pass
+
+async def set_subscription(user_id, dos, days, plan):
     if not dos:
         today = date.today()
     else:
