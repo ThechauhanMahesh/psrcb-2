@@ -9,7 +9,7 @@ from main.Database.database import Database
 
 #Database command handling--------------------------------------------------------------------------
 
-db = Database(MONGODB_URI, 'saverestricted')
+db = Database(MONGODB_URI, 'PremiumSRCB')
 
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def incomming(event):
