@@ -54,6 +54,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         file = ""
         try:
             msg = await userbot.get_messages(chat, msg_id)
+            print(msg)
             if msg.media:
                 if msg.media==MessageMediaType.WEB_PAGE:
                     edit = await client.edit_message_text(sender, edit_id, "Cloning.")
