@@ -91,11 +91,15 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
                     thumb_path = None
+                round_message = False
+                if msg.media.document.attributes[0].round_message:
+                    round_message = True
                 await client.send_video(
                     chat_id=to,
                     video=file,
                     caption=caption,
                     supports_streaming=True,
+                    round_message=round_message,
                     height=height, width=width, duration=duration, 
                     thumb=thumb_path,
                     progress=progress_for_pyrogram,
@@ -142,7 +146,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if msg.media.document.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]: 
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)] 
+                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                         UT = time.time()
@@ -163,7 +167,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if msg.media.document.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]: 
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)]
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                         UT = time.time()
