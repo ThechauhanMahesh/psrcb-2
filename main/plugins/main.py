@@ -21,7 +21,7 @@ message = "Send me the message link you want to start saving from, as a reply to
    
 ft = f"To use this bot you've to join @{fs}."
 
-db = Database(MONGODB_URI, 'saverestricted')
+db = Database(MONGODB_URI, 'PremiumSRCB')
    
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
