@@ -59,7 +59,7 @@ async def pro(event):
     edit = await event.reply("Processing...")
     msg = await event.get_reply_message()
     for id in str(msg.text).split(" "):
-        await set_subscription(user_id=int(id), False, 0, "pro")
+        await set_subscription(int(id), False, 0, "pro")
     await edit.edit("done")
     
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/monthly'))
@@ -67,7 +67,7 @@ async def mo(event):
     edit = await event.reply("Processing...")
     msg = await event.get_reply_message()
     for id in str(msg.text).split(" "):
-        await set_subscription(user_id=int(id), False, 0, "monthly")
+        await set_subscription(int(id), False, 0, "monthly")
     await edit.edit("done")
     
 @Drone.on(events.NewMessage(incoming=True, pattern='batch'))
