@@ -80,10 +80,11 @@ async def _batch(event):
     if (await db.get_data(event.sender_id))["plan"] == "basic":
         await event.reply("Buy Monthly subscription or Pro subscription.")
         return
-    if (await db.get_process(event.sender_id))["process"]:
+    pr = (await db.get_process(event.sender_id))["process"]
+    if pr:
         return await event.reply("You've already started one process, wait for it to complete!")
     async with Drone.conversation(event.chat_id) as conv: 
-        if s != True:
+        if pr != True:
             await conv.send_message("Send me the message link you want to start saving from, as a reply to this message.", buttons=Button.force_reply())
             try:
                 link = await conv.get_reply()
