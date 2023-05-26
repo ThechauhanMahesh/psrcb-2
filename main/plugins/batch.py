@@ -76,7 +76,7 @@ async def _batch(event):
         return
     # wtf is the use of fsub here if the command is meant for the owner? 
     # well am too lazy to clean 
-    await check_subscription(event.sender(id))
+    await check_subscription(event.sender_id)
     if (await db.get_data(event.sender_id))["plan"] == "basic":
         await event.reply("Buy Monthly subscription or Pro subscription.")
         return
