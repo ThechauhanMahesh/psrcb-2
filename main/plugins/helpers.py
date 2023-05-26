@@ -23,7 +23,7 @@ from datetime import timedelta
 from datetime import date
 from datetime import datetime
 
-async def check_subsciption(id):
+async def check_subscription(id):
     db = Database(MONGODB_URI, 'PremiumSRCB')
     doe = (await db.get_data(id))["doe"]
     z = doe.split("-")
