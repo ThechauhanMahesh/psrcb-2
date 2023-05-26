@@ -117,8 +117,7 @@ async def _batch(event):
             if i and h and s is not None:
                 userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
             else:
-                ind = batch.index(f'{int(event.sender_id)}')
-                batch.pop(int(ind))
+                await db.rem_process(event.sender_id)
                 return await edit.edit("Your login credentials not found.")
             await db.update_process(event.sender_id, batch=True)
             await run_batch(userbot, Bot, event.sender_id, chat, _link, value) 
