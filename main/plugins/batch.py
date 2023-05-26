@@ -24,9 +24,7 @@ ft = f"To use this bot you've to join @{fs}."
 
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
-batch = []
-pros = []
-monthly = []
+db = Database(MONGODB_URI, 'saverestricted')
 
 async def get_pvt_content(event, chat, id):
     msg = await userbot.get_messages(chat, ids=id)
@@ -63,16 +61,12 @@ async def _batch(event):
         return
     # wtf is the use of fsub here if the command is meant for the owner? 
     # well am too lazy to clean 
-    if f'{event.sender_id}' not in monthly:
-        if f'{event.sender_id}' not in pros:
-            await event.reply("Buy Monthly subscription or Pro subscription.")
-            return
-    s = await force_sub(event.sender_id)
-    if s == True:
-        await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
-        return 
-    if f'{event.sender_id}' in batch:
-        return await event.reply("You've already started one batch, wait for it to complete!")
+    await check_subscription(event.sender(id))
+    if (await db.get_data(event.sender_id))["plan"] == "basic":
+        await event.reply("Buy Monthly subscription or Pro subscription.")
+        return
+    if (await db.get_process(event.sender_id))["process"]:
+        return await event.reply("You've already started one process, wait for it to complete!")
     async with Drone.conversation(event.chat_id) as conv: 
         if s != True:
             await conv.send_message("Send me the message link you want to start saving from, as a reply to this message.", buttons=Button.force_reply())
@@ -94,13 +88,12 @@ async def _batch(event):
             try:
                 value = int(_range.text)
                 if value > 20:
-                    if f'{event.sender_id}' not in pros:
+                    if (await db.get_data(event.sender_id))["plan"] == "pro":
                         return await conv.send_message("You can only get upto 20 files in a single batch.")
                     elif value > 100:
                         return await conv.send_message("You can only get upto 100 files in a single batch.")
             except ValueError:
                 return await conv.send_message("Range must be an integer!")
-            db = Database(MONGODB_URI, 'saverestricted')
             i, h, s = await db.get_credentials(event.chat.id)
             chat = await db.get_chat(event.chat.id)
             if chat == None:
@@ -112,12 +105,11 @@ async def _batch(event):
                 ind = batch.index(f'{int(event.sender_id)}')
                 batch.pop(int(ind))
                 return await edit.edit("Your login credentials not found.")
-            batch.append(f'{event.sender_id}')
+            await db.update_process(event.sender_id, batch=True)
             await run_batch(userbot, Bot, event.sender_id, chat, _link, value) 
             conv.cancel()
-            if f'{event.sender_id}' in batch:
-                batch.pop(int(batch.index(f'{event.sender_id}')))
-                  
+            await db.rem_process(event.sender_id)
+            
 async def run_batch(userbot, client, sender, chat, link, _range):
     for i in range(_range):
         if i < 50:
@@ -136,7 +128,7 @@ async def run_batch(userbot, client, sender, chat, link, _range):
             else:
                 timer = 2
         try: 
-            if not f'{sender}' in batch:
+            if not (await db.get_process(sender))["process"]:
                 await client.send_message(sender, "Batch completed.")
                 break
         except Exception as e:
