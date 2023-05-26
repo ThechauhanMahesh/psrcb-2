@@ -28,8 +28,8 @@ async def check_subsciption(id):
 
 async def set_subscription(user_id, dos, days, plan):
     if not dos:
-        today = str(datetime.today()).split(" ")[0]
-        
+        dos_ = str(datetime.today()).split(" ")[0]
+        today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
     else:
         dos_ = dos.split("-")
         today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
