@@ -52,7 +52,7 @@ async def clone(event):
             return
     except TypeError:
         return
-    await check_subscription(event.sender)
+    await check_subscription(event.sender_id)
     s = await db.get_data(event.sender_id)
     if s["dos"] == None:
         await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
