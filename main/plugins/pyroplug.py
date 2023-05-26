@@ -97,9 +97,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 await client.send_video_note(
                     chat_id=to,
                     video_note=file,
-                    caption=caption,
-                    supports_streaming=True,
-                    height=height, width=width, duration=duration, 
+                    length=height, duration=duration, 
                     thumb=thumb_path,
                     progress=progress_for_pyrogram,
                     progress_args=(
