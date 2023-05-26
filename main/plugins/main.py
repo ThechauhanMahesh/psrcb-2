@@ -4,7 +4,7 @@ from .. import bot as Drone
 from .. import MONGODB_URI, Bot, AUTH_USERS 
 from .. import FORCESUB as fs
 
-from main.plugins.helpers import get_link, join, set_timer, screenshot
+from main.plugins.helpers import get_link, join, set_timer, screenshot, check_subscription
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import Database
 from main.plugins.pyroplug import get_msg
@@ -52,6 +52,7 @@ async def clone(event):
             return
     except TypeError:
         return
+    await check_subscription(event.sender)
     s = await db.get_data(event.sender_id)
     if s["dos"] == None:
         await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
