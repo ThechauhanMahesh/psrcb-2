@@ -21,8 +21,6 @@ message = "Send me the message link you want to start saving from, as a reply to
    
 ft = f"To use this bot you've to join @{fs}."
 
-from main.plugins.batch import monthly, pros
-
 db = Database(MONGODB_URI, 'saverestricted')
    
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
@@ -32,7 +30,7 @@ async def free(event):
     if not (await db.get_process(event.sender_id))["process"]:
         return
     if (await db.get_process(event.sender_id))["batch"]:
-         return await event.reply("Use /cancel to stop batch.")
+        return await event.reply("Use /cancel to stop batch.")
     await event.reply("Done, try after 10 minutes.")
     await asyncio.sleep(600)
     return await db.rem_process(int(event.sender_id))
@@ -61,7 +59,6 @@ async def clone(event):
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
         return await edit.edit("Please don't spam links, wait until ongoing process is done.")
-    user.append(f'{int(event.sender_id)}')
     pt = 20
     ut = 10
     if (await db.get_data(event.sender_id))["plan"] == "pro":
