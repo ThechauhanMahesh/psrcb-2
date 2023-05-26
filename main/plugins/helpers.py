@@ -21,17 +21,20 @@ from telethon.tl.functions.channels import GetParticipantRequest
 
 from datetime import timedelta
 from datetime import date
+from datetime import datetime
 
 async def check_subsciption(id):
     pass
 
 async def set_subscription(user_id, dos, days, plan):
     if not dos:
-        today = date.today()
+        today = str(datetime.today()).split(" ")[0]
+        
     else:
-        today = dos
+        dos_ = dos.split("-")
+        today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
     expiry_date = today + timedelta(days=days)
-    data = {"dos":today, "doe":expiry_date, "plan":plan}
+    data = {"dos":str(today), "doe":str(expiry_date), "plan":plan}
     db = Database(MONGODB_URI, 'PremiumSRCB')
     await db.update_data(user_id, data)
     
