@@ -32,29 +32,27 @@ async def get_pvt_content(event, chat, id):
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/cancel'))
 async def cancel(event):
-    if not f'{event.sender_id}' in batch:
-        return
-    batch.pop(int(batch.index(f'{event.sender_id}')))
+    if not (await db.get_process(event.sender_id))["batch"]:
+        return await event.reply("No batch active.")
+    await db.rem_process(event.sender_id)
     await event.reply("Done.")
 
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/pros'))
 async def pro(event):
     edit = await event.reply("Processing...")
     msg = await event.get_reply_message()
-    pros.clear()
     for id in str(msg.text).split(" "):
-        pros.append(id)
-    await edit.edit(f"{pros}")
-
+        await set_subscription(user_id=int(id), days=0, plan="pro")
+    await edit.edit("done")
+    
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/monthly'))
 async def mo(event):
     edit = await event.reply("Processing...")
     msg = await event.get_reply_message()
-    monthly.clear()
     for id in str(msg.text).split(" "):
-        monthly.append(id)
-    await edit.edit(f"{monthly}")
-
+        await set_subscription(user_id=int(id), days=0, plan="monthly")
+    await edit.edit("done")
+    
 @Drone.on(events.NewMessage(incoming=True, pattern='batch'))
 async def _batch(event):
     if not event.is_private:
