@@ -44,6 +44,7 @@ async def check(userbot, client, link):
 async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
     edit = ""
     chat = ""
+    round_message = False
     msg_id = int(msg_link.split("/")[-1]) + int(i)
     height, width, duration, thumb_path = 90, 90, 0, None
     if 't.me/c/' in msg_link or 't.me/b/' in msg_link:
@@ -83,7 +84,8 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             caption = None
             if msg.caption is not None:
                 caption = msg.caption
-            if msg.media.document.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]: 
+            if msg.media==MessageMediaType.VIDEO_NOTE:
+                round_message = True
                 print("Trying to get metadata")
                 data = video_metadata(file)
                 height, width, duration = data["height"], data["width"], data["duration"]
@@ -92,15 +94,35 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
                     thumb_path = None
-                round_message = False
-                if msg.media.document.attributes[0].round_message:
-                    round_message = True
+                await client.send_video_note(
+                    chat_id=to,
+                    video=file,
+                    caption=caption,
+                    supports_streaming=True,
+                    height=height, width=width, duration=duration, 
+                    thumb=thumb_path,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        '**UPLOADING:**\n',
+                        edit,
+                        time.time()
+                    )
+                )
+            elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
+                print("Trying to get metadata")
+                data = video_metadata(file)
+                height, width, duration = data["height"], data["width"], data["duration"]
+                print(f'd: {duration}, w: {width}, h:{height}')
+                try:
+                    thumb_path = await screenshot(file, duration, sender)
+                except Exception:
+                    thumb_path = None
                 await client.send_video(
                     chat_id=to,
                     video=file,
                     caption=caption,
                     supports_streaming=True,
-                    round_message=round_message,
                     height=height, width=width, duration=duration, 
                     thumb=thumb_path,
                     progress=progress_for_pyrogram,
@@ -112,7 +134,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     )
                 )
             
-            elif str(file).split(".")[-1] in ['jpg', 'jpeg', 'png', 'webp']:
+            elif msg.media==MessageMediaType.VIDEO:
                 await edit.edit("Uploading photo.")
                 await bot.send_file(to, file, caption=caption)
             else:
@@ -144,8 +166,12 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             print(e)
             if "messages.SendMedia" in str(e): 
                 try: 
-                    if msg.media.document.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]: 
+                    if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
+                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
+                    elif msg.media==MessageMediaType.VIDEO_NOTE:
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
@@ -165,10 +191,14 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     return 
             elif "SaveBigFilePartRequest" in str(e):
                 try: 
-                    if msg.media.document.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]: 
+                    if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)]
+                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
+                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
+                    elif msg.media==MessageMediaType.VIDEO_NOTE:
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                         UT = time.time()
