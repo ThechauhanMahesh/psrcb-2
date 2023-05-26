@@ -32,6 +32,7 @@ async def set_subscription(user_id, dos, days, plan):
         today = dos
     expiry_date = today + timedelta(days=days)
     data = {"dos":today, "doe":expiry_date, "plan":plan}
+    db = Database(MONGODB_URI, 'PremiumSRCB')
     await db.update_data(data)
     
 #Forcesub-----------------------------------------------------------------------------------
