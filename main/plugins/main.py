@@ -112,5 +112,5 @@ async def clone(event):
         except Exception as e:
             print(e)
             pass
-        await set_timer(Drone, event.sender_id, ut) 
-        await userbot.stop()
+         await userbot.stop()
+         await set_timer(Drone, event.sender_id, ut) 
