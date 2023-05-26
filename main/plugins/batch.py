@@ -46,12 +46,11 @@ async def check_plan(event):
 async def pro(event):
     edit = await event.reply("Processing...")
     msg = await event.get_reply_message()
-    await db.set_subscription 
     data = str(msg.text).split(" ")
     date = data[1]
     if date == "None":
         date = False
-    await set_subscription(int(data[0]), int(data[2]), dos=date, plan=data[3])
+    await set_subscription(int(data[0]), date, int(data[2]), data[3])
     x = await db.get_data(int(data[0]))
     await edit.edit(f'{x}')
     
@@ -60,7 +59,7 @@ async def pro(event):
     edit = await event.reply("Processing...")
     msg = await event.get_reply_message()
     for id in str(msg.text).split(" "):
-        await set_subscription(user_id=int(id), days=0, plan="pro")
+        await set_subscription(user_id=int(id), False, 0, "pro")
     await edit.edit("done")
     
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/monthly'))
@@ -68,7 +67,7 @@ async def mo(event):
     edit = await event.reply("Processing...")
     msg = await event.get_reply_message()
     for id in str(msg.text).split(" "):
-        await set_subscription(user_id=int(id), days=0, plan="monthly")
+        await set_subscription(user_id=int(id), False, 0, "monthly")
     await edit.edit("done")
     
 @Drone.on(events.NewMessage(incoming=True, pattern='batch'))
