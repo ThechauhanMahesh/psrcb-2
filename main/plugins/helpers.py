@@ -22,11 +22,11 @@ from telethon.tl.functions.channels import GetParticipantRequest
 from datetime import timedelta
 from datetime import date
 
-async set_subscription(user_id, days, dos=False, plan="basic"):
-    if dos:
-        today = dos
-    else:
+async set_subscription(user_id, dos, days, plan):
+    if not dos:
         today = date.today()
+    else:
+        today = dos
     expiry_date = today + timedelta(days=days)
     data = {"dos":today, "doe":expiry_date, "plan":plan}
     await db.update_data(data)
