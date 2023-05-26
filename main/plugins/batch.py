@@ -9,7 +9,7 @@ import time, os, asyncio
 
 from .. import bot as Drone, MONGODB_URI, Bot, FORCESUB as fs, AUTH_USERS  as AUTH
 from main.plugins.pyroplug import check, get_bulk_msg
-from main.plugins.helpers import get_link, screenshot, force_sub
+from main.plugins.helpers import get_link, screenshot, force_sub, set_subscription
 from main.Database.database import Database
 
 from telethon import events, Button, errors
@@ -37,6 +37,24 @@ async def cancel(event):
     await db.rem_process(event.sender_id)
     await event.reply("Done.")
 
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/myplan'))
+async def check_plan(event):
+    data = await db.get_data(event.sender_id)
+    await event.reply(f'**DATE OF SUBSCRIPTION:** {data["dos"]}\n**DATE OF EXPIRY:** {data["doe"]}\n**PLAN:** {data["plan"]}')
+    
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/ss'))
+async def pro(event):
+    edit = await event.reply("Processing...")
+    msg = await event.get_reply_message()
+    await db.set_subscription 
+    data = str(msg.text).split(" ")
+    date = data[1]
+    if date == "None":
+        date = False
+    await set_subscription(int(data[0]), int(data[2]), dos=date, plan=data[3])
+    x = await db.get_data(int(data[0]))
+    await edit.edit(f'{x}')
+    
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/pros'))
 async def pro(event):
     edit = await event.reply("Processing...")
