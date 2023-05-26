@@ -29,8 +29,10 @@ errorC = """Error: Couldn't start client by Login credentials, Please logout and
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/free'))
 async def free(event):
-    if not (await db.get_process(int(event.sender_id))):
+    if not (await db.get_process(event.sender_id))["process"]:
         return
+    if (await db.get_process(event.sender_id))["batch"]:
+         return await event.reply("Use /cancel to stop batch.")
     await event.reply("Done, try after 10 minutes.")
     await asyncio.sleep(600)
     return await db.rem_process(int(event.sender_id))
