@@ -24,8 +24,21 @@ from datetime import date
 from datetime import datetime
 
 async def check_subsciption(id):
-    pass
-
+    db = Database(MONGODB_URI, 'PremiumSRCB')
+    doe = (await db.get_data(id))["doe"]
+    z = doe.split("-")
+    e = int(z[0] + z[1] + z[2])
+    x = str(datetime.today()).split(" ")[0]
+    w = x.split("-")
+    today = int(w[0] + w[1] + w[2])
+    if today > e:
+        await bot.edit_permissions(FSUB, id, view_messages=False)
+        await bot.edit_permissions(FSUB, id, view_messages=True)
+        await db.rem_data(id)
+    else:
+        pass
+        
+    
 async def set_subscription(user_id, dos, days, plan):
     if not dos:
         x = str(datetime.today()).split(" ")[0]
