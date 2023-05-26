@@ -25,7 +25,7 @@ class Database:
           api_hash=None, 
           session=None, 
           chat=None, 
-          process=False, 
+          process={"process":False, "batch":False}, 
           data={"dos":None, "doe":None, "plan":"basic"},
         )
            
@@ -84,13 +84,13 @@ class Database:
         await self.col.update_one({'id': id}, {'$set': {'data': data}})
        
     async def rem_data(self, id, data):
-        await self.col.update_one({'id': id}, {'$set': {'done': {"dos":None, "doe":None, "plan":None}}})
+        await self.col.update_one({'id': id}, {'$set': {'data': {"dos":None, "doe":None, "plan":None}}})
     
-    async def update_process(self, id):
-        await self.col.update_one({'id': id}, {'$set': {'process': True}})
+    async def update_process(self, id, batch=False):
+        await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":batch}}})
     
     async def rem_process(self, id):
-        await self.col.update_one({'id': id}, {'$set': {'process': False}})
+        await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":False}}})
         
     async def get_credentials(self, id):
         user = await self.col.find_one({'id':int(id)})
