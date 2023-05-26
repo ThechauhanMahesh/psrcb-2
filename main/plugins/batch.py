@@ -24,7 +24,7 @@ ft = f"To use this bot you've to join @{fs}."
 
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
-db = Database(MONGODB_URI, 'saverestricted')
+db = Database(MONGODB_URI, 'PremiumSRCB')
 
 async def get_pvt_content(event, chat, id):
     msg = await userbot.get_messages(chat, ids=id)
