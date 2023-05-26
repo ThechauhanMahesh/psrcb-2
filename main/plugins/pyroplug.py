@@ -96,7 +96,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     thumb_path = None
                 await client.send_video_note(
                     chat_id=to,
-                    video=file,
+                    video_note=file,
                     caption=caption,
                     supports_streaming=True,
                     height=height, width=width, duration=duration, 
