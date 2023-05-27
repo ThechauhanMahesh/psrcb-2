@@ -1,12 +1,12 @@
 # Github.com/Vasusen-code
 
 from .. import bot as Drone
-from .. import MONGODB_URI, Bot, AUTH_USERS 
+from .. import Bot, AUTH_USERS 
 from .. import FORCESUB as fs
 
 from main.plugins.helpers import get_link, join, set_timer, screenshot, check_subscription
 from main.plugins.progress import progress_for_pyrogram
-from main.Database.database import Database
+from main.Database.database import db
 from main.plugins.pyroplug import get_msg
 
 from pyrogram.errors import FloodWait, BadRequest
@@ -18,11 +18,7 @@ import re, time, asyncio
 from decouple import config
 
 message = "Send me the message link you want to start saving from, as a reply to this message."
-   
-ft = f"To use this bot you've to join @{fs}."
-
-db = Database(MONGODB_URI, 'PremiumSRCB')
-   
+     
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/free'))
