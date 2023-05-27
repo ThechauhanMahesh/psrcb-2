@@ -12,7 +12,6 @@ from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatI
 from pyrogram.enums import MessageMediaType
 from ethon.pyfunc import video_metadata
 from ethon.telefunc import fast_upload
-from moviepy.editor import VideoFileClip
 from telethon.tl.types import DocumentAttributeVideo
 from telethon import events
 
