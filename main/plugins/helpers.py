@@ -24,7 +24,10 @@ from datetime import date
 from datetime import datetime
 
 async def check_subscription(id):
-    doe = (await db.get_data(id))["doe"]
+    try: 
+        doe = (await db.get_data(id))["doe"]
+    except Exception:
+        return
     z = doe.split("-")
     e = int(z[0] + z[1] + z[2])
     x = str(datetime.today()).split(" ")[0]
