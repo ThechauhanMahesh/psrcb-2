@@ -69,15 +69,18 @@ async def _batch(event):
                     _link = get_link(link.text)
                 except Exception:
                     await conv.send_message("No link found.")
+                    return conv.cancel()
             except Exception as e:
                 print(e)
-                return await conv.send_message("Cannot wait more longer for your response!")
+                await conv.send_message("Cannot wait more longer for your response!")
+                return conv.cancel()
             await conv.send_message("Send me the number of files/range you want to save from the given message, as a reply to this message.", buttons=Button.force_reply())
             try:
                 _range = await conv.get_reply()
             except Exception as e:
                 print(e)
-                return await conv.send_message("Cannot wait more longer for your response!")
+                await conv.send_message("Cannot wait more longer for your response!")
+                return conv.cancel()
             try:
                 value = int(_range.text)
                 if value > 20:
@@ -95,8 +98,8 @@ async def _batch(event):
             if i and h and s is not None:
                 userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
             else:
-                await db.rem_process(event.sender_id)
-                return await edit.edit("Your login credentials not found.")
+                await conv.send_message("Your login credentials not found.")
+                return conv.cancel()
             await db.update_process(event.sender_id, batch=True)
             await run_batch(userbot, Bot, event.sender_id, chat, _link, value) 
             conv.cancel()
