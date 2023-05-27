@@ -7,10 +7,10 @@ Plugin for both public & private channels!
 
 import time, os, asyncio
 
-from .. import bot as Drone, MONGODB_URI, Bot, FORCESUB as fs, AUTH_USERS  as AUTH
+from .. import bot as Drone, Bot, FORCESUB as fs, AUTH_USERS  as AUTH
 from main.plugins.pyroplug import check, get_bulk_msg
 from main.plugins.helpers import get_link, screenshot, force_sub, set_subscription, check_subscription
-from main.Database.database import Database
+from main.Database.database import db
 
 from telethon import events, Button, errors
 from telethon.tl.types import DocumentAttributeVideo
@@ -20,15 +20,7 @@ from pyrogram.errors import FloodWait
 
 from ethon.pyfunc import video_metadata
 
-ft = f"To use this bot you've to join @{fs}."
-
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
-
-db = Database(MONGODB_URI, 'PremiumSRCB')
-
-async def get_pvt_content(event, chat, id):
-    msg = await userbot.get_messages(chat, ids=id)
-    await event.client.send_message(event.chat_id, msg) 
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/cancel'))
 async def cancel(event):
@@ -41,7 +33,8 @@ async def cancel(event):
 async def check_plan(event):
     data = await db.get_data(event.sender_id)
     await event.reply(f'**DATE OF SUBSCRIPTION:** {data["dos"]}\n**DATE OF EXPIRY:** {data["doe"]}\n**PLAN:** {data["plan"]}')
-    
+    return
+
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/ss'))
 async def ss(event):
     edit = await event.reply("Processing...")
@@ -53,24 +46,10 @@ async def ss(event):
     await set_subscription(int(data[0]), date, int(data[2]), data[3])
     x = await db.get_data(int(data[0]))
     await edit.edit(f'{x}')
-    
-@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/pros'))
-async def pro(event):
-    edit = await event.reply("Processing...")
-    msg = await event.get_reply_message()
-    for id in str(msg.text).split(" "):
-        await set_subscription(int(id), False, 10, "pro")
-    await edit.edit("done")
-    
-@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/monthly'))
-async def mo(event):
-    edit = await event.reply("Processing...")
-    msg = await event.get_reply_message()
-    for id in str(msg.text).split(" "):
-        await set_subscription(int(id), False, 10, "monthly")
-    await edit.edit("done")
-    
-@Drone.on(events.NewMessage(incoming=True, pattern='batch'))
+    await event.client.send_message(int(data[0]), "Your plan is active now, send /myplan to check.")
+    return 
+
+@Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
 async def _batch(event):
     if not event.is_private:
         return
