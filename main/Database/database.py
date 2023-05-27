@@ -87,7 +87,7 @@ class Database:
         await self.col.update_one({'id': id}, {'$set': {'data': {"dos":None, "doe":None, "plan":"basic"}}})
     
     async def update_process(self, id, batch=False):
-        await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":batch}}})
+        await self.col.update_one({'id': id}, {'$set': {'process': {"process":True, "batch":batch}}})
     
     async def rem_process(self, id):
         await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":False}}})
