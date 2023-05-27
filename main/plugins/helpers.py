@@ -116,7 +116,7 @@ async def set_timer(bot, sender, t):
     await asyncio.sleep(int(t))
     await db.rem_process(sender)
     
----------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------
     
 def hhmmss(seconds):
     x = time.strftime('%H:%M:%S',time.gmtime(seconds))
