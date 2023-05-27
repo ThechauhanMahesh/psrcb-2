@@ -65,7 +65,7 @@ async def clone(event):
     if to == None:
         to = event.sender_id
     if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link:
-        await db.update_process(sender)
+        await db.update_process(event.sender_id)
         try:
             await get_msg(None, Bot, Drone, event.sender_id, to, edit.id, link, 0)
         except Exception as e:
@@ -104,7 +104,7 @@ async def clone(event):
                 return await edit.edit(str(e))
         else:
             return await edit.edit("Your login credentials not found.")
-        await db.update_process(sender)
+        await db.update_process(event.sender_id)
         try: 
             await get_msg(userbot, Bot, Drone,event.sender_id, to, edit.id, link, 0)
         except Exception as e:
