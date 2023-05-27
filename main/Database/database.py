@@ -110,4 +110,5 @@ class Database:
     async def get_process(self, id):
         user = await self.col.find_one({'id':int(id)})
         return user.get('process', None)
-
+      
+db = Database(MONGODB_URI, SESSION_NAME)
