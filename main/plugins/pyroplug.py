@@ -9,7 +9,7 @@ from main.plugins.helpers import duration as dr
 
 from pyrogram import Client, filters
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
-from pyrogram.enums import MessageMediaType
+from pyrogram.enums import MessageMediaType, ChatType
 from ethon.pyfunc import video_metadata
 from ethon.telefunc import fast_upload
 from telethon.tl.types import DocumentAttributeVideo
