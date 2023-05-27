@@ -48,7 +48,7 @@ async def bcast(event):
             try:
                 await event.client.send_message(int(id), msg)
                 sent += 1
-                await xx.edit((f"Total users : {x}\nSENT: {sent}\nFAILED: {failed}")
+                await xx.edit(f"Total users : {x}\nSENT: {sent}\nFAILED: {failed}")
                 await asyncio.sleep(1)
             except FloodWaitError as fw:
                 await asyncio.sleep(fw.x + 10)
@@ -58,7 +58,7 @@ async def bcast(event):
                 await asyncio.sleep(1)
         except Exception:
             failed += 1
-            await xx.edit((f"Total users : {x}\nSENT: {sent}\nFAILED: {failed}")
+            await xx.edit(f"Total users : {x}\nSENT: {sent}\nFAILED: {failed}")
     await xx.edit(f"Broadcast complete.\n\nTotal users : {x}\nSENT: {sent}\nFAILED: {failed}")
     
 @Drone.on(events.NewMessage(incoming=True, pattern="^/setchat (.*)" ))
