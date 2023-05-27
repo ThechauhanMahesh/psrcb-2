@@ -211,10 +211,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
     else:
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
         chat =  msg_link.split("/")[-2]
-        msg = await client.get_messages(chat, msg_id)
-        if msg.sender_chat.type == ChatType.GROUP or msg.sender_chat.type == ChatType.SUPERGROUP:
-            group_link = f't.me/c/{int(msg.sender_chat.id)}/{int(msg.id)}'
-            return await get_msg(userbot, client, bot, sender, to, edit_id, group_link, i)
         try:
             await client.copy_message(to, chat, msg_id)
         except Exception as e:
