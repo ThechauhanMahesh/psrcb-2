@@ -1,9 +1,9 @@
 #Github.com/Vasusen-code
 
-from .. import MONGODB_URI, bot
+from .. import bot
 from .. import FORCESUB as FSUB
 
-from main.Database.database import Database
+from main.Database.database import db
 
 from pyrogram import Client
 from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant, BadRequest
@@ -24,7 +24,6 @@ from datetime import date
 from datetime import datetime
 
 async def check_subscription(id):
-    db = Database(MONGODB_URI, 'PremiumSRCB')
     doe = (await db.get_data(id))["doe"]
     z = doe.split("-")
     e = int(z[0] + z[1] + z[2])
@@ -36,9 +35,8 @@ async def check_subscription(id):
         await bot.edit_permissions(FSUB, id, view_messages=True)
         await db.rem_data(id)
     else:
-        pass
-        
-    
+        return 
+            
 async def set_subscription(user_id, dos, days, plan):
     if not dos:
         x = str(datetime.today()).split(" ")[0]
@@ -49,7 +47,6 @@ async def set_subscription(user_id, dos, days, plan):
         today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
     expiry_date = today + timedelta(days=days)
     data = {"dos":str(today), "doe":str(expiry_date), "plan":plan}
-    db = Database(MONGODB_URI, 'PremiumSRCB')
     await db.update_data(user_id, data)
     
 #Forcesub-----------------------------------------------------------------------------------
@@ -116,27 +113,13 @@ def get_link(string):
 
 #Set timer to avoid spam
 async def set_timer(bot, sender, t):
-    db = Database(MONGODB_URI, 'PremiumSRCB')
     await db.update_process(sender)
     await bot.send_message(sender, f'You can start a new process again after {t} seconds.')
     await asyncio.sleep(int(t))
     await db.rem_process(sender)
     
-# #check time left in timer
-# async def check_timer(sender):
-#     db = Database(MONGODB_URI, 'PremiumSRCB')
-#     process = (await db.get_process(sender))["process"]
-#     if process == True:
-#         return False
-#     else:
-#         return True
+---------------------------------------------------------------------------------------------------------------
     
-# async def rem_timer(sender):
-#     db = Database(MONGODB_URI, 'PremiumSRCB')
-#     await db.rem_process(sender)
-
-#Screenshot---------------------------------------------------------------------------------------------------------------
-
 def hhmmss(seconds):
     x = time.strftime('%H:%M:%S',time.gmtime(seconds))
     return x
