@@ -111,7 +111,6 @@ def get_link(string):
 
 #Set timer to avoid spam
 async def set_timer(bot, sender, t):
-    await db.update_process(sender)
     await bot.send_message(sender, f'You can start a new process again after {t} seconds.')
     await asyncio.sleep(int(t))
     await db.rem_process(sender)
