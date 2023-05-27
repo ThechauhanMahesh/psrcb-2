@@ -123,7 +123,7 @@ async def run_batch(userbot, client, sender, chat, link, _range):
             else:
                 timer = 2
         try: 
-            if (await db.get_process(sender))["process"]:
+            if not (await db.get_process(sender))["process"]:
                 await client.send_message(sender, "Batch completed.")
                 break
         except Exception as e:
