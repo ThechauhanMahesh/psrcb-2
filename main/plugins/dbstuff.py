@@ -2,14 +2,12 @@
 #github.com/vasusen-code
  
 from .. import bot as Drone
-from .. import AUTH_USERS, MONGODB_URI
+from .. import AUTH_USERS
 from telethon import events, Button
 from decouple import config
-from main.Database.database import Database
+from main.Database.database import db
 
 #Database command handling--------------------------------------------------------------------------
-
-db = Database(MONGODB_URI, 'PremiumSRCB')
 
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def incomming(event):
@@ -17,7 +15,12 @@ async def incomming(event):
         await db.add_user(event.sender_id)
         tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
         await event.client.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {event.sender_id}') 
-        
+        await event.reply("Your plan will soon be activated if the payment is done.")
+    else:
+        if (await db.get_data(event.sender_id))["dos"] == None:
+            await event.client.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {event.sender_id}') 
+            await event.reply("Your plan will soon be activated if the payment is done.")
+         
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="/users"))
 async def listusers(event):
     xx = await event.reply("Counting total users in Database.")
@@ -30,12 +33,13 @@ async def bcast(event):
     msg = await event.get_reply_message()
     if not msg:
         await event.reply("reply to a mesage to broadcast!")
+        return
     xx = await event.reply("Counting total users in Database.")
     x = await db.total_users_count()
     await xx.edit(f"Total user(s) {int(x)}")
     all_users = await db.get_users()
-    sent = []
-    failed = []
+    sent = 0
+    failed = 0
     async for user in all_users:
         user_id = user.get("id", None) 
         ids.append(user_id)
@@ -43,31 +47,19 @@ async def bcast(event):
         try:
             try:
                 await event.client.send_message(int(id), msg)
-                sent.append(id)
-                await xx.edit(f"Total users : {x}", 
-                             buttons=[
-                                 [Button.inline(f"SENT: {len(sent)}", data="none")],
-                                 [Button.inline(f"FAILED: {len(failed)}", data="none")]])
+                sent += 1
+                await xx.edit((f"Total users : {x}\nSENT: {sent}\nFAILED: {failed}")
                 await asyncio.sleep(1)
             except FloodWaitError as fw:
-                await asyncio.sleep(fw.seconds + 10)
+                await asyncio.sleep(fw.x + 10)
                 await event.client.send_message(int(id), msg)
-                sent.append(id)
-                await xx.edit(f"Total users : {x}", 
-                             buttons=[
-                                [Button.inline(f"SENT: {len(sent)}", data="none")],
-                                [Button.inline(f"FAILED: {len(failed)}", data="none")]])
+                sent += 1
+                await xx.edit(f"Total users : {x}\nSENT: {sent}\nFAILED: {failed}")
                 await asyncio.sleep(1)
         except Exception:
-            failed.append(id)
-            await xx.edit(f"Total users : {x}", 
-                             buttons=[
-                                 [Button.inline(f"SENT: {len(sent)}", data="none")],
-                                 [Button.inline(f"FAILED: {len(failed)}", data="none")]])
-    await xx.edit(f"Broadcast complete.\n\nTotal users in database: {x}", 
-                 buttons=[
-                     [Button.inline(f"SENT: {len(sent)}", data="none")],
-                     [Button.inline(f"FAILED: {len(failed)}", data="none")]])
+            failed += 1
+            await xx.edit((f"Total users : {x}\nSENT: {sent}\nFAILED: {failed}")
+    await xx.edit(f"Broadcast complete.\n\nTotal users : {x}\nSENT: {sent}\nFAILED: {failed}")
     
 @Drone.on(events.NewMessage(incoming=True, pattern="^/setchat (.*)" ))
 async def update_chat(event):
