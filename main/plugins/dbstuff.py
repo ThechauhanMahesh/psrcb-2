@@ -17,8 +17,7 @@ async def incomming(event):
         await db.add_user(event.sender_id)
         tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
         await event.client.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {event.sender_id}') 
-        await event.reply("If you have made the payment your plan will soon be activated")
-       
+        
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="/users"))
 async def listusers(event):
     xx = await event.reply("Counting total users in Database.")
