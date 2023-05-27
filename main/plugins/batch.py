@@ -74,8 +74,6 @@ async def mo(event):
 async def _batch(event):
     if not event.is_private:
         return
-    # wtf is the use of fsub here if the command is meant for the owner? 
-    # well am too lazy to clean 
     await check_subscription(event.sender_id)
     if (await db.get_data(event.sender_id))["plan"] == "basic":
         await event.reply("Buy Monthly subscription or Pro subscription.")
