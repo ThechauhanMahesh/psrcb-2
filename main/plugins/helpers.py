@@ -66,13 +66,11 @@ async def force_sub(id):
 #Multi client-------------------------------------------------------------------------------------------------------------
 
 async def login(sender, i, h, s):
-    db = Database(MONGODB_URI, 'PremiumSRCB')
     await db.update_api_id(sender, i)
     await db.update_api_hash(sender, h)
     await db.update_session(sender, s)
     
 async def logout(sender):
-    db = Database(MONGODB_URI, 'PremiumSRCB')
     await db.rem_api_id(sender)
     await db.rem_api_hash(sender)
     await db.rem_session(sender)
