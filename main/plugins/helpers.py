@@ -31,9 +31,9 @@ async def check_subscription(id):
     w = x.split("-")
     today = int(w[0] + w[1] + w[2])
     if today > e:
+        await db.rem_data(id)
         await bot.edit_permissions(FSUB, id, view_messages=False)
         await bot.edit_permissions(FSUB, id, view_messages=True)
-        await db.rem_data(id)
     else:
         return 
             
