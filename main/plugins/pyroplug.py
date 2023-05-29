@@ -214,8 +214,12 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         try:
             await client.copy_message(to, chat, msg_id)
         except Exception as e:
-            print(e)
-            return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+            if "Empty messages cannot be copied" in str(e):
+                group_link = f't.me/c/{int(msg.sender_chat.id)}/{int(msg.id)}'
+                return await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
+            else:
+                print(e)
+                return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
         await edit.delete()
         
 async def get_bulk_msg(userbot, client, sender, chat, msg_link, i):
