@@ -48,11 +48,13 @@ async def clone(event):
             return
     except TypeError:
         return
-    await check_subscription(event.sender_id)
+    trial = await db.get_trial(event.sender_id)
+    if trial == 5:
+          return await event.reply("Your free trial is now over, buy premium subscription from @DroneBOTS to continue.")
     s = await db.get_data(event.sender_id)
-    if s["dos"] == None:
-        await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
-        return
+    x = await force_sub(event.sender_id)
+    if x == True:
+        return await event.reply("To use this bot you must join these channels.")
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
         return await edit.edit("Please don't spam links, wait until ongoing process is done.")
@@ -74,24 +76,7 @@ async def clone(event):
         await set_timer(Drone, event.sender_id, ut) 
         return
     if 't.me/+' in link:
-        userbot = ""
-        i, h, s = await db.get_credentials(event.chat.id)
-        userbot = None
-        if i and h and s is not None:
-            try:
-                userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
-                await userbot.start()
-            except Exception as e:
-                print(e)
-                return await edit.edit(str(e))
-        else:
-            return await edit.edit("Your login credentials not found.")
-        try: 
-            j = await join(userbot, link)
-            await edit.edit(j)
-        except Exception as e:
-            print(e)
-            pass
+        return await event.reply("Join channels by yourself manually.")
     if 't.me/c/' in link or 't.me/b/' in link:
         userbot = ""
         i, h, s = await db.get_credentials(event.chat.id)
@@ -112,3 +97,6 @@ async def clone(event):
             pass
         await userbot.stop()
         await set_timer(Drone, event.sender_id, ut) 
+        await db.update_trial(event.sender_id)
+        await event.send_message(event.sender_id, f"You have {(await db.get_trial(event.sender_id)) - 1} trials left.")
+        
