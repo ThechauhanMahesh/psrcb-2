@@ -27,6 +27,7 @@ class Database:
           chat=None, 
           process={"process":False, "batch":False}, 
           data={"dos":None, "doe":None, "plan":"basic"},
+          trial=0,
         )
            
     async def add_user(self,id):
@@ -88,6 +89,11 @@ class Database:
     
     async def update_process(self, id, batch=False):
         await self.col.update_one({'id': id}, {'$set': {'process': {"process":True, "batch":batch}}})
+        
+    async def update_trial(self, id):
+        user = await self.col.find_one({'id':int(id)})
+        trial = user.get('trial', None)
+        await self.col.update_one({'id': id}, {'$set': {'trial':  trial+1}})
     
     async def rem_process(self, id):
         await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":False}}})
@@ -110,5 +116,9 @@ class Database:
     async def get_process(self, id):
         user = await self.col.find_one({'id':int(id)})
         return user.get('process', None)
-      
+    
+    async def get_trial(self, id):
+        user = await self.col.find_one({'id':int(id)})
+        return user.get('trial', 0)
+    
 db = Database(MONGODB_URI, SESSION_NAME)
