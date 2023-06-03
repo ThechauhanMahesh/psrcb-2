@@ -49,7 +49,7 @@ async def ss(event):
     await event.client.send_message(int(data[0]), "Your plan is active now, send /myplan to check.")
     return 
 
-@Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/batch'))
 async def _batch(event):
     if not event.is_private:
         return
