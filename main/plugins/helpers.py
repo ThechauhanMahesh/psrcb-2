@@ -56,7 +56,16 @@ async def set_subscription(user_id, dos, days, plan):
 
 async def force_sub(id):
     try:
-        x = await bot(GetParticipantRequest(channel=FSUB, participant=int(id)))
+        x = await bot(GetParticipantRequest(channel=FSUB[0],participant=int(id)))
+        left = x.stringify()
+        if 'left' in left:
+            ok = True
+        else:
+            ok = False
+    except UserNotParticipantError:
+        ok = True
+    try:
+        x = await bot(GetParticipantRequest(channel=FSUB[1],participant=int(id)))
         left = x.stringify()
         if 'left' in left:
             ok = True
