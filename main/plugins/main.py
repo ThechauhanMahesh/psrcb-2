@@ -2,9 +2,8 @@
 
 from .. import bot as Drone
 from .. import Bot, AUTH_USERS 
-from .. import FORCESUB as fs
 
-from main.plugins.helpers import get_link, join, set_timer, screenshot, check_subscription
+from main.plugins.helpers import get_link, join, set_timer, screenshot
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import db
 from main.plugins.pyroplug import get_msg
@@ -12,7 +11,7 @@ from main.plugins.pyroplug import get_msg
 from pyrogram.errors import FloodWait, BadRequest
 from pyrogram import Client, filters, idle
 from ethon.pyfunc import video_metadata
-from telethon import events
+from telethon import events, Button
 
 import re, time, asyncio
 from decouple import config
@@ -53,7 +52,7 @@ async def clone(event):
           return await event.reply("Your free trial is now over, buy premium subscription from @DroneBOTS to continue.")
     x = await force_sub(event.sender_id)
     if x == True:
-        return await event.reply("To use this bot you must join these channels.")
+        return await event.reply("To use this bot you must join these channels." buttons=[[Button.url("DRONE BOTS", url="t.me/dronebots"), Button.url("SRCB", url="t.me/save_restrict_content")]])
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
         return await edit.edit("Please don't spam links, wait until ongoing process is done.")
