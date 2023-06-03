@@ -51,21 +51,13 @@ async def clone(event):
     trial = await db.get_trial(event.sender_id)
     if trial == 5:
           return await event.reply("Your free trial is now over, buy premium subscription from @DroneBOTS to continue.")
-    s = await db.get_data(event.sender_id)
     x = await force_sub(event.sender_id)
     if x == True:
         return await event.reply("To use this bot you must join these channels.")
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
         return await edit.edit("Please don't spam links, wait until ongoing process is done.")
-    pt = 20
-    ut = 10
-    if (await db.get_data(event.sender_id))["plan"] == "pro":
-        ut = 2
-        pt = 2
-    to = await db.get_chat(event.chat.id)
-    if to == None:
-        to = event.sender_id
+    to = event.sender_id
     if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link:
         await db.update_process(event.sender_id)
         try:
@@ -73,7 +65,7 @@ async def clone(event):
         except Exception as e:
             print(e)
             pass
-        await set_timer(Drone, event.sender_id, ut) 
+        await set_timer(Drone, event.sender_id, 120) 
         return
     if 't.me/+' in link:
         return await event.reply("Join channels by yourself manually.")
@@ -96,7 +88,7 @@ async def clone(event):
             print(e)
             pass
         await userbot.stop()
-        await set_timer(Drone, event.sender_id, ut) 
+        await set_timer(Drone, event.sender_id, 300) 
         await db.update_trial(event.sender_id)
         await event.send_message(event.sender_id, f"You have {(await db.get_trial(event.sender_id)) - 1} trials left.")
         
