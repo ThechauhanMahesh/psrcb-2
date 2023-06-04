@@ -212,15 +212,15 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
         chat =  msg_link.split("/")[-2]
         try:
-            await client.copy_message(to, chat, msg_id)
-        except Exception as e:
-            if "Empty messages cannot be copied" in str(e):
+            msg = await client.get_messages(chat, msg_id)
+            if msg.empty:
                 group = await userbot.get_users(chat)
                 group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
-                return await get_msg(userbot, client, bot, sender, to, edit_id, group_link, i)
-            else:
-                print(e)
-                return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+                return await get_msg(userbot, client, bot, sender, edit_id, group_link, i)
+            await client.copy_message(to, chat, msg_id)
+        except Exception as e:
+            print(e)
+            return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
         await edit.delete()
         
 async def get_bulk_msg(userbot, client, sender, chat, msg_link, i):
