@@ -217,7 +217,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             if "Empty messages cannot be copied" in str(e):
                 group = await userbot.get_users(chat)
                 group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
-                return await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
+                return await get_msg(userbot, client, bot, sender, to, edit_id, group_link, i)
             else:
                 print(e)
                 return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
