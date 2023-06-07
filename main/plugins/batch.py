@@ -64,7 +64,7 @@ async def _batch(event):
     pr = (await db.get_process(event.sender_id))["process"]
     if pr:
         return await event.reply("You've already started one process, wait for it to complete!")
-    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
+    async with Drone.conversation(event.chat_id) as conv: 
         if pr != True:
             await conv.send_message("Send me the message link you want to start saving from, as a reply to this message.", buttons=Button.force_reply())
             try:
