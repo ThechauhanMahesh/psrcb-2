@@ -65,6 +65,11 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             caption = None
             if msg.caption is not None:
                 caption = msg.caption
+            check_file_name = file.split("downloads/")
+            if "/" in check_file_name[1]:
+                new_file_name = check_file_name[0] + "downloads/" + check_file_name[1].replace("/", "-")
+                os.rename(file, new_file_name)
+                file = new_file_name
             if msg.media==MessageMediaType.VIDEO_NOTE:
                 round_message = True
                 print("Trying to get metadata")
