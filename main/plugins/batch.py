@@ -24,11 +24,11 @@ errorC = """Error: Couldn't start client by Login credentials, Please logout and
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/cancel'))
 async def cancel(event):
-    if not (await db.get_process(event.sender_id))["batch"]:
-        return await event.reply("No batch active.")
-    await db.rem_process(event.sender_id)
     async with event.client.conversation(event.sender_id, exclusive=False) as conv:
         await conv.cancel_all()
+    if not (await db.get_process(event.sender_id))["batch"]:
+        return await event.reply("No batch active, all previous conversations cancelled.")
+    await db.rem_process(event.sender_id)
     await event.reply("Done.")
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/myplan'))
@@ -62,7 +62,7 @@ async def _batch(event):
     pr = (await db.get_process(event.sender_id))["process"]
     if pr:
         return await event.reply("You've already started one process, wait for it to complete!")
-    async with Drone.conversation(event.chat_id) as conv: 
+    async with Drone.conversation(event.chat_id, exclusive=True) as conv: 
         if pr != True:
             await conv.send_message("Send me the message link you want to start saving from, as a reply to this message.", buttons=Button.force_reply())
             try:
