@@ -168,7 +168,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     except Exception:
                         return
                     return 
-            elif "SaveBigFilePartRequest" in str(e):
+            elif "SaveBigFilePartRequest" in str(e) or str(e) == "File size equals to 0 B":
                 try: 
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
