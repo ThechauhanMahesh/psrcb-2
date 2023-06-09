@@ -1,7 +1,7 @@
 # Github.com/Vasusen-code
 
 from .. import bot as Drone
-import asyncio, time, os
+import asyncio, time, os, shutil
 
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot, findVideoResolution
@@ -68,7 +68,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             check_file_name = file.split("downloads/")
             if "/" in check_file_name[1]:
                 new_file_name = check_file_name[0] + "downloads/" + check_file_name[1].replace("/", "-")
-                os.rename(file, new_file_name)
+                shutil.move(file, new_file_name)
                 file = new_file_name
             if msg.media==MessageMediaType.VIDEO_NOTE:
                 round_message = True
