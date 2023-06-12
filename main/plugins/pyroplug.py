@@ -1,7 +1,7 @@
 # Github.com/Vasusen-code
 
 from .. import bot as Drone
-import asyncio, time, os, shutil
+import asyncio, time, os, shutil, datetime 
 
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot, findVideoResolution
@@ -50,26 +50,35 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     await edit.delete()
                     return
             edit = await client.edit_message_text(sender, edit_id, "Trying to Download.")
-            file = await userbot.download_media(
-                msg,
-                progress=progress_for_pyrogram,
-                progress_args=(
-                    client,
-                    "**DOWNLOADING:**\n",
-                    edit,
-                    time.time()
+            try:
+                file = await userbot.download_media(
+                    msg,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        "**DOWNLOADING:**\n",
+                        edit,
+                        time.time()
+                    )
                 )
-            )
+            except FileNotFoundError:
+                new_name = f"{datetiem.datetime.now()}-{sender}"
+                file = await userbot.download_media(
+                    msg,
+                    progress=progress_for_pyrogram,
+                    file_name=new_name
+                    progress_args=(
+                        client,
+                        "**DOWNLOADING:**\n",
+                        edit,
+                        time.time()
+                    )
+                )
             print(file)
             await edit.edit('Preparing to Upload!')
             caption = None
             if msg.caption is not None:
                 caption = msg.caption
-            check_file_name = file.split("downloads/")
-            if "/" in check_file_name[1]:
-                new_file_name = check_file_name[0] + "downloads/" + check_file_name[1].replace("/", "-")
-                shutil.move(file, new_file_name)
-                file = new_file_name
             if msg.media==MessageMediaType.VIDEO_NOTE:
                 round_message = True
                 print("Trying to get metadata")
@@ -148,7 +157,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             return
         except Exception as e:
             print(e)
-            if "messages.SendMedia" in str(e): 
+            if "messages.SendMedia" in str(e) \
+            or "SaveBigFilePartRequest" in str(e) \
+            or "SendMediaRequest" in str(e) \
+            or str(e) == "File size equals to 0 B":
                 try: 
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
@@ -166,32 +178,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if os.path.isfile(file) == True:
                         os.remove(file)
                 except Exception as e:
-                    print(e)
-                    await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
-                    try:
-                        os.remove(file)
-                    except Exception:
-                        return
-                    return 
-            elif "SaveBigFilePartRequest" in str(e):
-                try: 
-                    if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
-                        UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
-                    elif msg.media==MessageMediaType.VIDEO_NOTE:
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
-                    else:
-                        UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
-                    if os.path.isfile(file) == True:
-                        os.remove(file)
-                except Exception as e:
-                    print("Telethon tried but failed!")
                     print(e)
                     await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
                     try:
