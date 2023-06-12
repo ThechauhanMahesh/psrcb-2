@@ -62,7 +62,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     )
                 )
             except FileNotFoundError:
-                new_name = f"{datetiem.datetime.now()}-{sender}"
+                new_name = f"{datetime.datetime.now()}-{sender}"
                 file = await userbot.download_media(
                     msg,
                     file_name=file,
