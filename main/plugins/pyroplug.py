@@ -51,21 +51,29 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     return
             edit = await client.edit_message_text(sender, edit_id, "Trying to Download.")
             try:
-                file = await userbot.download_media(msg,
-                                                    progress=progress_for_pyrogram,
-                                                    progress_args=(client,
-                                                                   "**DOWNLOADING:**\n",
-                                                                   edit,
-                                                                   time.time()
-                                                                  )
-                                                   )
+                file = await userbot.download_media(
+                    msg,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        "**DOWNLOADING:**\n",
+                        edit,
+                        time.time()
+                    )
+                )
             except FileNotFoundError:
                 new_name = f"{datetiem.datetime.now()}-{sender}"
-                file = await userbot.download_media(msg,
-                                                    progress=progress_for_pyrogram,
-                                                    file_name=new_name
-                                                    progress_args=(client, "**DOWNLOADING:**\n", edit, time.time())
-                                                   )
+                file = await userbot.download_media(
+                    msg,
+                    file_name=file,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        "**DOWNLOADING:**\n",
+                        edit,
+                        time.time()
+                    )
+                )
             print(file)
             await edit.edit('Preparing to Upload!')
             caption = None
