@@ -1,7 +1,7 @@
 # Github.com/Vasusen-code
 
 from .. import bot as Drone
-import asyncio, time, os
+import asyncio, time, os, shutil, datetime 
 
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot, findVideoResolution
@@ -50,16 +50,30 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     await edit.delete()
                     return
             edit = await client.edit_message_text(sender, edit_id, "Trying to Download.")
-            file = await userbot.download_media(
-                msg,
-                progress=progress_for_pyrogram,
-                progress_args=(
-                    client,
-                    "**DOWNLOADING:**\n",
-                    edit,
-                    time.time()
+            try:
+                file = await userbot.download_media(
+                    msg,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        "**DOWNLOADING:**\n",
+                        edit,
+                        time.time()
+                    )
                 )
-            )
+            except FileNotFoundError:
+                new_name = file.split("downloads/")[1].replace("/", "-")
+                file = await userbot.download_media(
+                    msg,
+                    file_name=new_name,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        "**DOWNLOADING:**\n",
+                        edit,
+                        time.time()
+                    )
+                )
             print(file)
             await edit.edit('Preparing to Upload!')
             caption = None
@@ -143,7 +157,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             return
         except Exception as e:
             print(e)
-            if "messages.SendMedia" in str(e): 
+            if "messages.SendMedia" in str(e) \
+            or "SaveBigFilePartRequest" in str(e) \
+            or "SendMediaRequest" in str(e) \
+            or str(e) == "File size equals to 0 B":
                 try: 
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
@@ -161,32 +178,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if os.path.isfile(file) == True:
                         os.remove(file)
                 except Exception as e:
-                    print(e)
-                    await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
-                    try:
-                        os.remove(file)
-                    except Exception:
-                        return
-                    return 
-            elif "SaveBigFilePartRequest" in str(e) or str(e) == "File size equals to 0 B":
-                try: 
-                    if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
-                        UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
-                    elif msg.media==MessageMediaType.VIDEO_NOTE:
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
-                    else:
-                        UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
-                    if os.path.isfile(file) == True:
-                        os.remove(file)
-                except Exception as e:
-                    print("Telethon tried but failed!")
                     print(e)
                     await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
                     try:
@@ -212,14 +203,15 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
         chat =  msg_link.split("/")[-2]
         try:
+            msg = await client.get_messages(chat, msg_id)
+            if msg.empty:
+                group = await userbot.get_users(chat)
+                group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
+                return await get_msg(userbot, client, bot, sender, edit_id, group_link, i)
             await client.copy_message(to, chat, msg_id)
         except Exception as e:
-            if "Empty messages cannot be copied" in str(e):
-                group_link = f't.me/c/{int(msg.sender_chat.id)}/{int(msg.id)}'
-                return await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
-            else:
-                print(e)
-                return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+            print(e)
+            return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
         await edit.delete()
         
 async def get_bulk_msg(userbot, client, sender, chat, msg_link, i):
