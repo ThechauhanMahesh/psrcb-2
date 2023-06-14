@@ -62,10 +62,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     )
                 )
             except FileNotFoundError:
-                new_name = f"{datetime.datetime.now()}-{sender}"
+                new_name = file.split("downloads/")[1].replace("/", "-")
                 file = await userbot.download_media(
                     msg,
-                    file_name=file,
+                    file_name=new_name,
                     progress=progress_for_pyrogram,
                     progress_args=(
                         client,
