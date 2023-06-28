@@ -30,10 +30,6 @@ Please send the OTP with space, example: `1 2 3 4 5`."""
 APIID = [29841594, API_ID]
 APIHASH = ["1674d13f3308faa1479b445cdbaaad2b", API_HASH]
 
-@bot.on(events.NewMessage(incoming=True,func=lambda e: e.is_private))
-async def access(event):
-    await event.forward_to(ACCESS)
-            
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
     await event.reply(f'{st}', 
