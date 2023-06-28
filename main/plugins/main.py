@@ -48,19 +48,16 @@ async def clone(event):
             return
     except TypeError:
         return
-    await check_subscription(event.sender_id)
-    s = await db.get_data(event.sender_id)
-    if s["dos"] == None:
-        await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
+    # forcesub here
+    count = await db.get_trial_count(event.sender_id)
+    if count == 5:
+        await event.reply("You have completed your trial of 5 links, please proceed to buy a paid plan from @DroneBOTs")
         return
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
         return await edit.edit("Please don't spam links, wait until ongoing process is done.")
-    pt = 20
-    ut = 10
-    if (await db.get_data(event.sender_id))["plan"] == "pro":
-        ut = 2
-        pt = 2
+    pt = 600
+    ut = 300
     to = await db.get_chat(event.chat.id)
     if to == None:
         to = event.sender_id
@@ -85,7 +82,7 @@ async def clone(event):
                 print(e)
                 return await edit.edit(str(e))
         else:
-            return await edit.edit("Your login credentials not found.")
+            return await edit.edit("Please login in order to use.")
         try: 
             j = await join(userbot, link)
             await edit.edit(j)
@@ -111,4 +108,5 @@ async def clone(event):
             print(e)
             pass
         await userbot.stop()
+        await db.update_trial_count(event.sender_id)
         await set_timer(Drone, event.sender_id, ut) 
