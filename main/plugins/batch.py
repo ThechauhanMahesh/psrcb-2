@@ -57,6 +57,7 @@ async def ss(event):
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
 async def _batch(event):
+    return await event.reply("Buy paid plan from @DroneBOTs")
     if not event.is_private:
         return
     await check_subscription(event.sender_id)
