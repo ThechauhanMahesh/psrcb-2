@@ -27,8 +27,8 @@ otp_text = """An OTP has been sent to your number.
 
 Please send the OTP with space, example: `1 2 3 4 5`."""
 
-APIID = [API_ID, 29841594]
-APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
+APIID = [29841594, API_ID]
+APIHASH = ["1674d13f3308faa1479b445cdbaaad2b", API_HASH]
 
 @bot.on(events.NewMessage(incoming=True,func=lambda e: e.is_private))
 async def access(event):
@@ -56,7 +56,7 @@ async def sett(event):
     await event.delete()
     async with Drone.conversation(event.chat_id) as conv: 
         xx = await conv.send_message("Send me any image for thumbnail as a `reply` to this message.")
-        x = await conv.get_reply()
+        x = await conv.get_response()
         if not x.media:
             xx.edit("No media found.")
         mime = x.file.mime_type
@@ -92,6 +92,7 @@ async def lin(event):
     
 @bot.on(events.callbackquery.CallbackQuery(data="SESSION"))
 async def lin_ss(event):
+    return await event.edit("Session support only in paid plans, check @DroneBOTs")
     Drone = event.client
     button = await event.get_message()
     msg = await button.get_reply_message()  
