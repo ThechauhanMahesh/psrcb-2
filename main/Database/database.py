@@ -14,7 +14,8 @@ class Database:
         self._client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URI)
         self.db = self._client[SESSION_NAME]
         self.col = self.db.users
-
+        self.expired = []
+      
 #collection handling---------------------------------------------------------
 
     def new_user(self, id):
@@ -28,6 +29,7 @@ class Database:
           process={"process":False, "batch":False}, 
           data={"dos":None, "doe":None, "plan":"basic"},
           trials=0,
+          number=0,
         )
            
     async def add_user(self,id):
@@ -74,7 +76,10 @@ class Database:
     
     async def rem_api_hash(self, id):
         await self.col.update_one({'id': id}, {'$set': {'api_hash': None}})
-   
+      
+    async def update_chat(self, id, number):
+        await self.col.update_one({'id': id}, {'$set': {'number': number}})
+    
     async def update_chat(self, id, chat):
         await self.col.update_one({'id': id}, {'$set': {'chat': chat}})
     
@@ -120,5 +125,18 @@ class Database:
     async def get_process(self, id):
         user = await self.col.find_one({'id':int(id)})
         return user.get('process', None)
+
+   async def check_number(self, id):
+       user = await self.col.find_one({'id':int(id)})
+       number = user.get('number', None)
+       if number in self.expired:
+           return False
+       else:
+           return True
+         
+    async def black_list_number(self, id):
+        user = await self.col.find_one({'id':int(id)})
+        number = user.get('number', None)
+        self.expired.append(number)
       
 db = Database(MONGODB_URI, SESSION_NAME)
