@@ -27,6 +27,7 @@ class Database:
           chat=None, 
           process={"process":False, "batch":False}, 
           data={"dos":None, "doe":None, "plan":"basic"},
+          trials=0,
         )
            
     async def add_user(self,id):
@@ -91,7 +92,12 @@ class Database:
     
     async def rem_process(self, id):
         await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":False}}})
-        
+
+    async def update_trial_count(self, id):
+        user = await self.col.find_one({'id':int(id)})
+        trial = user.get('trials', None)
+        await self.col.update_one({'id': id}, {'$set': {'trials': trials+1}})
+    
     async def get_credentials(self, id):
         user = await self.col.find_one({'id':int(id)})
         i = user.get('api_id', None)
@@ -102,6 +108,10 @@ class Database:
     async def get_chat(self, id):
         user = await self.col.find_one({'id':int(id)})
         return user.get('chat', None)
+
+    async def get_trial_count(self, id):
+        user = await self.col.find_one({'id':int(id)})
+        return user.get('trials', None)
       
     async def get_data(self, id):
         user = await self.col.find_one({'id':int(id)})
