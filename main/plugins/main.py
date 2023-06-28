@@ -4,7 +4,7 @@ from .. import bot as Drone
 from .. import Bot, AUTH_USERS 
 from .. import FORCESUB as fs
 
-from main.plugins.helpers import get_link, join, set_timer, screenshot, check_subscription
+from main.plugins.helpers import get_link, join, set_timer, screenshot, check_subscription, force_sub
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import db
 from main.plugins.pyroplug import get_msg
@@ -48,10 +48,12 @@ async def clone(event):
             return
     except TypeError:
         return
-    # forcesub here
+    f = await force_sub(event.sender_id)
+    if f:
+        return await event.reply("You must join @DroneBots and @SaveContents to use this bot.")
     count = await db.get_trial_count(event.sender_id)
-    if count == 5:
-        await event.reply("You have completed your trial of 5 links, please proceed to buy a paid plan from @DroneBOTs")
+    if count == 10:
+        await event.reply("You have completed your trial of 10 links, please proceed to buy a paid plan from @DroneBOTs")
         return
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
