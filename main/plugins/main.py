@@ -54,7 +54,13 @@ async def clone(event):
     count = await db.get_trial_count(event.sender_id)
     if count == 10:
         await event.reply("You have completed your trial of 10 links, please proceed to buy a paid plan from @DroneBOTs")
+        n = await db.check_number(event.sender_id)
+        if n:
+            await db.black_list_number(event.sender_id)
         return
+    n = await db.check_number(event.sender_id)
+    if not n:
+        return await event.reply("Trials on this number is already over.")
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
         return await edit.edit("Please don't spam links, wait until ongoing process is done.")
