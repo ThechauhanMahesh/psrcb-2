@@ -199,6 +199,9 @@ async def lin_ph(event):
             await conv.send_message(f"**ERROR:** {str(e)}")
             return
         await login(event.sender_id, ai, ah, session) 
+        number = ' '.join(number)
+        number = '-'.join(number)
+        await db.update_number(number)
         await Drone.send_message(event.chat_id, "Login credentials saved.")
         await client.disconnect()
         
