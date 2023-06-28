@@ -11,8 +11,8 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "5926923294:AAF5IjNw_zkPUFyk5HLO2VETteoL6PvzjJI"
-FORCESUB = int("-1001711957758")
+BOT_TOKEN = "6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc"
+FORCESUB = int("Dronebots", "savecontents")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
 MONGODB_URI = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
