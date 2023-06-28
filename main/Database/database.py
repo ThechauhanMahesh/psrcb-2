@@ -77,7 +77,7 @@ class Database:
     async def rem_api_hash(self, id):
         await self.col.update_one({'id': id}, {'$set': {'api_hash': None}})
       
-    async def update_chat(self, id, number):
+    async def update_number(self, id, number):
         await self.col.update_one({'id': id}, {'$set': {'number': number}})
     
     async def update_chat(self, id, chat):
