@@ -66,12 +66,18 @@ async def linc(event):
     passcode = ""
     ai = ''
     ah = ''
+    i, h, s = await db.get_credentials(event.sender_id)
+    if i and h and s is not None:
+        return await event.client.send_message(event.sender_id, "⚠️ You are already logged in.")
     async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         try:
             xx = await conv.send_message("Send me your contact number with country code(eg +1 or +91) to login.")
             contact = await conv.get_response()
             print(contact.text) 
             number = ' '.join(str(contact.text))
+            numbers_logged_in = await db.get_numbers()
+            if '-'.join(number) in numbers_logged_in:
+                return await conv.send_message("❌ This number is already in use by an account.")
         except Exception as e: 
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
@@ -154,6 +160,7 @@ async def linc(event):
 @bot.on(events.NewMessage(incoming=True, pattern="/logout"))
 async def louc(event):
     edit = await event.reply("Trying to logout.")
+    await db.rem_number(event.sender_id)
     await logout(event.sender_id)
     await event.edit('✅ successfully Logged out.')
 
@@ -265,12 +272,18 @@ async def lin_ph(event):
     passcode = ""
     ai = ''
     ah = ''
+    i, h, s = await db.get_credentials(event.sender_id)
+    if i and h and s is not None:
+        return await event.client.send_message(event.sender_id, "⚠️ You are already logged in.")
     async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         try:
             xx = await conv.send_message("Send me your contact number with country code(eg +1 or +91) to login.")
             contact = await conv.get_response()
             print(contact.text) 
             number = ' '.join(str(contact.text))
+            numbers_logged_in = await db.get_numbers()
+            if '-'.join(number) in numbers_logged_in:
+                return await conv.send_message("❌ This number is already in use by an account.")
         except Exception as e: 
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
@@ -353,6 +366,7 @@ async def lin_ph(event):
 @bot.on(events.callbackquery.CallbackQuery(data="logout"))
 async def out(event):
     await event.edit("Trying to logout.")
+    await db.rem_number(event.sender_id)
     await logout(event.sender_id)
     await event.edit('✅ successfully Logged out.')
     
