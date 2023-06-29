@@ -164,6 +164,7 @@ class Database:
         number = user.get('number', None)
         default = await self.col.find_one({'id': self.default_id})
         expired = default.get('expired', None)
+        expired.append(number)
         await self.col.update_one({'id': self.default_id}, {'$set': {'expired': expired}})
     
 db = Database(MONGODB_URI, SESSION_NAME)
