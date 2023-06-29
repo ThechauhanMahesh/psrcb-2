@@ -126,13 +126,13 @@ class Database:
         user = await self.col.find_one({'id':int(id)})
         return user.get('process', None)
 
-   async def check_number(self, id):
-       user = await self.col.find_one({'id':int(id)})
-       number = user.get('number', None)
-       if number in self.expired:
-           return False
-       else:
-           return True
+    async def check_number(self, id):
+         user = await self.col.find_one({'id':int(id)})
+         number = user.get('number', None)
+         if number in self.expired:
+             return False
+         else:
+             return True
          
     async def black_list_number(self, id):
         user = await self.col.find_one({'id':int(id)})
