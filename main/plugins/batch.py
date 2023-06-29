@@ -37,6 +37,7 @@ async def cancel(event):
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/myplan'))
 async def check_plan(event):
+    return await event.reply("Only for paid users, check @DroneBOTs")
     data = await db.get_data(event.sender_id)
     await event.reply(f'**DATE OF SUBSCRIPTION:** {data["dos"]}\n**DATE OF EXPIRY:** {data["doe"]}\n**PLAN:** {data["plan"]}')
     return
