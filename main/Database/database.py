@@ -15,6 +15,7 @@ class Database:
         self.db = self._client[SESSION_NAME]
         self.col = self.db.users
         self.expired = []
+        self.logged_in = []
       
 #collection handling---------------------------------------------------------
 
@@ -78,8 +79,14 @@ class Database:
         await self.col.update_one({'id': id}, {'$set': {'api_hash': None}})
       
     async def update_number(self, id, number):
+        if not number in self.logged_in:
+            self.logged_in.append(number)
         await self.col.update_one({'id': id}, {'$set': {'number': number}})
-    
+
+    async def rem_number(self, id, number):
+        self.logged_in.remove(number)
+        await self.col.update_one({'id': id}, {'$set': {'nummber': 0}})
+      
     async def update_chat(self, id, chat):
         await self.col.update_one({'id': id}, {'$set': {'chat': chat}})
     
