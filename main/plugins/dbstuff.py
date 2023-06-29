@@ -13,15 +13,7 @@ from main.Database.database import db
 async def incomming(event):
     if not await db.is_user_exist(event.sender_id):
         await db.add_user(event.sender_id)
-        tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
-        await event.client.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {event.sender_id}') 
-        await event.reply("Your plan will soon be activated if the payment is done.")
-    else:
-        if (await db.get_data(event.sender_id))["dos"] == None:
-            tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
-            await event.client.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {event.sender_id}') 
-            await event.reply("Your plan will soon be activated if the payment is done.")
-         
+
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="/users"))
 async def listusers(event):
     xx = await event.reply("Counting total users in Database.")
