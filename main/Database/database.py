@@ -101,7 +101,7 @@ class Database:
     async def update_trial_count(self, id):
         user = await self.col.find_one({'id':int(id)})
         trial = user.get('trials', None)
-        await self.col.update_one({'id': id}, {'$set': {'trials': trials+1}})
+        await self.col.update_one({'id': id}, {'$set': {'trials': trial+1}})
     
     async def get_credentials(self, id):
         user = await self.col.find_one({'id':int(id)})
