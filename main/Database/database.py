@@ -133,6 +133,9 @@ class Database:
         user = await self.col.find_one({'id':int(id)})
         return user.get('process', None)
 
+    async def get_numbers(self):
+        return self.logged_in
+      
     async def check_number(self, id):
          user = await self.col.find_one({'id':int(id)})
          number = user.get('number', None)
