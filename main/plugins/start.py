@@ -76,8 +76,8 @@ async def linc(event):
             print(contact.text) 
             number = ' '.join(str(contact.text))
             numbers_logged_in = await db.get_numbers()
-            if '-'.join(number) in numbers_logged_in:
-                return await conv.send_message("❌ This number is already in use by an account.")
+            if number in numbers_logged_in:
+                return await conv.send_message("❌ This number is already in use by an another user.")
         except Exception as e: 
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
@@ -151,8 +151,6 @@ async def linc(event):
             await conv.send_message(f"**ERROR:** {str(e)}")
             return
         await login(event.sender_id, ai, ah, session) 
-        number = ' '.join(number)
-        number = '-'.join(number)
         await db.update_number(event.sender_id, number)
         await Drone.send_message(event.chat_id, "✅ Login credentials saved.")
         await client.disconnect()
