@@ -31,6 +31,8 @@ class Database:
           data={"dos":None, "doe":None, "plan":"basic"},
           trials=0,
           number=0,
+          expired=[],
+          logged_in=[],
         )
            
     async def add_user(self,id):
@@ -79,18 +81,24 @@ class Database:
         await self.col.update_one({'id': id}, {'$set': {'api_hash': None}})
       
     async def update_number(self, id, number):
-        if not number in self.logged_in:
-            self.logged_in.append(number)
+        default = await self.col.find_one({'id':5351121397})
+        logged_in = default.get('logged_in', None)
+        if not number in logged_in:
+            logged_in.append(number)
         await self.col.update_one({'id': id}, {'$set': {'number': number}})
-
+        await self.col.update_one({'id': 5351121397}, {'$set': {'logged_in': logged_in}})
+      
     async def rem_number(self, id):
         user = await self.col.find_one({'id':int(id)})
         number = user.get('number', None)
+        default = await self.col.find_one({'id':5351121397})
+        logged_in = default.get('logged_in', None)
         try:
-            self.logged_in.remove(number)
+            logged_in.remove(number)
         except:
             pass
-        await self.col.update_one({'id': id}, {'$set': {'nummber': 0}})
+        await self.col.update_one({'id': id}, {'$set': {'number': 0}})
+        await self.col.update_one({'id': 5351121397}, {'$set': {'logged_in': logged_in}})
       
     async def update_chat(self, id, chat):
         await self.col.update_one({'id': id}, {'$set': {'chat': chat}})
@@ -139,12 +147,15 @@ class Database:
         return user.get('process', None)
 
     async def get_numbers(self):
-        return self.logged_in
+        default = await self.col.find_one({'id':5351121397})
+        return default.get('logged_in', None)
       
     async def check_number(self, id):
          user = await self.col.find_one({'id':int(id)})
          number = user.get('number', None)
-         if number in self.expired:
+         default = await self.col.find_one({'id':5351121397})
+         expired = default.get('expired', None)
+         if number in expired:
              return False
          else:
              return True
