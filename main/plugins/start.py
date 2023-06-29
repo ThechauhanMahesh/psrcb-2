@@ -162,7 +162,7 @@ async def louc(event):
     edit = await event.reply("Trying to logout.")
     await db.rem_number(event.sender_id)
     await logout(event.sender_id)
-    await event.edit('✅ successfully Logged out.')
+    await edit.edit('✅ successfully Logged out.')
 
 @bot.on(events.NewMessage(incoming=True, pattern="/help"))
 async def helpc(event):
@@ -195,9 +195,9 @@ async def remt(event):
     edit = await event.reply('Trying.')
     try:
         os.remove(f'{event.sender_id}.jpg')
-        await event.edit('Removed!')
+        await edit.edit('Removed!')
     except Exception:
-        await event.edit("No thumbnail saved.")           
+        await edit.edit("No thumbnail saved.")           
         
 @bot.on(events.callbackquery.CallbackQuery(data="sett"))
 async def sett(event):    
