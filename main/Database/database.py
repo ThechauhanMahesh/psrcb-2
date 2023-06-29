@@ -96,7 +96,7 @@ class Database:
             logged_in.remove(number)
         except:
             pass
-        await self.col.update_one({'id': id}, {'$set': {'number': 0}})
+        await self.col.update_one({'id': id}, {'$set': {'number': "xyz69"}})
         await self.col.update_one({'id': self.default_id}, {'$set': {'logged_in': logged_in}})
       
     async def update_chat(self, id, chat):
