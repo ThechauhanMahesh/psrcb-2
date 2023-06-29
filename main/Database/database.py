@@ -14,8 +14,7 @@ class Database:
         self._client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URI)
         self.db = self._client[SESSION_NAME]
         self.col = self.db.users
-        self.expired = []
-        self.logged_in = []
+        self.default_id = 1807573686
       
 #collection handling---------------------------------------------------------
 
@@ -81,24 +80,24 @@ class Database:
         await self.col.update_one({'id': id}, {'$set': {'api_hash': None}})
       
     async def update_number(self, id, number):
-        default = await self.col.find_one({'id':5351121397})
+        default = await self.col.find_one({'id': self.default_id})
         logged_in = default.get('logged_in', None)
         if not number in logged_in:
             logged_in.append(number)
         await self.col.update_one({'id': id}, {'$set': {'number': number}})
-        await self.col.update_one({'id': 5351121397}, {'$set': {'logged_in': logged_in}})
+        await self.col.update_one({'id': self.default_id}, {'$set': {'logged_in': logged_in}})
       
     async def rem_number(self, id):
         user = await self.col.find_one({'id':int(id)})
         number = user.get('number', None)
-        default = await self.col.find_one({'id':5351121397})
+        default = await self.col.find_one({'id': self.default_id})
         logged_in = default.get('logged_in', None)
         try:
             logged_in.remove(number)
         except:
             pass
         await self.col.update_one({'id': id}, {'$set': {'number': 0}})
-        await self.col.update_one({'id': 5351121397}, {'$set': {'logged_in': logged_in}})
+        await self.col.update_one({'id': self.default_id}, {'$set': {'logged_in': logged_in}})
       
     async def update_chat(self, id, chat):
         await self.col.update_one({'id': id}, {'$set': {'chat': chat}})
@@ -147,13 +146,13 @@ class Database:
         return user.get('process', None)
 
     async def get_numbers(self):
-        default = await self.col.find_one({'id':5351121397})
+        default = await self.col.find_one({'id': self.default_id})
         return default.get('logged_in', None)
       
     async def check_number(self, id):
          user = await self.col.find_one({'id':int(id)})
          number = user.get('number', None)
-         default = await self.col.find_one({'id':5351121397})
+         default = await self.col.find_one({'id': self.default_id})
          expired = default.get('expired', None)
          if number in expired:
              return False
