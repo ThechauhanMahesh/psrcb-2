@@ -75,6 +75,8 @@ async def linc(event):
             contact = await conv.get_response()
             print(contact.text) 
             number = ' '.join(str(contact.text))
+            if "-" in number:
+                return await conv.send_message("You cannot use '-' in number.")
             numbers_logged_in = await db.get_numbers()
             if number in numbers_logged_in:
                 return await conv.send_message("❌ This number is already in use by an another user.")
@@ -279,9 +281,11 @@ async def lin_ph(event):
             contact = await conv.get_response()
             print(contact.text) 
             number = ' '.join(str(contact.text))
+            if "-" in number:
+                return await conv.send_message("You cannot use '-' in number.")
             numbers_logged_in = await db.get_numbers()
-            if '-'.join(number) in numbers_logged_in:
-                return await conv.send_message("❌ This number is already in use by an account.")
+            if number in numbers_logged_in:
+                return await conv.send_message("❌ This number is already in use by another user.")
         except Exception as e: 
             print(e)
             return await xx.edit("An error occured while waiting for the response.")
