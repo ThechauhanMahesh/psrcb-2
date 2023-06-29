@@ -27,8 +27,8 @@ async def free(event):
         return
     if (await db.get_process(event.sender_id))["batch"]:
         return await event.reply("Use /cancel to stop batch.")
-    await event.reply("Done, try after 10 minutes.")
-    await asyncio.sleep(600)
+    await event.reply("Done, try after 60 minutes.")
+    await asyncio.sleep(3600)
     return await db.rem_process(int(event.sender_id))
    
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS, pattern="^/afree (.*)"))
