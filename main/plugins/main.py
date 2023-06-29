@@ -48,22 +48,27 @@ async def clone(event):
             return
     except TypeError:
         return
+    emoji = await event.reply("🔗")
     f = await force_sub(event.sender_id)
     if f:
-        return await event.reply("You must join @DroneBots and @SaveContents to use this bot.")
+        await emoji.delete()
+        return await event.reply("⚠️ You must join @DroneBots and @SaveContents to use this bot.")
     count = await db.get_trial_count(event.sender_id)
-    if count == 10:
-        await event.reply("You have completed your trial of 10 links, please proceed to buy a paid plan from @DroneBOTs")
+    if count == 20:
+        await emoji.delete()
+        await event.reply("⚠️You have completed your trial of 20 links, please proceed to buy a paid plan from @DroneBOTs")
         n = await db.check_number(event.sender_id)
         if n:
             await db.black_list_number(event.sender_id)
         return
     n = await db.check_number(event.sender_id)
     if not n:
-        return await event.reply("Trials on this number is already over.")
+        await emoji.delete()
+        return await event.reply("⚠️ Trials on this number is already over, buy premium subscription from @DroneBOTs")
+    await emoji.delete()
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
-        return await edit.edit("Please don't spam links, wait until ongoing process is done.")
+        return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
     pt = 600
     ut = 300
     to = await db.get_chat(event.chat.id)
@@ -108,7 +113,7 @@ async def clone(event):
                 print(e)
                 return await edit.edit(str(e))
         else:
-            return await edit.edit("Your login credentials not found.")
+            return await edit.edit("Please login in order to use this bot.")
         await db.update_process(event.sender_id)
         try: 
             await get_msg(userbot, Bot, Drone,event.sender_id, to, edit.id, link, 0)
