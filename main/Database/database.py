@@ -162,6 +162,8 @@ class Database:
     async def black_list_number(self, id):
         user = await self.col.find_one({'id':int(id)})
         number = user.get('number', None)
-        self.expired.append(number)
-      
+        default = await self.col.find_one({'id': self.default_id})
+        expired = default.get('expired', None)
+        await self.col.update_one({'id': self.default_id}, {'$set': {'expired': expired}})
+    
 db = Database(MONGODB_URI, SESSION_NAME)
