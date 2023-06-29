@@ -43,6 +43,106 @@ async def start(event):
                               ])
     tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
     await event.client.send_message(int(ACCESS), f'{tag} started the BOT\nUserID: {event.sender_id}') 
+
+@bot.on(events.NewMessage(incoming=True, pattern="/login"))
+async def linc(event):
+    Drone = event.client
+    number = 0
+    otp = 0
+    session = ""
+    passcode = ""
+    ai = ''
+    ah = ''
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
+        try:
+            xx = await conv.send_message("Send me your contact number with country code(eg +1 or +91) to login.")
+            contact = await conv.get_response()
+            print(contact.text) 
+            number = ' '.join(str(contact.text))
+        except Exception as e: 
+            print(e)
+            return await xx.edit("An error occured while waiting for the response.")
+        client = Client("my_account", api_id=APIID[0], api_hash=APIHASH[0], in_memory=True)
+        ai = APIID[0]
+        ah = APIHASH[0]
+        try:
+            await client.connect()
+        except ConnectionError:
+            await client.disconnect()
+            await client.connect()
+        code_alert = await conv.send_message("Sending code...")
+        try:
+            code = await client.send_code(number)
+            await asyncio.sleep(1)
+        except FloodWait as e:
+            await client.disconnect()
+            client = Client("my_account", api_id=APIID[-1], api_hash=APIHASH[-1])
+            ai = APIID[-1]
+            ah = APIHASH[-1]
+            try:
+                await client.connect()
+            except ConnectionError:
+                await client.disconnect()
+                await client.connect()
+            try:
+                code = await client.send_code(number)
+                await asyncio.sleep(1)
+            except FloodWait:
+                await conv.send_message(f"Can't send code, you have Floodwait of {e.x} Seconds.")
+                return
+        except Exception as e:
+            print(e)
+            await conv.send_message(f"**Error**: {str(e)}")
+            return
+        try:
+            await code_alert.delete()
+            ask_code = await conv.send_message(otp_text)  
+            otp_ = await conv.get_response()
+            otp = otp_.text
+        except Exception as e: 
+            print(e)
+            return await ask_code.edit("An error occured while waiting for the response.")
+        try:
+            await client.sign_in(number, code.phone_code_hash, phone_code=' '.join(str(otp)))
+        except PhoneCodeInvalid:
+            await conv.send_message("Invalid Code, try again.")
+            return
+        except PhoneCodeExpired:
+            await conv.send_message("Code has expired, try again.")
+            return
+        except SessionPasswordNeeded:
+            try:
+                xz = await conv.send_message("Send your Two-Step Verification password.") 
+                z = await conv.get_response()
+                passcode = z.text
+            except Exception as e: 
+                print(e)
+                return await xz.edit("An error occured while waiting for the response.")
+            try:
+                await client.check_password(passcode)
+            except Exception as e:
+                await conv.send_message(f"**ERROR:** {str(e)}")
+                return
+        except Exception as e:
+            await conv.send_message(f"**ERROR:** {str(e)}")
+            return
+        try:
+            session = await client.export_session_string()
+        except Exception as e:
+            await conv.send_message(f"**ERROR:** {str(e)}")
+            return
+        await login(event.sender_id, ai, ah, session) 
+        number = ' '.join(number)
+        number = '-'.join(number)
+        await db.update_number(number)
+        await Drone.send_message(event.chat_id, "Login credentials saved.")
+        await client.disconnect()
+        
+@bot.on(events.NewMessage(incoming=True, pattern="/logout"))
+async def louc(event):
+    await event.edit("Trying to logout.")
+    await logout(event.sender_id)
+    await event.edit('successfully Logged out.')
     
 @bot.on(events.callbackquery.CallbackQuery(data="sett"))
 async def sett(event):    
@@ -104,7 +204,7 @@ async def lin_ss(event):
             return await xz.edit("An error occured while waiting for the response.")
         await login(event.sender_id, API_ID, API_HASH, s) 
         await Drone.send_message(event.chat_id, "Login credentials saved.")
-        
+    
 @bot.on(events.callbackquery.CallbackQuery(data="Phone No."))
 async def lin_ph(event):
     Drone = event.client
@@ -117,7 +217,7 @@ async def lin_ph(event):
     passcode = ""
     ai = ''
     ah = ''
-    async with Drone.conversation(event.chat_id) as conv: 
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         try:
             xx = await conv.send_message("Send me your contact number with country code(eg +1 or +91) to login.")
             contact = await conv.get_response()
