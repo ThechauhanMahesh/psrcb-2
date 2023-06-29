@@ -56,7 +56,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     progress=progress_for_pyrogram,
                     progress_args=(
                         client,
-                        "**DOWNLOADING:**\n",
+                        "**🔻 DOWNLOADING:**\n",
                         edit,
                         time.time()
                     )
@@ -69,7 +69,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     progress=progress_for_pyrogram,
                     progress_args=(
                         client,
-                        "**DOWNLOADING:**\n",
+                        "**🔻 DOWNLOADING:**\n",
                         edit,
                         time.time()
                     )
@@ -121,7 +121,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     progress=progress_for_pyrogram,
                     progress_args=(
                         client,
-                        '**UPLOADING:**\n',
+                        '**🔺 UPLOADING:**\n',
                         edit,
                         time.time()
                     )
@@ -140,7 +140,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     progress=progress_for_pyrogram,
                     progress_args=(
                         client,
-                        '**UPLOADING:**\n',
+                        '**🔺 UPLOADING:**\n',
                         edit,
                         time.time()
                     )
@@ -164,16 +164,16 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 try: 
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     elif msg.media==MessageMediaType.VIDEO_NOTE:
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
                         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
                     else:
                         UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**UPLOADING:**')
+                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
                     if os.path.isfile(file) == True:
                         os.remove(file)
@@ -186,7 +186,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         return
                     return 
             else:
-                await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+                await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
                 try:
                     os.remove(file)
                 except Exception:
@@ -205,13 +205,13 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         try:
             msg = await client.get_messages(chat, msg_id)
             if msg.empty:
-                group = await userbot.get_users(chat)
+                group = await userbot.get_chat(chat)
                 group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
                 return await get_msg(userbot, client, bot, sender, edit_id, group_link, i)
             await client.copy_message(to, chat, msg_id)
         except Exception as e:
             print(e)
-            return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+            return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
         await edit.delete()
         
 async def get_bulk_msg(userbot, client, sender, chat, msg_link, i):
