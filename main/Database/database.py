@@ -29,7 +29,7 @@ class Database:
           process={"process":False, "batch":False}, 
           data={"dos":None, "doe":None, "plan":"basic"},
           trials=0,
-          number=None,
+          number="xyz69",
           expired=[],
           logged_in=[],
         )
