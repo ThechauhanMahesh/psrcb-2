@@ -84,7 +84,10 @@ class Database:
         await self.col.update_one({'id': id}, {'$set': {'number': number}})
 
     async def rem_number(self, id, number):
-        self.logged_in.remove(number)
+        try:
+            self.logged_in.remove(number)
+        except:
+            pass
         await self.col.update_one({'id': id}, {'$set': {'nummber': 0}})
       
     async def update_chat(self, id, chat):
