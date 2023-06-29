@@ -147,13 +147,13 @@ async def linc(event):
         await login(event.sender_id, ai, ah, session) 
         number = ' '.join(number)
         number = '-'.join(number)
-        await db.update_number(number)
+        await db.update_number(event.sender_id, number)
         await Drone.send_message(event.chat_id, "✅ Login credentials saved.")
         await client.disconnect()
         
 @bot.on(events.NewMessage(incoming=True, pattern="/logout"))
 async def louc(event):
-    await event.edit("Trying to logout.")
+    edit = await event.reply("Trying to logout.")
     await logout(event.sender_id)
     await event.edit('✅ successfully Logged out.')
 
@@ -185,7 +185,7 @@ async def helpc(event):
 @bot.on(events.NewMessage(incoming=True, pattern="/remthumb"))
 async def remt(event):  
     Drone = event.client            
-    await event.edit('Trying.')
+    edit = await event.reply('Trying.')
     try:
         os.remove(f'{event.sender_id}.jpg')
         await event.edit('Removed!')
@@ -346,7 +346,7 @@ async def lin_ph(event):
         await login(event.sender_id, ai, ah, session) 
         number = ' '.join(number)
         number = '-'.join(number)
-        await db.update_number(number)
+        await db.update_number(event.sender_id, number)
         await Drone.send_message(event.chat_id, "✅ Login credentials saved.")
         await client.disconnect()
         
