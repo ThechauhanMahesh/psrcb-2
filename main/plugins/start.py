@@ -21,6 +21,19 @@ ht = """Help:
 - Login 
 - Then send Link of message of any channel you've joined.
 
+#FAQ 
+
+- If bot says “Have you joined the channel?” Then just login again in bot and try.
+
+- If bot says “Please don't spam links, wait until ongoing process is done.” then send /free command in bot and try after 10 minutes. 
+
+- if bot says “Login credentials not found” the just login again
+
+- If bot shows error containing “AUTH_KEY_DUPLICATED” in it then login again.
+
+- if you batch is stuck then use /cancel 
+
+#Note : Don’t use the /free command unnecessarily.
 """
 
 otp_text = """An OTP has been sent to your number. 
@@ -143,7 +156,42 @@ async def louc(event):
     await event.edit("Trying to logout.")
     await logout(event.sender_id)
     await event.edit('✅ successfully Logged out.')
-    
+
+@bot.on(events.NewMessage(incoming=True, pattern="/help"))
+async def helpc(event):
+    await event.reply(ht)
+
+@bot.on(events.NewMessage(incoming=True, pattern="/setthumb"))
+async def helpc(event):
+    Drone = event.client                    
+    async with Drone.conversation(event.chat_id) as conv: 
+        xx = await conv.send_message("Send me any image for thumbnail.")
+        x = await conv.get_response()
+        if not x.media:
+            xx.edit("No media found.")
+        mime = x.file.mime_type
+        if not 'png' in mime:
+            if not 'jpg' in mime:
+                if not 'jpeg' in mime:
+                    return await xx.edit("No image found.")
+        await xx.delete()
+        t = await event.client.send_message(event.chat_id, 'Trying.')
+        path = await event.client.download_media(x.media)
+        if os.path.exists(f'{event.sender_id}.jpg'):
+            os.remove(f'{event.sender_id}.jpg')
+        os.rename(path, f'./{event.sender_id}.jpg')
+        await t.edit("✅ Temporary thumbnail saved!")
+
+@bot.on(events.NewMessage(incoming=True, pattern="/remthumb"))
+async def remt(event):  
+    Drone = event.client            
+    await event.edit('Trying.')
+    try:
+        os.remove(f'{event.sender_id}.jpg')
+        await event.edit('Removed!')
+    except Exception:
+        await event.edit("No thumbnail saved.")           
+        
 @bot.on(events.callbackquery.CallbackQuery(data="sett"))
 async def sett(event):    
     Drone = event.client                    
