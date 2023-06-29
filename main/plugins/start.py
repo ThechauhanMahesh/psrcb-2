@@ -10,7 +10,7 @@ from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, 
 
 from main.plugins.helpers import login, logout, force_sub
 from main.Database.database import db
-st = "Send me __Link__ of any __Public__ channel message to clone it here, For __private__ channel message, First __Login__ then send any __message link__ from your chat.\n\n**SUPPORT:** @TeamDrone\n**DEV:** @MaheshChauhan"
+st = "Send me **link** of any **public** channel message to clone it here 🔗, For **private** channel message, First **login** then send any **message link** from your chat ✅.\n\n**SUPPORT:** @TeamDrone\n**DEV:** @MaheshChauhan"
 
 ht = """Help:
 
@@ -135,14 +135,14 @@ async def linc(event):
         number = ' '.join(number)
         number = '-'.join(number)
         await db.update_number(number)
-        await Drone.send_message(event.chat_id, "Login credentials saved.")
+        await Drone.send_message(event.chat_id, "✅ Login credentials saved.")
         await client.disconnect()
         
 @bot.on(events.NewMessage(incoming=True, pattern="/logout"))
 async def louc(event):
     await event.edit("Trying to logout.")
     await logout(event.sender_id)
-    await event.edit('successfully Logged out.')
+    await event.edit('✅ successfully Logged out.')
     
 @bot.on(events.callbackquery.CallbackQuery(data="sett"))
 async def sett(event):    
@@ -151,7 +151,7 @@ async def sett(event):
     msg = await button.get_reply_message() 
     await event.delete()
     async with Drone.conversation(event.chat_id) as conv: 
-        xx = await conv.send_message("Send me any image for thumbnail as a `reply` to this message.")
+        xx = await conv.send_message("Send me any image for thumbnail.")
         x = await conv.get_response()
         if not x.media:
             xx.edit("No media found.")
@@ -166,7 +166,7 @@ async def sett(event):
         if os.path.exists(f'{event.sender_id}.jpg'):
             os.remove(f'{event.sender_id}.jpg')
         os.rename(path, f'./{event.sender_id}.jpg')
-        await t.edit("Temporary thumbnail saved!")
+        await t.edit("✅ Temporary thumbnail saved!")
         
 @bot.on(events.callbackquery.CallbackQuery(data="remt"))
 async def remt(event):  
@@ -188,7 +188,7 @@ async def lin(event):
     
 @bot.on(events.callbackquery.CallbackQuery(data="SESSION"))
 async def lin_ss(event):
-    return await event.edit("Session support only in paid plans, check @DroneBOTs")
+    return await event.edit("⚠️ Session support only in paid plans, check @DroneBOTs")
     Drone = event.client
     button = await event.get_message()
     msg = await button.get_reply_message()  
@@ -203,7 +203,7 @@ async def lin_ss(event):
             print(e)
             return await xz.edit("An error occured while waiting for the response.")
         await login(event.sender_id, API_ID, API_HASH, s) 
-        await Drone.send_message(event.chat_id, "Login credentials saved.")
+        await Drone.send_message(event.chat_id, "✅ Login credentials saved.")
     
 @bot.on(events.callbackquery.CallbackQuery(data="Phone No."))
 async def lin_ph(event):
@@ -299,14 +299,14 @@ async def lin_ph(event):
         number = ' '.join(number)
         number = '-'.join(number)
         await db.update_number(number)
-        await Drone.send_message(event.chat_id, "Login credentials saved.")
+        await Drone.send_message(event.chat_id, "✅ Login credentials saved.")
         await client.disconnect()
         
 @bot.on(events.callbackquery.CallbackQuery(data="logout"))
 async def out(event):
     await event.edit("Trying to logout.")
     await logout(event.sender_id)
-    await event.edit('successfully Logged out.')
+    await event.edit('✅ successfully Logged out.')
     
 @bot.on(events.callbackquery.CallbackQuery(data="help"))
 async def help(event):
