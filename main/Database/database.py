@@ -83,7 +83,9 @@ class Database:
             self.logged_in.append(number)
         await self.col.update_one({'id': id}, {'$set': {'number': number}})
 
-    async def rem_number(self, id, number):
+    async def rem_number(self, id):
+        user = await self.col.find_one({'id':int(id)})
+        number = user.get('number', None)
         try:
             self.logged_in.remove(number)
         except:
