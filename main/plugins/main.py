@@ -51,11 +51,11 @@ async def clone(event):
     await check_subscription(event.sender_id)
     s = await db.get_data(event.sender_id)
     if s["dos"] == None:
-        await event.reply("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
+        await event.reply("⚠️ You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
         return
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
-        return await edit.edit("Please don't spam links, wait until ongoing process is done.")
+        return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
     pt = 20
     ut = 10
     if (await db.get_data(event.sender_id))["plan"] == "pro":
@@ -85,7 +85,7 @@ async def clone(event):
                 print(e)
                 return await edit.edit(str(e))
         else:
-            return await edit.edit("Your login credentials not found.")
+            return await edit.edit("⚠️ Your login credentials not found.")
         try: 
             j = await join(userbot, link)
             await edit.edit(j)
@@ -103,7 +103,7 @@ async def clone(event):
                 print(e)
                 return await edit.edit(str(e))
         else:
-            return await edit.edit("Your login credentials not found.")
+            return await edit.edit("⚠️ Your login credentials not found.")
         await db.update_process(event.sender_id)
         try: 
             await get_msg(userbot, Bot, Drone,event.sender_id, to, edit.id, link, 0)
