@@ -1,6 +1,6 @@
 # Github.com/Vasusen-code
 
-from .. import bot as Drone
+from .. import bot as Drone, BOT_UN
 import asyncio, time, os, shutil, datetime 
 
 from main.plugins.progress import progress_for_pyrogram
@@ -178,13 +178,54 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if os.path.isfile(file) == True:
                         os.remove(file)
                 except Exception as e:
-                    print(e)
-                    await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
-                    try:
-                        os.remove(file)
-                    except Exception:
-                        return
-                    return 
+                    if "SendMediaRequest" in str(e):
+                        try:
+                            if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
+                                await client.send_video(
+                                    chat_id=BOT_UN,
+                                    video=file,
+                                    caption=caption,
+                                    supports_streaming=True,
+                                    height=height, width=width, duration=duration, 
+                                    thumb=thumb_path,
+                                    progress=progress_for_pyrogram,
+                                    progress_args=(
+                                        client,
+                                        '**UPLOADING:**\n',
+                                        edit,
+                                        time.time()
+                                    )
+                                )
+                            else:
+                                await userbot.send_document(
+                                    BOT_UN,
+                                    file, 
+                                    caption=caption,
+                                    thumb=thumb_path,
+                                    progress=progress_for_pyrogram,
+                                    progress_args=(
+                                        client,
+                                        '**UPLOADING:**\n',
+                                        edit,
+                                        time.time()
+                                    )
+                                )
+                        except Exception as e:
+                            print(e)
+                            await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+                            try:
+                                os.remove(file)
+                            except Exception:
+                                return
+                            return 
+                    else:
+                        print("Tried telethon but failed because ", e)
+                        await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
+                        try:
+                            os.remove(file)
+                        except Exception:
+                            return
+                        return 
             else:
                 await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
                 try:
