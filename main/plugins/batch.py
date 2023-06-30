@@ -33,7 +33,7 @@ async def cancel(event):
     await db.rem_process(event.sender_id)
     async with event.client.conversation(event.sender_id, exclusive=False) as conv:
         await conv.cancel_all()
-    await event.reply("Done.")
+    await event.reply("✅ Done.")
 
 @Drone.on(events.NewMessage(incoming=True, pattern='/myplan'))
 async def check_plan(event):
@@ -61,11 +61,11 @@ async def _batch(event):
         return
     await check_subscription(event.sender_id)
     if (await db.get_data(event.sender_id))["plan"] == "basic":
-        await event.reply("Buy Monthly subscription or Pro subscription.")
+        await event.reply("⚠️ Buy Monthly subscription or Pro subscription.")
         return
     pr = (await db.get_process(event.sender_id))["process"]
     if pr:
-        return await event.reply("You've already started one process, wait for it to complete!")
+        return await event.reply("⚠️ You've already started one process, wait for it to complete!")
     async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         if pr != True:
             await conv.send_message("Send me the message link you want to start saving from, as a reply to this message.", buttons=Button.force_reply())
@@ -74,7 +74,7 @@ async def _batch(event):
                 try:
                     _link = get_link(link.text)
                 except Exception:
-                    await conv.send_message("No link found.")
+                    await conv.send_message("⚠️ No link found.")
                     return await conv.cancel_all()
             except Exception as e:
                 print(e)
@@ -91,10 +91,10 @@ async def _batch(event):
                 value = int(_range.text)
                 if value > 20:
                     if not (await db.get_data(event.sender_id))["plan"] == "pro":
-                        await conv.send_message("You can only get upto 20 files in a single batch.")
+                        await conv.send_message("⚠️ You can only get upto 20 files in a single batch.")
                         return await conv.cancel_all()
                     elif value > 100:
-                        await conv.send_message("You can only get upto 100 files in a single batch.")
+                        await conv.send_message("⚠️ You can only get upto 100 files in a single batch.")
                         return await conv.cancel_all()
             except ValueError:
                 await conv.send_message("Range must be an integer!")
@@ -107,7 +107,7 @@ async def _batch(event):
             if i and h and s is not None:
                 userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
             else:
-                await conv.send_message("Your login credentials not found.")
+                await conv.send_message("⚠️ Your login credentials not found.")
                 return await conv.cancel_all()
             await db.update_process(event.sender_id, batch=True)
             await run_batch(userbot, Bot, event.sender_id, chat, _link, value) 
@@ -133,11 +133,11 @@ async def run_batch(userbot, client, sender, chat, link, _range):
                 timer = 2
         try: 
             if not (await db.get_process(sender))["process"]:
-                await client.send_message(sender, "Batch completed.")
+                await client.send_message(sender, "✅ Batch completed.")
                 break
         except Exception as e:
             print(e)
-            await client.send_message(sender, "Batch completed.")
+            await client.send_message(sender, "✅ Batch completed.")
             break
         try: 
             await userbot.start()
@@ -149,12 +149,12 @@ async def run_batch(userbot, client, sender, chat, link, _range):
             await get_bulk_msg(userbot, client, sender, chat, link, i) 
         except FloodWait as fw:
             if int(fw.x) > 299:
-                await client.send_message(sender, "Cancelling batch since you have floodwait more than 5 minutes.")
+                await client.send_message(sender, "❌ Cancelling batch since you have floodwait more than 5 minutes.")
                 break
             await asyncio.sleep(fw.x + 5)
             await get_bulk_msg(userbot, client, sender, chat, link, i)
         await userbot.stop()
-        protection = await client.send_message(chat, f"Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
+        protection = await client.send_message(chat, f"⚠️ Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
         await asyncio.sleep(timer)
         await protection.delete()
             
