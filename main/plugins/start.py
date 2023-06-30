@@ -235,10 +235,6 @@ async def remt(event):
     
 @bot.on(events.callbackquery.CallbackQuery(data="login"))
 async def lin(event):
-    s = await force_sub(event.sender_id)
-    if s == True:
-        await event.edit("You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
-        return
     await event.edit("Choose your **login method**.\n\nNote: Login by session is more stable.", buttons=[[Button.inline("SESSION", data="SESSION"), Button.inline("PHONE NO", data="Phone No.")]])
     
 @bot.on(events.callbackquery.CallbackQuery(data="SESSION"))
