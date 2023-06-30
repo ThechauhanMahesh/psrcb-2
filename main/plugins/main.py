@@ -55,7 +55,7 @@ async def clone(event):
         return
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
-        return await edit.edit("⚠️ Please don't spam links, wait until ongoing process is done.")
+        return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
     pt = 20
     ut = 10
     if (await db.get_data(event.sender_id))["plan"] == "pro":
