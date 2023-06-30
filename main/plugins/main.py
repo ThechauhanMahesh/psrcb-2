@@ -68,7 +68,7 @@ async def clone(event):
     await emoji.delete()
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
-        return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
+        return await edit.edit("❌ Please don't spam links, wait until ongoing process is done or buy premium subscription from @DroneBots.")
     pt = 600
     ut = 300
     to = await db.get_chat(event.chat.id)
