@@ -257,7 +257,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         print(e)
                         return await edit.edit(str(e))
                     group_link = f't.me/b/{chat}/{int(msg_id)}'
-                    await get_msg(userbot, client, bot, sender, edit_id, group_link, i)
+                    await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
                     return await userbot.stop()
             await client.copy_message(to, chat, msg_id)
         except Exception as e:
