@@ -259,7 +259,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     group_link = f't.me/b/{chat}/{int(msg_id)}'
                     await edit.delete()
                     edit = await bot.send_message(sender, "processing.")
-                    await get_msg(userbot, client, bot, sender, to, edit.id, msg_link, i)
+                    await get_msg(userbot, client, bot, sender, to, edit.id, group_link, i)
                     await userbot.stop()
                     return await edit.delete()
             await client.copy_message(to, chat, msg_id)
