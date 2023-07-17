@@ -248,8 +248,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         try:
             msg = await client.get_messages(chat, msg_id)
             if msg.empty:
-                group = await userbot.get_users(chat)
-                group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
                 i, h, s = await db.get_credentials(event.chat.id)
                 if i and h and s is not None:
                     try:
@@ -258,6 +256,8 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     except Exception as e:
                         print(e)
                         return await edit.edit(str(e))
+                    group = await userbot.get_users(chat)
+                    group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
                     await get_msg(userbot, client, bot, sender, edit_id, group_link, i)
                     return await userbot.stop()
             await client.copy_message(to, chat, msg_id)
