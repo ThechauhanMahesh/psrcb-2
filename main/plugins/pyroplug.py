@@ -243,7 +243,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             print(e)
         await edit.delete()
     else:
-        edit = await client.edit_message_text(sender, edit_id, "Cloning.")
+        edit = await client.edit_message_text(sender, edit_id, "Trying to clone...")
         chat =  msg_link.split("/")[-2]
         try:
             msg = await client.get_messages(chat, msg_id)
