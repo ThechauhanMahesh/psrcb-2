@@ -248,7 +248,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         try:
             msg = await client.get_messages(chat, msg_id)
             if msg.empty:
-                i, h, s = await db.get_credentials(event.chat.id)
+                i, h, s = await db.get_credentials(sender)
                 if i and h and s is not None:
                     try:
                         userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
