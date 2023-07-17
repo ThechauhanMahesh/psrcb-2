@@ -243,7 +243,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             print(e)
         await edit.delete()
     else:
-        edit = await client.edit_message_text(sender, edit_id, "Trying to clone...")
+        edit = await client.edit_message_text(sender, edit_id, "Cloning.")
         chat =  msg_link.split("/")[-2]
         try:
             msg = await client.get_messages(chat, msg_id)
@@ -257,8 +257,11 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         print(e)
                         return await edit.edit(str(e))
                     group_link = f't.me/b/{chat}/{int(msg_id)}'
-                    await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
-                    return await userbot.stop()
+                    await edit.delete()
+                    edit = await bot.send_message(sender, "processing.")
+                    await get_msg(userbot, client, bot, sender, to, edit.id, msg_link, i)
+                    await userbot.stop()
+                    return await edit.delete()
             await client.copy_message(to, chat, msg_id)
         except Exception as e:
             print(e)
