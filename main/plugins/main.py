@@ -14,8 +14,10 @@ from pyrogram import Client, filters, idle
 from ethon.pyfunc import video_metadata
 from telethon import events
 
-import re, time, asyncio
+import re, time, asyncio, uvloop
 from decouple import config
+
+uvloop.install()
 
 message = "Send me the message link you want to start saving from, as a reply to this message."
      
