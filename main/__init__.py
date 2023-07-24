@@ -3,7 +3,7 @@
 from pyrogram import Client
 from telethon import TelegramClient
 from decouple import config
-import logging, time, sys
+import logging, time, sys, uvloop
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -27,6 +27,8 @@ Bot = Client(
     api_id=int(API_ID),
     api_hash=API_HASH
 )    
+
+uvloop.install()
 
 try:
     Bot.start()
