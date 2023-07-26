@@ -27,6 +27,7 @@ class Database:
           chat=None, 
           process={"process":False, "batch":False}, 
           data={"dos":None, "doe":None, "plan":"basic"},
+          timer=2,
         )
            
     async def add_user(self,id):
@@ -91,7 +92,10 @@ class Database:
     
     async def rem_process(self, id):
         await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":False}}})
-        
+
+    async def update_timer(self, id, seconds):
+        await self.col.update_one({'id': id}, {'$set': {'timer': seconds}})
+    
     async def get_credentials(self, id):
         user = await self.col.find_one({'id':int(id)})
         i = user.get('api_id', None)
