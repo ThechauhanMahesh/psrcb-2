@@ -31,6 +31,16 @@ async def cancel(event):
     await db.rem_process(event.sender_id)
     await event.reply("Done.")
 
+@Drone.on(events.NewMessage(incoming=True, pattern='/timer'))
+async def change_timer(event):
+    x = event.text.split(" ")
+    try:
+        seconds = int(x[1])
+    except:
+        return await event.reply("Use only integers")
+    await db.update_timer(event.sender_id, seconds)
+    await event.reply("Done!")
+    
 @Drone.on(events.NewMessage(incoming=True, pattern='/myplan'))
 async def check_plan(event):
     data = await db.get_data(event.sender_id)
