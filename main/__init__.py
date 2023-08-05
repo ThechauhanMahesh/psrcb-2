@@ -28,7 +28,6 @@ Bot = Client(
     api_hash=API_HASH
 )    
 
-uvloop.install()
 
 try:
     Bot.start()
