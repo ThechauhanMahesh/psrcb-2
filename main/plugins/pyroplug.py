@@ -160,10 +160,51 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         except Exception as e:
             print(e)
             if "messages.SendMedia" in str(e) \
+            or "2000" in str(e) \
             or "SaveBigFilePartRequest" in str(e) \
-            or "SendMediaRequest" in str(e) \
-            or str(e) == "File size equals to 0 B":
+            or "SendMediaRequest" in str(e):
                 try: 
+                    if "2000" in str(e):
+                        if not (await db.get_data(sender))["plan"] == "pro":
+                            try:
+                                os.remove(file)
+                            except Exception:
+                                pass 
+                            return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
+                        if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
+                            print("Trying to get metadata")
+                            data = video_metadata(file)
+                            height, width, duration = data["height"], data["width"], data["duration"]
+                            print(f'd: {duration}, w: {width}, h:{height}')
+                            try:
+                                thumb_path = await screenshot(file, duration, sender)
+                            except Exception:
+                                thumb_path = None
+                            await userbot.send_video(chat_id=to, video=file, caption=caption, 
+                                                    supports_streaming=True, 
+                                                    height=height, width=width, duration=duration, 
+                                                    thumb=thumb_path,
+                                                    progress=progress_for_pyrogram,
+                                                    progress_args=(
+                                                        client,
+                                                        '**🔺 UPLOADING:**\n',
+                                                        edit,
+                                                        time.time()))
+                        else:
+                            thumb_path=thumbnail(sender)
+                            await client.send_document(
+                                to,
+                                file, 
+                                caption=caption,
+                                thumb=thumb_path,
+                                progress=progress_for_pyrogram,
+                                progress_args=(
+                                    client,
+                                    '**🔺 UPLOADING:**\n',
+                                    edit,
+                                    time.time()
+                                )
+                            )
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
