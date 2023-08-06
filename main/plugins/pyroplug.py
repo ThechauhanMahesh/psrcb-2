@@ -192,7 +192,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                                                         time.time()))
                         else:
                             thumb_path=thumbnail(sender)
-                            await client.send_document(
+                            await userbot.send_document(
                                 to,
                                 file, 
                                 caption=caption,
