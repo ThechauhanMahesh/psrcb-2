@@ -128,7 +128,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         time.time()
                     )
                 )
-            elif msg.media==MessageMediaType.AUDIO: and msg.video.mime_type in ["audio/ogg"]:
+            elif msg.media==MessageMediaType.AUDIO and msg.video.mime_type in ["audio/ogg"]:
                 await userbot.send_voice(to, file, caption=caption)
                 
             elif msg.media==MessageMediaType.PHOTO:
