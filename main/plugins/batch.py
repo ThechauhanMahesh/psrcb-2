@@ -89,11 +89,11 @@ async def _batch(event):
                 return await conv.cancel_all()
             try:
                 value = int(_range.text)
-                if value > 20:
+                if value > 30:
                     if not (await db.get_data(event.sender_id))["plan"] == "pro":
                         await conv.send_message("⚠️ You can only get upto 20 files in a single batch.")
                         return await conv.cancel_all()
-                    elif value > 100:
+                    elif value > 150:
                         await conv.send_message("⚠️ You can only get upto 100 files in a single batch.")
                         return await conv.cancel_all()
             except ValueError:
@@ -117,20 +117,26 @@ async def _batch(event):
 async def run_batch(userbot, client, sender, chat, link, _range):
     for i in range(_range):
         if i < 50:
+            timer = 10
+        elif i > 25 and i < 50:
+            timer = 15
+        elif i > 50 and i < 100:
             timer = 20
-        elif i > 50 and i < 100:
-            timer = 30
-        elif i > 50 and i < 100:
-            timer = 30
         elif i > 100:
-            timer = 30
+            timer = 25
         if not 't.me/c/' in link and not 't.me/b/' in link:
             timer = 5
         if (await db.get_data(sender))["plan"] == "pro":
             if not 't.me/c/' in link and not 't.me/b/' in link:
-                timer = 2
+                timer = 3
             else:
                 timer = 2
+                if i > 25 and i < 50:
+                    timer = 5
+                elif i > 50 and i < 100:
+                    timer = 8
+                elif i > 100:
+                    timer = 10
         try: 
             if not (await db.get_process(sender))["process"]:
                 await client.send_message(sender, "✅ Batch completed.")
