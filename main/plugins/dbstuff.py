@@ -5,10 +5,35 @@ from .. import bot as Drone
 from .. import AUTH_USERS
 from telethon import events, Button
 from decouple import config
-from main.Database.database import db
+from main.Database.database import db, pdb
 
 #Database command handling--------------------------------------------------------------------------
 
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="/update"))
+async def update(event):
+    x = await event.reply("processing...")
+    all_users = await pdb.get_users()
+    i = 0 
+    for user in all users:
+        data = user.get("data", None)
+        if data["dos"] == None:
+            return
+        id = user.get("id", None) 
+        api_id = user.get("api_id", None) 
+        api_hash = user.get("api_hash", None) 
+        session = user.get("session", None) 
+        chat = user.get("chat", None) 
+        if not await db.is_user_exist(id):
+            await db.add_user(id)
+            await db.update_api_id(id, api_id)
+            await db.update_api_hash(id, api_hash)
+            await db.update_session(id, session)
+            await db.update_chat(id, chat)
+            await db.update_data(id, data)
+            i += 1
+            await x.edit(str(i))
+    await x.edit(done)
+            
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def incomming(event):
     if not await db.is_user_exist(event.sender_id):
