@@ -27,7 +27,6 @@ class Database:
           chat=None, 
           process={"process":False, "batch":False}, 
           data={"dos":None, "doe":None, "plan":"basic"},
-          timer=2,
           caption={"action":None, "string":None},
         )
            
