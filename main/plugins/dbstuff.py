@@ -5,7 +5,7 @@ from .. import bot as Drone
 from .. import AUTH_USERS
 from telethon import events, Button
 from decouple import config
-from main.Database.database import db, pdb
+from main.Database.database import db
 
 #Database command handling--------------------------------------------------------------------------
 
