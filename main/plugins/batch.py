@@ -65,7 +65,7 @@ async def _caption(event):
                           Button.inline("ADD", data="add")],
                           Button.inline("DELETE", data="delete")],
                           Button.inline("REPLACE", data="replace")],
-                     )
+                      ])
 
 @Drone.on(events.callbackquery.CallbackQuery(data="add"))
 async def _add(event):
