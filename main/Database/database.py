@@ -92,7 +92,19 @@ class Database:
     
     async def rem_process(self, id):
         await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":False}}})
-        
+
+    async def add_caption(self, id, string):
+        await self.col.update_one({'id': id}, {'$set': {'caption': {"action":"add", "string":string}}})
+
+    async def delete_caption(self, id, string):
+        await self.col.update_one({'id': id}, {'$set': {'caption': {"action":"delete", "string":string}}})
+
+    async def replace_caption(self, id, string):
+        await self.col.update_one({'id': id}, {'$set': {'caption': {"action":"replace", "string":string}}})
+
+    async def off_caption(self, id, string):
+        await self.col.update_one({'id': id}, {'$set': {'caption': {"action":None, "string":None}}})
+      
     async def get_credentials(self, id):
         user = await self.col.find_one({'id':int(id)})
         i = user.get('api_id', None)
