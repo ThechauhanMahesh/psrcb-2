@@ -95,7 +95,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                             new_caption = caption + f"\n\n{string}"
                         if action == "replace":
                             if string["d"].lower() == text.lower():
-                                new_caption += string["d"]
+                                new_caption += string["r"]
                             else:
                                 new_caption += text
                     caption = new_caption
