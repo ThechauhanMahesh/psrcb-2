@@ -73,7 +73,7 @@ async def _add(event):
             x = await conv.get_response()
         except:
             await conv.send_message("Cannot wait longer for your response.")
-        await db.add_caption(event.sender_id, x)
+        await db.add_caption(event.sender_id, x.text)
         await conv.send_message("Done")
         
 @Drone.on(events.callbackquery.CallbackQuery(data="delete"))
@@ -85,7 +85,7 @@ async def delete(event):
             x = await conv.get_response()
         except:
             await conv.send_message("Cannot wait longer for your response.")
-        await db.delete_caption(event.sender_id, x)
+        await db.delete_caption(event.sender_id, x.text)
         await conv.send_message("Done")
         
 @Drone.on(events.callbackquery.CallbackQuery(data="off"))
@@ -108,7 +108,7 @@ async def replace(event):
             text2 = await conv.get_response()
         except:
             await conv.send_message("Cannot wait longer for your response.")
-        await db.replace_caption(event.sender_id, {"d":text1, "a":text2})
+        await db.replace_caption(event.sender_id, {"d":text1.text, "a":text2.text})
         await conv.send_message("Done")
         
 @Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
