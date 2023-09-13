@@ -59,13 +59,10 @@ async def ss(event):
 async def _caption(event):
     if not (await db.get_data(event.sender_id))["plan"] == "pro":
         await event.reply("Purchase pro plan.")
-    await event.reply("Choose an action", 
-                      buttons=[[
-                          Button.inline("OFF", data="off")],
-                          Button.inline("ADD", data="add")],
-                          Button.inline("DELETE", data="delete")],
-                          Button.inline("REPLACE", data="replace")],
-                      ])
+    await event.reply("Choose an action", buttons=[[Button.inline("OFF", data="off")],
+                                                   [Button.inline("ADD", data="add")],
+                                                   [Button.inline("DELETE", data="delete")],
+                                                   [Button.inline("REPLACE", data="replace")]])
 
 @Drone.on(events.callbackquery.CallbackQuery(data="add"))
 async def _add(event):
