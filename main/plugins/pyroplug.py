@@ -85,7 +85,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     new_caption = ""
                     caption_data = await db.get_caption(sender)
                     action = caption_data["action"]
-                    string = caption_data["string "]
+                    string = caption_data["string"]
                     if action is not None:
                         if action == "delete":
                             for text in caption.split():
