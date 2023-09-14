@@ -65,8 +65,8 @@ async def clean(event):
                     await Drone.edit_permissions(FSUB, id, view_messages=False)
                     i += 1
                     await edit.edit(i)
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
                 time.sleep(2)
     await edit.edit("Done")
  
