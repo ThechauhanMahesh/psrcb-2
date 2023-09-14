@@ -33,7 +33,33 @@ from main.Database.database import db
 #             i += 1
 #             await x.edit(str(i))
 #     await x.edit(done)
-            
+
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="/clean"))
+async def clean(event):
+    edit = await event.reply("processing...")
+    all_users = await db.get_users()
+    FSUB = int("-1001711957758")
+    i = 0
+    for user in all_users:
+        id = user.get("id", 0)
+        data = user.get("data", None)
+        doe = data["doe"]
+        if doe is not None:
+            z = doe.split("-")
+            e = int(z[0] + z[1] + z[2])
+            x = str(datetime.today()).split(" ")[0]
+            w = x.split("-")
+            today = int(w[0] + w[1] + w[2])
+            if today > e:
+                try:
+                    await bot.edit_permissions(FSUB, id, view_messages=False)
+                    i += 1
+                    await edit.edit(i)
+                except:
+                    pass
+                time.sleep(2)
+    await edit.edit("Done")
+ 
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def incomming(event):
     if not await db.is_user_exist(event.sender_id):
