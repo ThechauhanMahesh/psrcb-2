@@ -58,7 +58,7 @@ async def ss(event):
 @Drone.on(events.NewMessage(incoming=True, pattern='/caption'))
 async def _caption(event):
     if not (await db.get_data(event.sender_id))["plan"] == "pro":
-        await event.reply("Purchase pro plan.")
+        await event.reply("⚠️ Purchase pro plan.")
     await event.reply("Choose an action", buttons=[[Button.inline("OFF", data="off")],
                                                    [Button.inline("ADD", data="add")],
                                                    [Button.inline("DELETE", data="delete")],
@@ -74,7 +74,7 @@ async def _add(event):
         except:
             await conv.send_message("Cannot wait longer for your response.")
         await db.add_caption(event.sender_id, x.text)
-        await conv.send_message("Done")
+        await conv.send_message("Done ✅")
         
 @Drone.on(events.callbackquery.CallbackQuery(data="delete"))
 async def delete(event):
@@ -86,13 +86,13 @@ async def delete(event):
         except:
             await conv.send_message("Cannot wait longer for your response.")
         await db.delete_caption(event.sender_id, x.text)
-        await conv.send_message("Done")
+        await conv.send_message("Done ✅")
         
 @Drone.on(events.callbackquery.CallbackQuery(data="off"))
 async def off(event):
     await event.delete()
     await db.disable_caption(event.sender_id)
-    await event.client.send_message(event.sender_id, "No changes will be made in captions")
+    await event.client.send_message(event.sender_id, "No changes will be made in captions ✅")
     
 @Drone.on(events.callbackquery.CallbackQuery(data="replace"))
 async def replace(event):
@@ -109,7 +109,7 @@ async def replace(event):
         except:
             await conv.send_message("Cannot wait longer for your response.")
         await db.replace_caption(event.sender_id, {"d":text1.text, "a":text2.text})
-        await conv.send_message("Done")
+        await conv.send_message("Done ✅")
         
 @Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
 async def _batch(event):
