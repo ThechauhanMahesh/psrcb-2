@@ -6,6 +6,10 @@ from .. import AUTH_USERS
 from telethon import events, Button
 from decouple import config
 from main.Database.database import db
+import pymongo
+import dns.resolver
+from datetime import datetime
+import time
 
 #Database command handling--------------------------------------------------------------------------
 
@@ -37,7 +41,13 @@ from main.Database.database import db
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="/clean"))
 async def clean(event):
     edit = await event.reply("processing...")
-    all_users = await db.get_users()
+    dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
+    dns.resolver.default_resolver.nameservers = ['8.8.8.8']
+    mongo_url = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
+    client = pymongo.MongoClient(mongo_url)
+    db = client["PremiumSRCB"] 
+    collection = db["users"]  
+    all_users = collection.find()
     FSUB = int("-1001711957758")
     i = 0
     for user in all_users:
