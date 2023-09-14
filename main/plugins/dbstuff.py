@@ -63,8 +63,9 @@ async def clean(event):
             if today > e:
                 try:
                     await Drone.edit_permissions(FSUB, id, view_messages=False)
+                    await db.rem_data(id)
                     i += 1
-                    await edit.edit(i)
+                    await edit.edit(str(i))
                 except Exception as e:
                     print(e)
                 time.sleep(2)
