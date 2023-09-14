@@ -102,7 +102,7 @@ class Database:
     async def replace_caption(self, id, string):
         await self.col.update_one({'id': id}, {'$set': {'caption': {"action":"replace", "string":string}}})
 
-    async def disable_caption(self, id, string):
+    async def disable_caption(self, id):
         await self.col.update_one({'id': id}, {'$set': {'caption': {"action":None, "string":None}}})
       
     async def get_credentials(self, id):
