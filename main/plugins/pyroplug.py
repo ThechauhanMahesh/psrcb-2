@@ -78,28 +78,28 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 )
             print(file)
             await edit.edit('Preparing to Upload!')
-            caption = None
+            caption = ""
+            caption_data = await db.get_caption(sender)
+            action = caption_data["action"]
             if msg.caption is not None:
                 caption = msg.caption
                 if (await db.get_data(sender))["plan"] == "pro":
                     new_caption = ""
-                    caption_data = await db.get_caption(sender)
-                    action = caption_data["action"]
                     string = caption_data["string"]
                     if action is not None:
                         if action == "delete":
-                            for text in caption.split():
+                            for text in caption.split(" "):
                                 if not string.lower() == text.lower():
-                                    new_caption += text
-                        if action == "add":
-                            new_caption = caption + f"\n\n{string}"
+                                    new_caption += f" {text}"
                         if action == "replace":
-                            if string["d"].lower() == text.lower():
-                                new_caption += string["r"]
-                            else:
-                                new_caption += text
+                            for text in caption.split(" "):
+                                if string["d"].lower() == text.lower():
+                                    new_caption += f" {string["r"]}"
+                                else:
+                                    new_caption += f" {text}"
                     caption = new_caption
-                    
+            if action == "add":
+                caption = caption + f"\n\n{string}"  
             if msg.media==MessageMediaType.VIDEO_NOTE:
                 round_message = True
                 print("Trying to get metadata")
