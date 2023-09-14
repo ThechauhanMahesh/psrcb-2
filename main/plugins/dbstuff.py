@@ -62,8 +62,8 @@ async def clean(event):
             today = int(w[0] + w[1] + w[2])
             if today > e:
                 try:
-                    await Drone.edit_permissions(FSUB, id, view_messages=False)
                     await db.rem_data(id)
+                    await Drone.edit_permissions(FSUB, id, view_messages=False)
                     i += 1
                     await edit.edit(str(i))
                 except Exception as e:
