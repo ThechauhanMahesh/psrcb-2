@@ -45,8 +45,8 @@ async def clean(event):
     dns.resolver.default_resolver.nameservers = ['8.8.8.8']
     mongo_url = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
     client = pymongo.MongoClient(mongo_url)
-    db = client["PremiumSRCB"] 
-    collection = db["users"]  
+    _db = client["PremiumSRCB"] 
+    collection = _db["users"]  
     all_users = collection.find()
     FSUB = int("-1001711957758")
     i = 0
