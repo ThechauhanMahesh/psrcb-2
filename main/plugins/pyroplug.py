@@ -90,15 +90,9 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         if action == "add":
                             new_caption = caption + f"\n\n{string}"
                         if action == "delete":
-                            for text in caption.split(" "):
-                                if not string.lower() == text.lower():
-                                    new_caption += f' {text}'
+                            new_caption = caption.replace(string, "")
                         if action == "replace":
-                            for text in caption.split(" "):
-                                if string["d"].lower() == text.lower():
-                                    new_caption += f' {string["a"]}'
-                                else:
-                                    new_caption += f' {text}'
+                            new_caption = caption.replace(string["d"], string["a"])
                         caption = new_caption
             else:
                 if (await db.get_data(sender))["plan"] == "pro":
