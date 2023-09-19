@@ -81,7 +81,8 @@ async def clone(event):
         except Exception as e:
             print(e)
             pass
-        await set_timer(Drone, event.sender_id, ut) 
+        await set_timer(Drone, event.sender_id, ut)
+        await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/2**")
         return
     if 't.me/+' in link:
         userbot = ""
@@ -122,4 +123,5 @@ async def clone(event):
             pass
         await userbot.stop()
         await db.update_trial_count(event.sender_id)
+        await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/2**")
         await set_timer(Drone, event.sender_id, ut) 
