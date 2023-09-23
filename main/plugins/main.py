@@ -52,7 +52,7 @@ async def clone(event):
     f = await force_sub(event.sender_id)
     if f:
         await emoji.delete()
-        return await event.reply("⚠️ You must join @Save_restricted_content_1 and @SaveContents to use this bot.")
+        return await event.reply("⚠️ You must join @Save_restricted_content_1 and @SaveRestricted_Content to use this bot.")
     count = await db.get_trial_count(event.sender_id)
     if count == 20:
         await emoji.delete()
