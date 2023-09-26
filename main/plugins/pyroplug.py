@@ -79,6 +79,27 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             caption = None
             if msg.caption is not None:
                 caption = msg.caption
+                if (await db.get_data(sender))["plan"] == "pro":
+                    new_caption = ""
+                    caption_data = await db.get_caption(sender)
+                    action = caption_data["action"]
+                    string = caption_data["string"]
+                    if action is not None:
+                        if action == "add":
+                            new_caption = caption + f"\n\n{string}"
+                        if action == "delete":
+                            new_caption = caption.replace(string, "")
+                        if action == "replace":
+                            new_caption = caption.replace(string["d"], string["a"])
+                        caption = new_caption
+            else:
+                if (await db.get_data(sender))["plan"] == "pro":
+                    caption_data = await db.get_caption(sender)
+                    action = caption_data["action"]
+                    if action == "add":
+                        caption = caption_data["string"]
+            if msg.caption is not None:
+                caption = msg.caption
             if msg.media==MessageMediaType.VIDEO_NOTE:
                 round_message = True
                 print("Trying to get metadata")
