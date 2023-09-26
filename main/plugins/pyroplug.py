@@ -6,6 +6,7 @@ import asyncio, time, os, shutil, datetime
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot, findVideoResolution
 from main.plugins.helpers import duration as dr
+from main.Database.database import db
 
 from pyrogram import Client, filters
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
