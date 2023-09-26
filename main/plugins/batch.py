@@ -61,6 +61,62 @@ async def ss(event):
     await event.client.send_message(int(data[0]), "Your plan is active now, send /myplan to check.")
     return 
 
+@Drone.on(events.NewMessage(incoming=True, pattern='/caption'))
+async def _caption(event):
+    if not (await db.get_data(event.sender_id))["plan"] == "pro":
+        await event.reply("⚠️ Purchase pro plan.")
+    await event.reply("Choose an action", buttons=[[Button.inline("OFF", data="off")],
+                                                   [Button.inline("ADD", data="add")],
+                                                   [Button.inline("DELETE", data="delete")],
+                                                   [Button.inline("REPLACE", data="replace")]])
+
+@Drone.on(events.callbackquery.CallbackQuery(data="add"))
+async def _add(event):
+    await event.delete()
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
+        await conv.send_message("Send the text you want to add in captions.")
+        try:
+            x = await conv.get_response()
+        except:
+            await conv.send_message("Cannot wait longer for your response.")
+        await db.add_caption(event.sender_id, x.text)
+        await conv.send_message("Done ✅")
+        
+@Drone.on(events.callbackquery.CallbackQuery(data="delete"))
+async def delete(event):
+    await event.delete()
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
+        await conv.send_message("Send the text you want to delete in captions.")
+        try:
+            x = await conv.get_response()
+        except:
+            await conv.send_message("Cannot wait longer for your response.")
+        await db.delete_caption(event.sender_id, x.text)
+        await conv.send_message("Done ✅")
+        
+@Drone.on(events.callbackquery.CallbackQuery(data="off"))
+async def off(event):
+    await event.delete()
+    await db.disable_caption(event.sender_id)
+    await event.client.send_message(event.sender_id, "No changes will be made in captions ✅")
+    
+@Drone.on(events.callbackquery.CallbackQuery(data="replace"))
+async def replace(event):
+    await event.delete()
+    async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
+        await conv.send_message("Send the text you want to replace in captions.")
+        try:
+            text1 = await conv.get_response()
+        except:
+            await conv.send_message("Cannot wait longer for your response.")
+        await conv.send_message("Send the text you want to replace by in captions.")
+        try:
+            text2 = await conv.get_response()
+        except:
+            await conv.send_message("Cannot wait longer for your response.")
+        await db.replace_caption(event.sender_id, {"d":text1.text, "a":text2.text})
+        await conv.send_message("Done ✅")
+        
 @Drone.on(events.NewMessage(incoming=True, pattern='/batch'))
 async def _batch(event):
     if not event.is_private:
