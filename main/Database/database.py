@@ -93,9 +93,18 @@ class Database:
     async def rem_process(self, id):
         await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":False}}})
 
-    async def update_timer(self, id, seconds):
-        await self.col.update_one({'id': id}, {'$set': {'timer': seconds}})
-    
+    async def add_caption(self, id, string):
+        await self.col.update_one({'id': id}, {'$set': {'caption': {"action":"add", "string":string}}})
+
+    async def delete_caption(self, id, string):
+        await self.col.update_one({'id': id}, {'$set': {'caption': {"action":"delete", "string":string}}})
+
+    async def replace_caption(self, id, string):
+        await self.col.update_one({'id': id}, {'$set': {'caption': {"action":"replace", "string":string}}})
+
+    async def disable_caption(self, id):
+        await self.col.update_one({'id': id}, {'$set': {'caption': {"action":None, "string":None}}})
+      
     async def get_credentials(self, id):
         user = await self.col.find_one({'id':int(id)})
         i = user.get('api_id', None)
@@ -114,5 +123,9 @@ class Database:
     async def get_process(self, id):
         user = await self.col.find_one({'id':int(id)})
         return user.get('process', None)
+
+    async def get_caption(self, id):
+        user = await self.col.find_one({'id':int(id)})
+        return user.get('caption', None)
       
 db = Database(MONGODB_URI, SESSION_NAME)
