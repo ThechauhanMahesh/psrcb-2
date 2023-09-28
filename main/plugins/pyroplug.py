@@ -9,7 +9,7 @@ from main.plugins.helpers import duration as dr
 from main.Database.database import db
 
 from pyrogram import Client, filters
-from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
+from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid, PeerIdInvalid
 from pyrogram.enums import MessageMediaType, ChatType
 from ethon.pyfunc import video_metadata
 from ethon.telefunc import fast_upload
@@ -156,6 +156,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
             await client.edit_message_text(sender, edit_id, "Have you joined the channel?")
             return
+        except PeerIdInvalid:
+            chat = int(msg_link.split("/")[-3])
+            new_link = t.me/c/chat/msg_id
+            return await get_msg(userbot, client, bot, sender, to, edit_id, new_link, i)
         except Exception as e:
             print(e)
             if "messages.SendMedia" in str(e) \
