@@ -4,7 +4,7 @@ import datetime
 import motor.motor_asyncio
 from .. import MONGODB_URI
 
-SESSION_NAME = 'DemoSRCB'
+SESSION_NAME = 'Demo-SRCB'
 
 class Database:
   
@@ -29,7 +29,7 @@ class Database:
           process={"process":False, "batch":False}, 
           data={"dos":None, "doe":None, "plan":"basic"},
           trials=0,
-          number="xyz69",
+          number=None,
           expired=[],
           logged_in=[],
         )
