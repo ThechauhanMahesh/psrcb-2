@@ -54,9 +54,9 @@ async def clone(event):
         await emoji.delete()
         return await event.reply("⚠️ You must join @Save_restricted_content_1 and @SaveRestricted_Content to use this bot.")
     count = await db.get_trial_count(event.sender_id)
-    if count == 20:
+    if count == 50:
         await emoji.delete()
-        await event.reply("⚠️You have completed your trial of 20 links, please proceed to buy a paid plan from @DroneBOTs")
+        await event.reply("⚠️You have completed your trial of 50 links, please proceed to buy a paid plan from @DroneBOTs")
         n = await db.check_number(event.sender_id)
         if n:
             await db.black_list_number(event.sender_id)
