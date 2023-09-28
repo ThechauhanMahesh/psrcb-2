@@ -8,10 +8,15 @@ import logging, time, sys
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 
+"""
+D: 6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc
+
+6077629818:AAFTBqay0B_4yD_LrwnfpfAU2fcXU5Vs2bU
+"""
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc"
+BOT_TOKEN = "6077629818:AAFTBqay0B_4yD_LrwnfpfAU2fcXU5Vs2bU"
 FORCESUB = ["Save_restricted_content_1", "SaveRestricted_Content"]
 ACCESS = int("-1001768362393")
 ACCESS2 = int("-1001823465454")
