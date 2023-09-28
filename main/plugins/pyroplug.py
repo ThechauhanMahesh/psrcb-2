@@ -158,7 +158,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             return
         except PeerIdInvalid:
             chat = int(msg_link.split("/")[-3])
-            new_link = t.me/c/chat/msg_id
+            new_link = f"t.me/c/{chat}/{msg_id}"
             return await get_msg(userbot, client, bot, sender, to, edit_id, new_link, i)
         except Exception as e:
             print(e)
@@ -210,7 +210,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         try:
             msg = await client.get_messages(chat, msg_id)
             if msg.empty:
-                i, h, s = await db.get_credentials(event.chat.id)
+                i, h, s = await db.get_credentials(sender)
                 if i and h and s is not None:
                     try:
                         userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
