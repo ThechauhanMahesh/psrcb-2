@@ -114,7 +114,7 @@ async def clone(event):
                 print(e)
                 return await edit.edit(str(e))
         else:
-            return await edit.edit("Please login in order to use this bot.")
+            return await edit.edit("⚠️ Please /login in order to use this bot.")
         await db.update_process(event.sender_id)
         try: 
             await get_msg(userbot, Bot, Drone,event.sender_id, to, edit.id, link, 0)
