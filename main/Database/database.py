@@ -152,7 +152,7 @@ class Database:
     async def check_number(self, id):
          user = await self.col.find_one({'id':int(id)})
          number = user.get('number', None)
-         if number == "xyz69" or 0:
+         if number == None:
              return True
          default = await self.col.find_one({'id': self.default_id})
          expired = default.get('expired', None)
