@@ -6,6 +6,7 @@ import asyncio, time, os, shutil, datetime
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot, findVideoResolution
 from main.plugins.helpers import duration as dr
+from main.Database.database import db
 
 from pyrogram import Client, filters
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
@@ -205,9 +206,20 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         try:
             msg = await client.get_messages(chat, msg_id)
             if msg.empty:
+                i, h, s = await db.get_credentials(event.chat.id)
+                    if i and h and s is not None:
+                        try:
+                            userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
+                            await userbot.start()
+                        except Exception as e:
+                            print(e)
+                            return await edit.edit(str(e))
+                    else:
+                        return await edit.edit("Please login in order to use this bot.")
                 group = await userbot.get_chat(chat)
                 group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
-                return await get_msg(userbot, client, bot, sender, edit_id, group_link, i)
+                await get_msg(userbot, client, bot, sender, edit_id, group_link, i)
+                return await userbot.stop()
             await client.copy_message(to, chat, msg_id)
         except Exception as e:
             print(e)
