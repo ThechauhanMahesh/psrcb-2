@@ -12,6 +12,7 @@ from datetime import datetime
 import time
 #Database command handling--------------------------------------------------------------------------
 
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="/freeall"))
 async def free_all(event):
     edit = await event.reply("Processing...")
     dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
