@@ -6,9 +6,26 @@ from .. import AUTH_USERS
 from telethon import events, Button
 from decouple import config
 from main.Database.database import db
-
+import pymongo
+import dns.resolver
+from datetime import datetime
+import time
 #Database command handling--------------------------------------------------------------------------
 
+async def free_all(event):
+    edit = await event.reply("Processing...")
+    dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
+    dns.resolver.default_resolver.nameservers = ['8.8.8.8']
+    mongo_url = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
+    client = pymongo.MongoClient(mongo_url)
+    _db = client["Demo-SRCB"] 
+    collection = _db["users"]  
+    process = {"process":{"process":False, "batch":False}}
+    collection.update_many({}, {"$set":process})
+    await edit.edit("Done")
+    for entry in collection.find():
+        print(entry)
+     
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def incomming(event):
     if not await db.is_user_exist(event.sender_id):
