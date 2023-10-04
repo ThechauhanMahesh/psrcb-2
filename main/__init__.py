@@ -17,7 +17,7 @@ D: 6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
 BOT_TOKEN = "6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc"
-FORCESUB = ["Save_restricted_content_1", "SaveRestricted_Content"]
+FORCESUB = ["Save_restricted_content_1", "SaveRestricted_Content", "Useful_Premium_Bots"]
 ACCESS = int("-1001768362393")
 ACCESS2 = int("-1001823465454")
 MONGODB_URI = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
