@@ -12,7 +12,7 @@ from main.plugins.pyroplug import get_msg
 from pyrogram.errors import FloodWait, BadRequest
 from pyrogram import Client, filters, idle
 from ethon.pyfunc import video_metadata
-from telethon import events
+from telethon import events, Button
 
 import re, time, asyncio
 from decouple import config
