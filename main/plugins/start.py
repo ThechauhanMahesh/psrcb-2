@@ -47,9 +47,10 @@ APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 async def access(event):
     await event.forward_to(ACCESS)
 
-@bot.on(events.NewMessage(incoming=True, pattern="/start"))
-async def start(event):
+@bot.on(events.NewMessage(incoming=True, pattern="/help"))
+async def help(event):
     await event.reply("click on below button to watch tutorial video", buttons=[[Button.url("CLICK HERE", url="https://t.me/SaveRestricted_Content/14")]])
+    
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
     await event.reply(f'{st}', 
