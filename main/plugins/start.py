@@ -43,6 +43,11 @@ Please send the OTP with space, example: `1 2 3 4 5`."""
 APIID = [29841594, API_ID]
 APIHASH = ["1674d13f3308faa1479b445cdbaaad2b", API_HASH]
 
+
+@bot.on(events.NewMessage(incoming=True, pattern="/tutorial"))
+async def tut(event):
+    await event.reply("click on below button to watch tutorial video", buttons=[[Button.url("CLICK HERE", url="https://t.me/SaveRestricted_Content/14")]])
+    
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
     await event.reply(f'{st}', 
