@@ -6,9 +6,10 @@ import asyncio, time, os, shutil, datetime
 from main.plugins.progress import progress_for_pyrogram
 from main.plugins.helpers import screenshot, findVideoResolution
 from main.plugins.helpers import duration as dr
+from main.Database.database import db
 
 from pyrogram import Client, filters
-from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid
+from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid, PeerIdInvalid
 from pyrogram.enums import MessageMediaType, ChatType
 from ethon.pyfunc import video_metadata
 from ethon.telefunc import fast_upload
@@ -178,6 +179,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
             await client.edit_message_text(sender, edit_id, "⚠️ Have you joined the channel?")
             return
+        except PeerIdInvalid:
+            chat = int(msg_link.split("/")[-3])
+            new_link = f"t.me/c/{chat}/{msg_id}"
+            return await get_msg(userbot, client, bot, sender, to, edit_id, new_link, i)
         except Exception as e:
             print(e)
             if "messages.SendMedia" in str(e) \
@@ -318,17 +323,18 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     except Exception as e:
                         print(e)
                         return await edit.edit(str(e))
-                    group_link = f't.me/b/{chat}/{int(msg_id)}'
-                    await edit.delete()
-                    edit = await bot.send_message(sender, "processing.")
-                    await get_msg(userbot, client, bot, sender, to, edit.id, group_link, i)
-                    await userbot.stop()
-                    return await edit.delete()
+                else:
+                    return await edit.edit("⚠️ Please /login in order to use this bot.")
+                group = await userbot.get_chat(chat)
+                group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
+                await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
+                return await userbot.stop()
             await client.copy_message(to, chat, msg_id)
         except Exception as e:
             print(e)
             return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
         await edit.delete()
+     
         
 async def get_bulk_msg(userbot, client, sender, chat, msg_link, i):
     x = await client.send_message(sender, "Processing!")
