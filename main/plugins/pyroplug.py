@@ -123,7 +123,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         time.time()
                     )
                 )
-            elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
+            elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]:
                 print("Trying to get metadata")
                 data = video_metadata(file)
                 height, width, duration = data["height"], data["width"], data["duration"]
