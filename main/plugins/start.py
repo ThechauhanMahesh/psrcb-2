@@ -48,7 +48,7 @@ APIHASH = ["1674d13f3308faa1479b445cdbaaad2b", API_HASH]
 async def tut(event):
     await event.reply("click on below button to watch tutorial video", buttons=[[Button.url("CLICK HERE", url="https://t.me/SaveRestricted_Content/14")]])
     
-@bot.on(events.NewMessage(incoming=True, pattern="/start"))
+@bot.on(events.NewMessage(incoming=True, pattern="/start\s(.+)'"))
 async def start(event):
     await event.reply(f'{st}', 
                       buttons=[
@@ -59,9 +59,19 @@ async def start(event):
                               [Button.inline("HELP", data="help"),
                                Button.url("SOURCE", url="github.com/vasusen-code/saverestrictedcontentbot")],
                               ])
-    tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
+    sender_name = event.sender.first_name
+    tag = f'[{sender_name}](tg://user?id={event.sender_id})'
     await event.client.send_message(int(ACCESS), f'{tag} started the BOT\nUserID: {event.sender_id}') 
-
+    string = event.pattern_match.group(1)
+    if string:
+        if not await db.is_user_exist(event.sender_id):
+            user = await event.get_user()
+            if user.premium:
+                id = int(string)
+                await db.increase_limit(id, 5)
+                await event.client.send_message(id, f'{sender_name} started bot by your referral so you get 5 more extra links.')
+                
+        
 @bot.on(events.NewMessage(incoming=True, pattern="/login"))
 async def linc(event):
     Drone = event.client
