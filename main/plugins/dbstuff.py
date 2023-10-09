@@ -29,6 +29,8 @@ async def free_all(event):
      
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def incomming(event):
+    if '/start' in event.text:
+        return
     if not await db.is_user_exist(event.sender_id):
         await db.add_user(event.sender_id)
 
