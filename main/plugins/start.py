@@ -62,14 +62,14 @@ async def start(event):
     sender_name = event.sender.first_name
     tag = f'[{sender_name}](tg://user?id={event.sender_id})'
     await event.client.send_message(int(ACCESS), f'{tag} started the BOT\nUserID: {event.sender_id}') 
-    string = event.pattern_match.group(1)
-    if string:
-        if not await db.is_user_exist(event.sender_id):
-            user = await event.get_user()
-            if user.premium:
-                id = int(string)
-                await db.increase_limit(id, 5)
-                await event.client.send_message(id, f'{sender_name} started bot by your referral so you get 5 more extra links.')
+    # string = event.pattern_match.group(1)
+    # if string:
+    #     if not await db.is_user_exist(event.sender_id):
+    #         user = await event.get_user()
+    #         if user.premium:
+    #             id = int(string)
+    #             await db.increase_limit(id, 5)
+    #             await event.client.send_message(id, f'{sender_name} started bot by your referral so you get 5 more extra links.')
                 
         
 @bot.on(events.NewMessage(incoming=True, pattern="/login"))
