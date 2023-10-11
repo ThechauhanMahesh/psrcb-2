@@ -180,115 +180,87 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             await client.edit_message_text(sender, edit_id, "⚠️ Have you joined the channel?")
             return
         except PeerIdInvalid:
-            chat = int(msg_link.split("/")[-3])
-            new_link = f"t.me/c/{chat}/{msg_id}"
+            chat = msg_link.split("/")[-3]
+            try:
+                int(chat)
+                new_link = f"t.me/c/{chat}/{msg_id}"
+            except:
+                new_link = f"t.me/b/{chat}/{msg_id}"
             return await get_msg(userbot, client, bot, sender, to, edit_id, new_link, i)
+
         except Exception as e:
             print(e)
-            if "messages.SendMedia" in str(e) \
-            or "2000" in str(e) \
+            if "This message doesn't contain any downloadable media" in str(e) \
+            or "list index out of range" in str(e):
+                pass
+            elif "messages.SendMedia" in str(e) \
             or "SaveBigFilePartRequest" in str(e) \
             or "SendMediaRequest" in str(e):
-                try: 
-                    if "2000" in str(e):
-                        if not (await db.get_data(sender))["plan"] == "pro":
-                            try:
-                                os.remove(file)
-                            except Exception:
-                                pass 
-                            return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
-                        if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
-                            print("Trying to get metadata")
-                            data = video_metadata(file)
-                            height, width, duration = data["height"], data["width"], data["duration"]
-                            print(f'd: {duration}, w: {width}, h:{height}')
-                            try:
-                                thumb_path = await screenshot(file, duration, sender)
-                            except Exception:
-                                thumb_path = None
-                            await userbot.send_video(chat_id=to, video=file, caption=caption, 
-                                                    supports_streaming=True, 
-                                                    height=height, width=width, duration=duration, 
-                                                    thumb=thumb_path,
-                                                    progress=progress_for_pyrogram,
-                                                    progress_args=(
-                                                        client,
-                                                        '**🔺 UPLOADING:**\n',
-                                                        edit,
-                                                        time.time()))
-                        else:
-                            thumb_path=thumbnail(sender)
-                            await userbot.send_document(
-                                to,
-                                file, 
-                                caption=caption,
-                                thumb=thumb_path,
-                                progress=progress_for_pyrogram,
-                                progress_args=(
-                                    client,
-                                    '**🔺 UPLOADING:**\n',
-                                    edit,
-                                    time.time()
-                                )
-                            )
+                try:
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
-                        UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
-                    elif msg.media==MessageMediaType.VIDEO_NOTE:
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
-                        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
-                    else:
-                        UT = time.time()
-                        uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
-                        await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
-                    if os.path.isfile(file) == True:
-                        os.remove(file)
-                except Exception as e:
-                    if "SendMediaRequest" in str(e):
+                            UT = time.time()
+                            uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
+                            attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
+                            await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
+                        elif msg.media==MessageMediaType.VIDEO_NOTE:
+                            uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
+                            attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, round_message=round_message, supports_streaming=True)] 
+                            await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, attributes=attributes, force_document=False)
+                        else:
+                            UT = time.time()
+                            uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
+                            await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
+                        if os.path.isfile(file) == True:
+                            os.remove(file)
+                except exception as e:
+                    print("Tried telethon but failed because ", e)
+                    return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
+            elif "2000" in str(e):
+                try:
+                    if not (await db.get_data(sender))["plan"] == "pro":
                         try:
-                            if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
-                                await client.send_video(
-                                    chat_id=BOT_UN,
-                                    video=file,
-                                    caption=caption,
-                                    supports_streaming=True,
-                                    height=height, width=width, duration=duration, 
-                                    thumb=thumb_path,
-                                    progress=progress_for_pyrogram,
-                                    progress_args=(
-                                        client,
-                                        '**🔺 UPLOADING:**\n',
-                                        edit,
-                                        time.time()
-                                    )
-                                )
-                            else:
-                                await userbot.send_document(
-                                    BOT_UN,
-                                    file, 
-                                    caption=caption,
-                                    thumb=thumb_path,
-                                    progress=progress_for_pyrogram,
-                                    progress_args=(
-                                        client,
-                                        '**🔺 UPLOADING:**\n',
-                                        edit,
-                                        time.time()
-                                    )
-                                )
-                        except Exception as e:
-                            print(e)
-                            await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
-                            try:
-                                os.remove(file)
-                            except Exception:
-                                return
-                            return 
+                            os.remove(file)
+                        except Exception:
+                            pass 
+                        return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nPurchase pro plan to save 2gb+ files.')
+                    if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
+                        print("Trying to get metadata")
+                        data = video_metadata(file)
+                        height, width, duration = data["height"], data["width"], data["duration"]
+                        print(f'd: {duration}, w: {width}, h:{height}')
+                        try:
+                            thumb_path = await screenshot(file, duration, sender)
+                        except Exception:
+                            thumb_path = None
+                        await userbot.send_video(chat_id=to, video=file, caption=caption, 
+                                                supports_streaming=True, 
+                                                height=height, width=width, duration=duration, 
+                                                thumb=thumb_path,
+                                                progress=progress_for_pyrogram,
+                                                progress_args=(
+                                                    client,
+                                                    '**🔺 UPLOADING:**\n',
+                                                    edit,
+                                                    time.time()))
                     else:
-                        print("Tried telethon but failed because ", e)
+                        thumb_path=thumbnail(sender)
+                        await userbot.send_document(
+                            to,
+                            file, 
+                            caption=caption,
+                            thumb=thumb_path,
+                            progress=progress_for_pyrogram,
+                            progress_args=(
+                                client,
+                                '**🔺 UPLOADING:**\n',
+                                edit,
+                                time.time()
+                            )
+                        )
+                except Exception as e:
+                    if "SaveBigFilePartRequest" in str(e):
+                        await client.edit_message_text(sender, edit_id, f'FILE from `{msg_link}` has been uploaded in your saved messages.')
+                    else:
                         await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
                         try:
                             os.remove(file)
@@ -306,14 +278,14 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             os.remove(file)
             if os.path.isfile(file) == True:
                 os.remove(file)
-        except Exception as e:
-            print(e)
+        except Exception:
+            pass
         await edit.delete()
     else:
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
-        chat =  msg_link.split("/")[-2]
+        chat =  msg_link.split("t.me")[1].split("/")[1]
         try:
-            msg = await client.get_messages(chat, msg_id)
+            msg = await client.copy_message(to, chat, msg_id)
             if msg.empty:
                 i, h, s = await db.get_credentials(sender)
                 if i and h and s is not None:
@@ -325,11 +297,9 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         return await edit.edit(str(e))
                 else:
                     return await edit.edit("⚠️ Please /login in order to use this bot.")
-                group = await userbot.get_chat(chat)
-                group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
-                await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
+                new_link = f't.me/b/{chat}/{int(msg_id)}'
+                await get_msg(userbot, client, bot, sender, to, edit_id, new_link, i)
                 return await userbot.stop()
-            await client.copy_message(to, chat, msg_id)
         except Exception as e:
             print(e)
             return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
