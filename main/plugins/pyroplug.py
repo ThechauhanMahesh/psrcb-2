@@ -191,8 +191,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         except Exception as e:
             print(e)
             if "This message doesn't contain any downloadable media" in str(e) \
-            or "File size equals to 0 B" in str(e) \
-            or "list index out of range" in str(e):
                 pass
             elif "messages.SendMedia" in str(e) \
             or "SaveBigFilePartRequest" in str(e) \
@@ -277,8 +275,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 return
         try:
             os.remove(file)
-            if os.path.isfile(file) == True:
-                os.remove(file)
         except Exception:
             pass
         await edit.delete()
