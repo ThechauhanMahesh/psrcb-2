@@ -286,7 +286,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
         chat =  msg_link.split("t.me")[1].split("/")[1]
         try:
-            msg = await client.copy_message(to, chat, msg_id)
+            msg = await client.get_messages(chat, msg_id)
             if msg.empty:
                 i, h, s = await db.get_credentials(sender)
                 if i and h and s is not None:
@@ -297,10 +297,12 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         print(e)
                         return await edit.edit(str(e))
                 else:
-                    return await edit.edit("⚠️ Please /login in order to use this bot.")
-                new_link = f't.me/b/{chat}/{int(msg_id)}'
-                await get_msg(userbot, client, bot, sender, to, edit_id, new_link, i)
+                    return await edit.edit("⚠️ Your login credentials not found.")
+                group = await userbot.get_chat(chat)
+                group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
+                await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
                 return await userbot.stop()
+            await client.copy_message(to, chat, msg_id)
         except Exception as e:
             print(e)
             return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
