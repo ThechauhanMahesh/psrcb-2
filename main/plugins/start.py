@@ -48,7 +48,7 @@ APIHASH = ["1674d13f3308faa1479b445cdbaaad2b", API_HASH]
 async def tut(event):
     await event.reply("click on below button to watch tutorial video", buttons=[[Button.url("CLICK HERE", url="https://t.me/SaveRestricted_Content/14")]])
     
-@bot.on(events.NewMessage(incoming=True, pattern="/start\s(.+)'"))
+@bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
     await event.reply(f'{st}', 
                       buttons=[
