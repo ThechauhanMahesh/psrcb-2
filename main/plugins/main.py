@@ -72,7 +72,7 @@ async def clone(event):
     if (await db.get_process(event.sender_id))["process"] == True:
         return await edit.edit("❌ Please don't spam links, wait until ongoing process is done or buy premium subscription from @DroneBots.")
     pt = 600
-    ut = 300
+    ut = 180
     to = await db.get_chat(event.chat.id)
     if to == None:
         to = event.sender_id
