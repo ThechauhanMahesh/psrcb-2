@@ -190,7 +190,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
 
         except Exception as e:
             print(e)
-            if "This message doesn't contain any downloadable media" in str(e) \
+            if "This message doesn't contain any downloadable media" in str(e):
                 pass
             elif "messages.SendMedia" in str(e) \
             or "SaveBigFilePartRequest" in str(e) \
