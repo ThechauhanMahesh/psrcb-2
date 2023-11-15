@@ -197,7 +197,7 @@ async def run_batch(userbot, client, sender, chat, link, _range):
         if not 't.me/c/' in link and not 't.me/b/' in link:
             timer = 10
         if i%50 == 0:
-            i, h, s = await db.get_credentials(event.chat.id)
+            i, h, s = await db.get_credentials(sender)
             try: 
                 await userbot.stop()
                 userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
