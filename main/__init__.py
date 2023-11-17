@@ -37,6 +37,13 @@ uploader_ubot = Client(
   api_id=API_ID, 
   max_concurrent_transmissions=5
 ) 
+
+try:
+    uploader_ubot.start()
+except BaseException:
+    print("Userbot Error ! Have you added SESSION while deploying??")
+    sys.exit(1)
+  
 Bot = Client(
     "SaveRestricted",
     bot_token=BOT_TOKEN,
