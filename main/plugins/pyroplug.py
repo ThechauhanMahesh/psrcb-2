@@ -1,6 +1,6 @@
 # Github.com/Vasusen-code
 
-from .. import bot as Drone, BOT_UN
+from .. import bot as Drone, BOT_UN, UL_UB
 import asyncio, time, os, shutil, datetime 
 
 from main.plugins.progress import progress_for_pyrogram
@@ -187,7 +187,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             except:
                 new_link = f"t.me/b/{chat}/{msg_id}"
             return await get_msg(userbot, client, bot, sender, to, edit_id, new_link, i)
-
         except Exception as e:
             print(e)
             if "This message doesn't contain any downloadable media" in str(e):
@@ -231,16 +230,26 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                             thumb_path = await screenshot(file, duration, sender)
                         except Exception:
                             thumb_path = None
-                        await userbot.send_video(chat_id=to, video=file, caption=caption, 
+                        if not premium_user:
+                            uploader_bot = UL_UB
+                            to_ = to 
+                            to = "bigsizecontent"
+                        else:
+                            uploader_bot = userbot
+                        bigfilemsg = await uploader_bot.send_video(chat_id=to, video=file, caption=caption, 
                                                 supports_streaming=True, 
                                                 height=height, width=width, duration=duration, 
-                                                thumb=thumb_path,
+                                                thumb=thumb_path,b
                                                 progress=progress_for_pyrogram,
                                                 progress_args=(
                                                     client,
                                                     '**🔺 UPLOADING:**\n',
                                                     edit,
                                                     time.time()))
+                        if not premium_user:
+                            to = to_
+                            bigfile = await client.get_messages(chat, bigfilemsg.id)
+                            await client.send_message(to, bigfile)
                     else:
                         thumb_path=thumbnail(sender)
                         await userbot.send_document(
