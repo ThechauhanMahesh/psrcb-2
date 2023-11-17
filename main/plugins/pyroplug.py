@@ -233,7 +233,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         bigfilemsg = await uploader_ubot.send_video(chat_id="bigfilecontent", video=file, caption=caption, 
                                                 supports_streaming=True, 
                                                 height=height, width=width, duration=duration, 
-                                                thumb=thumb_path,b
+                                                thumb=thumb_path,
                                                 progress=progress_for_pyrogram,
                                                 progress_args=(
                                                     client,
