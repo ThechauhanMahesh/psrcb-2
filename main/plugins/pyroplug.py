@@ -243,7 +243,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         
                     else:
                         thumb_path=thumbnail(sender)
-                        await uploader_ubot.send_document(
+                        bigfilemsg = await uploader_ubot.send_document(
                             "bigfilecontent",
                             file, 
                             caption=caption,
