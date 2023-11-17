@@ -1,6 +1,6 @@
 # Github.com/Vasusen-code
 
-from .. import bot as Drone, BOT_UN, UL_UB
+from .. import bot as Drone, BOT_UN, uploader_ubot
 import asyncio, time, os, shutil, datetime 
 
 from main.plugins.progress import progress_for_pyrogram
@@ -230,13 +230,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                             thumb_path = await screenshot(file, duration, sender)
                         except Exception:
                             thumb_path = None
-                        if not premium_user:
-                            uploader_bot = UL_UB
-                            to_ = to 
-                            to = "bigsizecontent"
-                        else:
-                            uploader_bot = userbot
-                        bigfilemsg = await uploader_bot.send_video(chat_id=to, video=file, caption=caption, 
+                        bigfilemsg = await uploader_ubot.send_video(chat_id="bigfilecontent", video=file, caption=caption, 
                                                 supports_streaming=True, 
                                                 height=height, width=width, duration=duration, 
                                                 thumb=thumb_path,b
@@ -246,14 +240,11 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                                                     '**🔺 UPLOADING:**\n',
                                                     edit,
                                                     time.time()))
-                        if not premium_user:
-                            to = to_
-                            bigfile = await client.get_messages(chat, bigfilemsg.id)
-                            await client.send_message(to, bigfile)
+                        
                     else:
                         thumb_path=thumbnail(sender)
-                        await userbot.send_document(
-                            to,
+                        await uploader_ubot.send_document(
+                            "bigfilecontent",
                             file, 
                             caption=caption,
                             thumb=thumb_path,
@@ -265,6 +256,8 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                                 time.time()
                             )
                         )
+                    bigfile = await client.get_messages(chat, bigfilemsg.id)
+                    await client.send_message(to, bigfile)
                 except Exception as e:
                     if "SaveBigFilePartRequest" in str(e):
                         await client.edit_message_text(sender, edit_id, f'FILE from `{msg_link}` has been uploaded in your saved messages.')
