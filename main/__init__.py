@@ -30,6 +30,13 @@ BOT_UN = "Premiumsrcb2_bot"
 
 bot = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN) 
 
+uploader_ubot = Client(
+  "uploader_ubot",
+  session_string="BQBJMj4AMfzVcR5c1b5Ei6lSSiJyALGcum-CnpJTlEXPR1OIPFzWhIy915fA54xbMI_3B8ToASJxVDhYZF1qJ-zzyQN7KUh7iSuziA4CE7JIBoeazZ6xw8uf98jU0aW_8B-JR8mCX70hCsiDl0bd0pXSzFNZmg1CLBjkiMQDhX59i8gE9IY873JEU8EZCrsT4suKRwluLDWR93pbv71mDPItIw1zeCN2I1Ud6mpjog2dacEpX80Vy74cX06mKjyyF4brCoZCONIvdr3WPKGBqUMoeKXpcycAg2UWGVmWFXTECP5V-RrALLnhzCYxfUfunY1Lui0G-pnFbI176OiW32x8cvbKUwAAAABrvWK2AA", 
+  api_hash=API_HASH, 
+  api_id=API_ID, 
+  max_concurrent_transmissions=5
+) 
 Bot = Client(
     "SaveRestricted",
     bot_token=BOT_TOKEN,
