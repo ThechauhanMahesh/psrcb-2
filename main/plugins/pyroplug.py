@@ -230,7 +230,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                             thumb_path = await screenshot(file, duration, sender)
                         except Exception:
                             thumb_path = None
-                        bigfilemsg = await uploader_ubot.send_video(chat_id="bigfilecontent", video=file, caption=caption, 
+                        bigfilemsg = await uploader_ubot.send_video(chat_id="bigsizecontent", video=file, caption=caption, 
                                                 supports_streaming=True, 
                                                 height=height, width=width, duration=duration, 
                                                 thumb=thumb_path,
@@ -244,7 +244,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     else:
                         thumb_path=thumbnail(sender)
                         bigfilemsg = await uploader_ubot.send_document(
-                            "bigfilecontent",
+                            "bigsizecontent",
                             file, 
                             caption=caption,
                             thumb=thumb_path,
