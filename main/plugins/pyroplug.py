@@ -256,8 +256,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                                 time.time()
                             )
                         )
-                    bigfile = await client.get_messages("bigsizecontent", bigfilemsg.id)
-                    await bigfile.copy(to)
+                    await client.copy_message(to, chat, bigfilemsg.id)
                     await bigfilemsg.delete()
                 except Exception as e:
                     if "SaveBigFilePartRequest" in str(e):
