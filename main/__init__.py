@@ -41,8 +41,7 @@ uploader_ubot = Client(
 try:
     uploader_ubot.start()
 except BaseException:
-    print("Userbot Error ! Have you added SESSION while deploying??")
-    sys.exit(1)
+    print("Userbot Error !")
   
 Bot = Client(
     "SaveRestricted",
