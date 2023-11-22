@@ -38,12 +38,12 @@ uploader_ubot = Client(
   max_concurrent_transmissions=5
 ) 
 
-"""
+
 try:
     uploader_ubot.start()
 except BaseException:
     print("Userbot Error !")
-"""
+
 
 Bot = Client(
     "SaveRestricted",
