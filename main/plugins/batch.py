@@ -196,16 +196,16 @@ async def run_batch(userbot, client, sender, chat, link, _range):
             timer = 8
         if not 't.me/c/' in link and not 't.me/b/' in link:
             timer = 10
-        if i != 0 and i%50 == 0:
-            i, h, s = await db.get_credentials(sender)
-            try: 
-                await userbot.stop()
-                userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
-                await userbot.start()
-            except Exception as e:
-                print(e)
-                await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
-                break
+        # if i != 0 and i%50 == 0:
+        #     i, h, s = await db.get_credentials(sender)
+        #     try: 
+        #         await userbot.stop()
+        #         userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
+        #         await userbot.start()
+        #     except Exception as e:
+        #         print(e)
+        #         await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
+        #         break
         try: 
             if not (await db.get_process(sender))["process"]:
                 await client.send_message(sender, "Batch completed.")
