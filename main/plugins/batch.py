@@ -171,16 +171,8 @@ async def _batch(event):
             else:
                 await conv.send_message("⚠️ Your login credentials not found.")
                 return await conv.cancel_all()
-            try: 
-                await userbot.start()
-            except Exception as e:
-                print(e)
-                await conv.send_message(f'{errorC}\n\n**Error:** {str(e)}')
-                await conv.cancel_all()
-                return 
             await db.update_process(event.sender_id, batch=True)
-            await run_batch(userbot, Bot, event.sender_id, chat, _link, value) 
-            await userbot.stop()
+            await run_batch(userbot, Bot, event.sender_id, chat, _link, value)
             await conv.cancel_all()
             await db.rem_process(event.sender_id)
             
@@ -196,23 +188,19 @@ async def run_batch(userbot, client, sender, chat, link, _range):
             timer = 8
         if not 't.me/c/' in link and not 't.me/b/' in link:
             timer = 10
-        # if i != 0 and i%50 == 0:
-        #     i, h, s = await db.get_credentials(sender)
-        #     try: 
-        #         await userbot.stop()
-        #         userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
-        #         await userbot.start()
-        #     except Exception as e:
-        #         print(e)
-        #         await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
-        #         break
         try: 
             if not (await db.get_process(sender))["process"]:
-                await client.send_message(sender, "Batch completed.")
+                await client.send_message(sender, "✅ Batch completed.")
                 break
         except Exception as e:
             print(e)
             await client.send_message(sender, "✅ Batch completed.")
+            break
+        try: 
+            await userbot.start()
+        except Exception as e:
+            print(e)
+            await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
             break
         try:
             await get_bulk_msg(userbot, client, sender, chat, link, i) 
@@ -222,7 +210,9 @@ async def run_batch(userbot, client, sender, chat, link, _range):
                 break
             await asyncio.sleep(fw.x + 5)
             await get_bulk_msg(userbot, client, sender, chat, link, i)
+        await userbot.stop()
         protection = await client.send_message(chat, f"⚠️ Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
         await asyncio.sleep(timer)
         await protection.delete()
+            
             
