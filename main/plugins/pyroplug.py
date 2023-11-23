@@ -182,8 +182,9 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             if "messages.SendMedia" in str(e) \
             or "SaveBigFilePartRequest" in str(e) \
             or "SendMediaRequest" in str(e) \
-            or str(e) == "File size equals to 0 B":
+            or "size equals" in str(e):
                 try: 
+                    await asyncio.sleep(10)
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
@@ -197,8 +198,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
-                    if os.path.isfile(file) == True:
-                        os.remove(file)
                 except Exception as e:
                     if "SendMediaRequest" in str(e):
                         try:
