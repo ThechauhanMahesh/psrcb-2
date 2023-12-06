@@ -20,7 +20,7 @@ p : 6077629818:AAFTBqay0B_4yD_LrwnfpfAU2fcXU5Vs2bU
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "5926923294:AAE-f__dTNABjmN-4GfLzKQopGhLB5S9mp8"
+BOT_TOKEN = "6379096336:AAHKVOvumm-ErIn1bRPsHK9P3wkjw4jS5ik"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
@@ -38,13 +38,13 @@ uploader_ubot = Client(
   max_concurrent_transmissions=5
 ) 
 
-
+"""
 try:
     uploader_ubot.start()
 except BaseException:
     print("Userbot Error !")
 
-
+"""
 
 Bot = Client(
     "SaveRestricted",
