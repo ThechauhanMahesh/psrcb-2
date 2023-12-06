@@ -30,7 +30,6 @@ BOT_UN = "Premiumsrcb2_bot"
 
 bot = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN) 
 
-"""
 uploader_ubot = Client(
   "uploader_ubot",
   session_string="BQAtp4AAa0F7MognMniEO0Bx5QCO___MnxHTRnA2e6abBqFJ_MzKmMTrYOoV6R6LznK9d1ArPh6Py5KcHsJaIzXQVG0Kp0zAhSfbbBbbY1hnsbNVTGy6BY99d53We42MQFWyuXAuQxioshK--pej0-6jzdw6TfcUdwEWCeCNEOos7LMIgaOZUyyyAODRt-AOpJe_mv2sRwE9R1FcyfRzzKEb4po-ki1CXoEywdswE7C34l0WxCpyRGY-gNPRe3YapUQhG8D6bUB3Lvd6aa5U4rtue99ulYuxMC5QoR5x1Csi9FQy7d8iDUy61ahFKkS8GrtpNLprovQp9471_-Y6snrIlffZ0AAAAABrvWK2AA", 
@@ -45,7 +44,7 @@ try:
 except BaseException:
     print("Userbot Error !")
 
-"""
+
 
 Bot = Client(
     "SaveRestricted",
