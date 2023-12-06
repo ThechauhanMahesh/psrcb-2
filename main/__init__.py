@@ -20,7 +20,7 @@ p : 6077629818:AAFTBqay0B_4yD_LrwnfpfAU2fcXU5Vs2bU
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "5926923294:AAE-f__dTNABjmN-4GfLzKQopGhLB5S9mp8"
+BOT_TOKEN = "6379096336:AAHKVOvumm-ErIn1bRPsHK9P3wkjw4jS5ik"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
@@ -30,6 +30,7 @@ BOT_UN = "Premiumsrcb2_bot"
 
 bot = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN) 
 
+"""
 uploader_ubot = Client(
   "uploader_ubot",
   session_string="BQAtp4AAa0F7MognMniEO0Bx5QCO___MnxHTRnA2e6abBqFJ_MzKmMTrYOoV6R6LznK9d1ArPh6Py5KcHsJaIzXQVG0Kp0zAhSfbbBbbY1hnsbNVTGy6BY99d53We42MQFWyuXAuQxioshK--pej0-6jzdw6TfcUdwEWCeCNEOos7LMIgaOZUyyyAODRt-AOpJe_mv2sRwE9R1FcyfRzzKEb4po-ki1CXoEywdswE7C34l0WxCpyRGY-gNPRe3YapUQhG8D6bUB3Lvd6aa5U4rtue99ulYuxMC5QoR5x1Csi9FQy7d8iDUy61ahFKkS8GrtpNLprovQp9471_-Y6snrIlffZ0AAAAABrvWK2AA", 
@@ -44,6 +45,7 @@ try:
 except BaseException:
     print("Userbot Error !")
 
+"""
 
 Bot = Client(
     "SaveRestricted",
