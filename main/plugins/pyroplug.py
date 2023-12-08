@@ -188,7 +188,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 return await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
             elif "messages.SendMedia" in str(e) \
             or "SaveBigFilePartRequest" in str(e) \
-            or "SendMediaRequest" in str(e) \
+            or "SendMediaRequest" in str(e):
                 try: 
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
