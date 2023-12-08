@@ -180,7 +180,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
         except Exception as e:
             print(e)
             if or "size equals" in str(e):
-                await asyncio.sleep(30)
+                await asyncio.sleep(60)
                 return await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
             elif "messages.SendMedia" in str(e) \
             or "SaveBigFilePartRequest" in str(e) \
