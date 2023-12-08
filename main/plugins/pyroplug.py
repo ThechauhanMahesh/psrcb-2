@@ -179,12 +179,13 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             return
         except Exception as e:
             print(e)
-            if "messages.SendMedia" in str(e) \
+            if or "size equals" in str(e):
+                await asyncio.sleep(30)
+                return await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
+            elif "messages.SendMedia" in str(e) \
             or "SaveBigFilePartRequest" in str(e) \
             or "SendMediaRequest" in str(e) \
-            or "size equals" in str(e):
                 try: 
-                    await asyncio.sleep(10)
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
