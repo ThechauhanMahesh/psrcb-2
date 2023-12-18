@@ -191,8 +191,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             print(e)
             if "This message doesn't contain any downloadable media" in str(e):
                 pass
-            elif "size equals" in str(e) \
-            or "SaveBigFilePartRequest" in str(e):
+            elif "size equals" in str(e):
                 await asyncio.sleep(60)
                 try:
                     os.remove(file)
@@ -200,6 +199,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     pass
                 return await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
             elif "messages.SendMedia" in str(e) \
+            or "SaveBigFilePartRequest" in str(e) \
             or "SendMediaRequest" in str(e):
                 try:
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
