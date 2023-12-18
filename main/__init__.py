@@ -9,7 +9,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
                     level=logging.WARNING)
 
 """
-ps2 : 5832484897:AAF9XsvYlzaMJWrS6hq14yaEu_RKjzT84-8
+ps2 : 5832484897:AAEDPBUO9DE_XjRMLAU1WZBnUajgvyUquFc
 ps1 : 5926923294:AAE-f__dTNABjmN-4GfLzKQopGhLB5S9mp8
 ps3 : 6379096336:AAHKVOvumm-ErIn1bRPsHK9P3wkjw4jS5ik
 ps4 : 6401894192:AAFVDctSK9k3v3z7oTdtbweGLb5gmeUTxRw
@@ -20,7 +20,7 @@ p : 6077629818:AAFTBqay0B_4yD_LrwnfpfAU2fcXU5Vs2bU
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "6401894192:AAFVDctSK9k3v3z7oTdtbweGLb5gmeUTxRw"
+BOT_TOKEN = "5832484897:AAEDPBUO9DE_XjRMLAU1WZBnUajgvyUquFc"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
