@@ -13,14 +13,13 @@ ps2 : 5832484897:AAEDPBUO9DE_XjRMLAU1WZBnUajgvyUquFc
 ps1 : 5926923294:AAGAYKo413jrlZtSeYqhieHHT7i8TDzQDFA
 ps3 : 6379096336:AAFS3FejdN4J7rsZowO2Gu-iFoOgB_1_LH8
 ps4 : 6401894192:AAHJG2M_rBB-Z71jAant3MgHBELffoMG3eE
-
-p : 6077629818:AAFTBqay0B_4yD_LrwnfpfAU2fcXU5Vs2bU
+ps5 : 6669926453:AAEZc_j2UETA96mOgXTCWCmoi4RMfcdoycg
 """
 
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "6401894192:AAHJG2M_rBB-Z71jAant3MgHBELffoMG3eE"
+BOT_TOKEN = "6669926453:AAEZc_j2UETA96mOgXTCWCmoi4RMfcdoycg"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
@@ -37,12 +36,12 @@ uploader_ubot = Client(
   api_id=API_ID, 
   max_concurrent_transmissions=5
 ) 
-
+"""
 try:
     uploader_ubot.start()
 except BaseException:
     print("Userbot Error !")
-
+"""
 Bot = Client(
     "SaveRestricted",
     bot_token=BOT_TOKEN,
