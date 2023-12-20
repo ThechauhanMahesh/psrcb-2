@@ -9,10 +9,10 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
                     level=logging.WARNING)
 
 """
-ps2 : 5832484897:AAEDPBUO9DE_XjRMLAU1WZBnUajgvyUquFc
-ps1 : 5926923294:AAGAYKo413jrlZtSeYqhieHHT7i8TDzQDFA
-ps3 : 6379096336:AAFS3FejdN4J7rsZowO2Gu-iFoOgB_1_LH8
-ps4 : 6401894192:AAHJG2M_rBB-Z71jAant3MgHBELffoMG3eE
+ps2 : 6890628049:AAG4LctwPDIIHYgG-RRDHD_BCPV67c36ut8
+ps1 : 6900940299:AAEOPMETfJZrwwKvsx-5A9oFuv_nVs4jVq0
+ps3 : 6965898945:AAFb9AKCY9Adp6xYTqMm_0z15IOudK0UvXk
+ps4 : 6952070884:AAGUGUt3TD0PYvhq4svfLGzbV6v7z5xSYV8
 ps5 : 6669926453:AAEZc_j2UETA96mOgXTCWCmoi4RMfcdoycg
 """
 
