@@ -179,7 +179,9 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             return
         except Exception as e:
             print(e)
-            if "size equals" in str(e):
+            if "This message doesn't contain any downloadable media" in str(e):
+                pass
+            elif "size equals" in str(e):
                 await asyncio.sleep(60)
                 try:
                     os.remove(file)
