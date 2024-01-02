@@ -173,6 +173,7 @@ async def _batch(event):
                 return await conv.cancel_all()
             await db.update_process(event.sender_id, batch=True)
             await run_batch(userbot, Bot, event.sender_id, chat, _link, value)
+            await conv.send_message("✅ Batch completed.")
             await conv.cancel_all()
             await db.rem_process(event.sender_id)
             
@@ -211,8 +212,7 @@ async def run_batch(userbot, client, sender, chat, link, _range):
             await asyncio.sleep(fw.x + 5)
             await get_bulk_msg(userbot, client, sender, chat, link, i)
         await userbot.stop()
-        protection = await client.send_message(chat, f"⚠️ Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
         await asyncio.sleep(timer)
-        await protection.delete()
+        
             
             
