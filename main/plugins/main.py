@@ -15,7 +15,7 @@ from ethon.pyfunc import video_metadata
 from telethon import events
 
 import re, time, asyncio
-from decouple import config
+# from decouple import config
 
 
 
