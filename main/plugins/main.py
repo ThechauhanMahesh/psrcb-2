@@ -15,7 +15,7 @@ from ethon.pyfunc import video_metadata
 from telethon import events
 
 import re, time, asyncio
-from decouple import config
+# from decouple import config
 
 message = "Send me the message link you want to start saving from, as a reply to this message."
      
