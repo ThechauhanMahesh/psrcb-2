@@ -8,7 +8,7 @@ from main.Database.database import db
 from pyrogram import Client
 from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant, BadRequest
 
-from decouple import config
+# from decouple import config
 from pathlib import Path
 from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
