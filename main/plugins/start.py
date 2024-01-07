@@ -4,7 +4,7 @@ import os, asyncio
 from .. import bot, ACCESS, ACCESS2, API_ID, API_HASH
 
 from telethon import events, Button
-from decouple import config
+# from decouple import config
 from pyrogram import Client
 from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
 
