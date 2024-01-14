@@ -10,7 +10,6 @@ from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, 
 
 from main.plugins.helpers import login, logout, force_sub
 
-st = 
 ht = """Help:
 
 **FOR PUBLIC CHANNEL:**
