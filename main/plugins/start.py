@@ -10,8 +10,7 @@ from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, 
 
 from main.plugins.helpers import login, logout, force_sub
 
-st = "Send me **link** of any **public** channel message to clone it here 🔗, For **private** channel message, First **login** then send any **message link** from your chat ✅.\n\n**SUPPORT:** @TeamDrone\n**DEV:** @MaheshChauhan"
-
+st = 
 ht = """Help:
 
 **FOR PUBLIC CHANNEL:**
@@ -53,18 +52,8 @@ async def help(event):
     
 @bot.on(events.NewMessage(incoming=True, pattern="/start"))
 async def start(event):
-    await event.reply(f'{st}', 
-                      buttons=[
-                              [Button.inline("SET THUMB", data="sett"),
-                               Button.inline("REM THUMB", data="remt")],
-                              [Button.inline("LOG IN", data="login"),
-                               Button.inline("LOG OUT", data="logout")],
-                              [Button.inline("HELP", data="help"),
-                               Button.url("SOURCE", url="github.com/vasusen-code/saverestrictedcontentbot")],
-                              ])
-    tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
-    await event.client.send_message(int(ACCESS), f'{tag} started the BOT\nUserID: {event.sender_id}') 
-
+    await event.reply("Send me **link** of any **public** channel message to clone it here 🔗, For **private** channel message, First **login** then send any **message link** from your chat ✅.\n\n**SUPPORT:** @TeamDrone\n**DEV:** @MaheshChauhan")
+    
 @bot.on(events.NewMessage(incoming=True, pattern="/login"))
 async def linc(event):
     Drone = event.client
