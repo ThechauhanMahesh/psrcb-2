@@ -1,6 +1,6 @@
 # Github.com/Vasusen-code
 
-from .. import bot as Drone, BOT_UN, uploader_ubot
+from .. import bot as Drone, uploader_ubot
 import asyncio, time, os, shutil, datetime 
 
 from main.plugins.progress import progress_for_pyrogram
