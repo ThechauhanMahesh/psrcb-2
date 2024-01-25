@@ -19,13 +19,12 @@ ps5 : 6669926453:AAEZc_j2UETA96mOgXTCWCmoi4RMfcdoycg
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "6669926453:AAEZc_j2UETA96mOgXTCWCmoi4RMfcdoycg"
+BOT_TOKEN = "6608701591:AAFERzaluRyq4dNHDQi5EdBNlLXffMeJdbQ"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
 MONGODB_URI = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
 AUTH_USERS = 5351121397
-BOT_UN = "Premiumsrcb2_bot"
 
 bot = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN) 
 
@@ -36,12 +35,12 @@ uploader_ubot = Client(
   api_id=API_ID, 
   max_concurrent_transmissions=5
 ) 
-"""
+
 try:
     uploader_ubot.start()
 except BaseException:
     print("Userbot Error !")
-"""
+
 Bot = Client(
     "SaveRestricted",
     bot_token=BOT_TOKEN,
