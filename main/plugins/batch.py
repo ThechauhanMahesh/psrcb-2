@@ -149,8 +149,8 @@ async def _batch(event):
                     if not (await db.get_data(event.sender_id))["plan"] == "pro":
                         await conv.send_message("⚠️ You can only get upto 30 files in a single batch.")
                         return await conv.cancel_all()
-                    elif value > 150:
-                        await conv.send_message("⚠️ You can only get upto 150 files in a single batch.")
+                    elif value > 100:
+                        await conv.send_message("⚠️ You can only get upto 100 files in a single batch.")
                         return await conv.cancel_all()
             except ValueError:
                 await conv.send_message("Range must be an integer!")
