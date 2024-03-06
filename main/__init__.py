@@ -19,7 +19,7 @@ ps5 : 6669926453:AAEZc_j2UETA96mOgXTCWCmoi4RMfcdoycg
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "6890628049:AAG4LctwPDIIHYgG-RRDHD_BCPV67c36ut8"
+BOT_TOKEN = "6669926453:AAEZc_j2UETA96mOgXTCWCmoi4RMfcdoycg"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
@@ -36,12 +36,12 @@ uploader_ubot = Client(
   max_concurrent_transmissions=5
 ) 
 
-"""
+
 try:
     uploader_ubot.start()
 except BaseException:
     print("Userbot Error !")
-"""
+
 Bot = Client(
     "SaveRestricted",
     bot_token=BOT_TOKEN,
