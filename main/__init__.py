@@ -16,7 +16,7 @@ FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
 MONGODB_URI = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
-AUTH_USERS = 5351121397
+AUTH_USERS = 1807573686
 BOT_UN = "PremiumSRCB_DC2Bot"
 
 """
