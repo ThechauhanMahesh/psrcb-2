@@ -15,7 +15,7 @@ BOT_TOKEN = "6710941011:AAFVG83NRSnaohlnYR_KCM1MtnWPnsDbiuY"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 ACCESS2 = int("-1001823465454")
-MONGODB_URI = "mongodb+srv://Vasusen:darkmaahi@cluster0.o7uqb.mongodb.net/cluster0?retryWrites=true&w=majority"
+MONGODB_URI = "mongodb+srv://thechauhanmahesh:XgbFpSEe3pM9P45z@cluster0.mkaomd0.mongodb.net"
 AUTH_USERS = 1807573686
 BOT_UN = "PremiumSRCB_DC2Bot"
 
