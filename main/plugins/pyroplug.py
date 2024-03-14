@@ -237,6 +237,34 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                             thumb_path = await screenshot(file, duration, sender)
                         except Exception:
                             thumb_path = None
+
+                        await userbot.send_video(to, video=file, caption=caption, 
+                        supports_streaming=True, 
+                        height=height, width=width, duration=duration, 
+                        thumb=thumb_path,
+                        progress=progress_for_pyrogram,
+                        progress_args=(
+                        client,
+                        '**🔺 UPLOADING:**\n',
+                        edit,
+                        time.time()))
+                    else:
+                        thumb_path=thumbnail(sender)
+                        bigfilemsg = await userbot.send_document(
+                            to,
+                            file, 
+                            caption=caption,
+                            thumb=thumb_path,
+                            progress=progress_for_pyrogram,
+                            progress_args=(
+                                client,
+                                '**🔺 UPLOADING:**\n',
+                                edit,
+                                time.time()
+                            )
+                        )
+                        """
+
                         bigfilemsg = await uploader_ubot.send_video(chat_id="bigsizecontent", video=file, caption=caption, 
                                                 supports_streaming=True, 
                                                 height=height, width=width, duration=duration, 
@@ -265,9 +293,13 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         )
                     await client.copy_message(to, chat, bigfilemsg.id)
                     await bigfilemsg.delete()
+                """
+                    
                 except Exception as e:
                     if "SaveBigFilePartRequest" in str(e):
                         await client.edit_message_text(sender, edit_id, f'FILE from `{msg_link}` has been uploaded in your saved messages.')
+                    elif  "2000" in str(e):
+                       await client.edit_message_text(sender, edit_id, f'❌ You must have telegram premium to upload contents having size over 2GB.'
                     else:
                         await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
                         try:
