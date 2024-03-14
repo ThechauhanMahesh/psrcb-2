@@ -299,7 +299,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     if "SaveBigFilePartRequest" in str(e):
                         await client.edit_message_text(sender, edit_id, f'FILE from `{msg_link}` has been uploaded in your saved messages.')
                     elif  "2000" in str(e):
-                       await client.edit_message_text(sender, edit_id, f'❌ You must have telegram premium to upload contents having size over 2GB.'
+                       await client.edit_message_text(sender, edit_id, f'❌ You must have telegram premium to upload contents having size over 2GB.')
                     else:
                         await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
                         try:
