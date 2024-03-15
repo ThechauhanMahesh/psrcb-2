@@ -52,9 +52,9 @@ async def clone(event):
     f = await force_sub(event.sender_id)
     if f:
         await emoji.delete()
-        return await event.reply("⚠️ To use this bot you must **join** all below 3 channels", buttons=[[Button.url("SRCB 1", url="t.me/save_restricted_content_1")],
-                                                                                                      [Button.url("SRCB 2", url="t.me/saverestricted_content")],
-                                                                                                      [Button.url("UP BOTS", url="t.me/useful_premium_bots")]])
+        return await event.reply("⚠️ To use this bot you must **join** all below 3 channels", buttons=[[Button.url("JOIN 1", url="t.me/save_restricted_message")],
+                                                                                                      [Button.url("JOIN 2", url="t.me/save_restricted_content_1")],
+                                                                                                      [Button.url("JOIN 3", url="t.me/useful_premium_bots")]])
     count = await db.get_trial_count(event.sender_id)
     if count == 50:
         await emoji.delete()
