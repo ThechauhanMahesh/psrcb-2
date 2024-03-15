@@ -17,7 +17,7 @@ D: 6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
 BOT_TOKEN = "6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc"
-FORCESUB = ["Save_restricted_content_1", "SaveRestricted_Content", "Useful_Premium_Bots"]
+FORCESUB = ["Save_restricted_content_1", "Save_Restricted_Message", "Useful_Premium_Bots"]
 ACCESS = int("-1001768362393")
 ACCESS2 = int("-1001823465454")
 MONGODB_URI = "mongodb+srv://thechauhanmahesh:XgbFpSEe3pM9P45z@cluster0.mkaomd0.mongodb.net"
