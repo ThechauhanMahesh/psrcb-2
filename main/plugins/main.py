@@ -17,6 +17,8 @@ from telethon import events, Button
 import re, time, asyncio
 from decouple import config
 
+process = 0
+
 message = "Send me the message link you want to start saving from, as a reply to this message."
      
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
@@ -38,6 +40,7 @@ async def afree(event):
 
 @Drone.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def clone(event):
+    global process
     if event.is_reply:
         reply = await event.get_reply_message()
         if reply.text == message:
@@ -48,6 +51,8 @@ async def clone(event):
             return
     except TypeError:
         return
+    if not process < 16:
+        return await event.reply("⚠️ Bot is overloaded with 15/15 proccesses, please wait or buy premium from @DroneBots")
     emoji = await event.reply("🔗")
     f = await force_sub(event.sender_id)
     if f:
@@ -77,15 +82,15 @@ async def clone(event):
     if to == None:
         to = event.sender_id
     if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link:
-        await db.update_process(event.sender_id)
-        try:
-            await get_msg(None, Bot, Drone, event.sender_id, to, edit.id, link, 0)
-        except Exception as e:
-            print(e)
-            pass
-        await set_timer(Drone, event.sender_id, ut)
-        await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/3**")
-        return
+        # await db.update_process(event.sender_id)
+        # try:
+        #     await get_msg(None, Bot, Drone, event.sender_id, to, edit.id, link, 0)
+        # except Exception as e:
+        #     print(e)
+        #     pass
+        # await set_timer(Drone, event.sender_id, ut)
+        # await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/3**")
+        return edit.edit(str("⚠️ Public channel links are only for Paid users, check @Dronebots"))
     if 't.me/+' in link:
         userbot = ""
         i, h, s = await db.get_credentials(event.chat.id)
@@ -118,12 +123,14 @@ async def clone(event):
         else:
             return await edit.edit("⚠️ Please /login in order to use this bot.")
         await db.update_process(event.sender_id)
+        process += 1
         try: 
             await get_msg(userbot, Bot, Drone,event.sender_id, to, edit.id, link, 0)
         except Exception as e:
             print(e)
             pass
         await userbot.stop()
+        process -= 1
         await db.update_trial_count(event.sender_id)
         await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/3**")
         await set_timer(Drone, event.sender_id, ut) 
