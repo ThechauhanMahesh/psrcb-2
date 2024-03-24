@@ -162,11 +162,19 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             return await get_msg(userbot, client, bot, sender, to, edit_id, new_link, i)
         except Exception as e:
             print(e)
-            if "messages.SendMedia" in str(e) \
+            if "This message doesn't contain any downloadable media" in str(e):
+                pass
+            elif "size equals" in str(e):
+                await asyncio.sleep(60)
+                try:
+                    os.remove(file)
+                except:
+                    pass
+                return await get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i)
+            elif "messages.SendMedia" in str(e) \
             or "SaveBigFilePartRequest" in str(e) \
-            or "SendMediaRequest" in str(e) \
-            or str(e) == "File size equals to 0 B":
-                try: 
+            or "SendMediaRequest" in str(e):
+                try:
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
                         UT = time.time()
                         uploader = await fast_upload(f'{file}', f'{file}', UT, bot, edit, '**🔺 UPLOADING:**')
@@ -182,14 +190,64 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
                     if os.path.isfile(file) == True:
                         os.remove(file)
+                except exception as e:
+                    print("Tried telethon but failed because ", e)
+                    return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
+            elif "2000" in str(e):
+                try:
+                    if not (await db.get_data(sender))["plan"] == "pro":
+                        try:
+                            os.remove(file)
+                        except Exception:
+                            pass 
+                        return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nPurchase pro plan to save 2gb+ files.')
+                    if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
+                        print("Trying to get metadata")
+                        data = video_metadata(file)
+                        height, width, duration = data["height"], data["width"], data["duration"]
+                        print(f'd: {duration}, w: {width}, h:{height}')
+                        try:
+                            thumb_path = await screenshot(file, duration, sender)
+                        except Exception:
+                            thumb_path = None
+
+                        await userbot.send_video(to, video=file, caption=caption, 
+                        supports_streaming=True, 
+                        height=height, width=width, duration=duration, 
+                        thumb=thumb_path,
+                        progress=progress_for_pyrogram,
+                        progress_args=(
+                        client,
+                        '**🔺 UPLOADING:**\n',
+                        edit,
+                        time.time()))
+                    else:
+                        thumb_path=thumbnail(sender)
+                        bigfilemsg = await userbot.send_document(
+                            to,
+                            file, 
+                            caption=caption,
+                            thumb=thumb_path,
+                            progress=progress_for_pyrogram,
+                            progress_args=(
+                                client,
+                                '**🔺 UPLOADING:**\n',
+                                edit,
+                                time.time()
+                            )
+                        )
                 except Exception as e:
-                    print(e)
-                    await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`\n\nError: {str(e)}')
-                    try:
-                        os.remove(file)
-                    except Exception:
-                        return
-                    return 
+                    if "SaveBigFilePartRequest" in str(e):
+                        await client.edit_message_text(sender, edit_id, f'FILE from `{msg_link}` has been uploaded in your saved messages.')
+                    elif  "2000" in str(e):
+                       await client.edit_message_text(sender, edit_id, f'❌ You must have telegram premium to upload contents having size over 2GB.')
+                    else:
+                        await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
+                        try:
+                            os.remove(file)
+                        except Exception:
+                            return
+                        return 
             else:
                 await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
                 try:
