@@ -51,7 +51,7 @@ async def clone(event):
     await check_subscription(event.sender_id)
     s = await db.get_data(event.sender_id)
     if s["dos"] == None:
-        await event.reply("⚠️ You are not subscribed to premium bot, contact @ChauhanMahesh_BOT to buy.")
+        await event.reply("⚠️ You are not subscribed to premium bot, pay in @SubscriptionForBot to buy.")
         return
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
