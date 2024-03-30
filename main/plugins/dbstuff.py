@@ -82,7 +82,7 @@ async def incomming(event):
         if (await db.get_data(event.sender_id))["dos"] == None:
             tag = f'[{event.sender.first_name}](tg://user?id={event.sender_id})'
             await event.client.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {event.sender_id}') 
-            await event.reply("Your plan will soon be activated if the payment is done.")
+            await event.reply("Make a purchase from @SubscriptionForBot")
 
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="/users"))
 async def listusers(event):
