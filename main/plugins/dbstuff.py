@@ -4,7 +4,7 @@
 from .. import bot as Drone
 from .. import AUTH_USERS
 from telethon import events, Button
-from decouple import config
+# from decouple import config
 from main.Database.database import db
 import pymongo
 import dns.resolver
@@ -12,6 +12,7 @@ from datetime import datetime
 import time
 #Database command handling--------------------------------------------------------------------------
 
+AUTH = AUTH_USERS
 @Drone.on(events.NewMessage(incoming=True, from_users=AUTH_USERS , pattern="/freeall"))
 async def free_all(event):
     edit = await event.reply("Processing...")
@@ -90,7 +91,6 @@ async def bban(event):
     c = event.pattern_match.group(1)
     if not c:
         await event.reply("Disallow who!?")
-    AUTH = config("AUTH_USERS", default=None)
     admins = []
     admins.append(f'{int(AUTH)}')
     if c in admins:
