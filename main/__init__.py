@@ -2,7 +2,7 @@
 
 from pyrogram import Client
 from telethon import TelegramClient
-from decouple import config
+#from decouple import config
 import logging, time, sys
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
