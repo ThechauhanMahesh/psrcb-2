@@ -51,6 +51,7 @@ async def start(event):
 
 @bot.on(events.NewMessage(incoming=True, pattern="/login"))
 async def linc(event):
+    process = 0
     Drone = event.client
     number = 0
     otp = 0
@@ -58,6 +59,8 @@ async def linc(event):
     passcode = ""
     ai = ''
     ah = ''
+    if not process < 10:
+        return await event.reply("Too many logins, try again in some mins.")
     async with Drone.conversation(event.chat_id, exclusive=False) as conv: 
         try:
             xx = await conv.send_message("Send me your contact number with country code(eg +1 or +91) to login.")
@@ -137,8 +140,11 @@ async def linc(event):
             await conv.send_message(f"**ERROR:** {str(e)}")
             return
         await login(event.sender_id, ai, ah, session) 
-        await Drone.send_message(event.chat_id, "✅ Login credentials saved.")
+        await Drone.send_message(event.chat_id, "✅ Login credentials saved.\n\n⚠️ click on 'yes its me' when telegram asks if is it you who logged in.")
         await client.disconnect()
+        process += 1
+        await asyncio.sleep(60)
+        process -= 1
         
 @bot.on(events.NewMessage(incoming=True, pattern="/logout"))
 async def louc(event):
