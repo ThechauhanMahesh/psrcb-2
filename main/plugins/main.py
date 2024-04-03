@@ -51,8 +51,8 @@ async def clone(event):
             return
     except TypeError:
         return
-    if not process < 16:
-        return await event.reply("⚠️ Bot is overloaded with 15/15 proccesses, please wait or buy premium from @DroneBots")
+    if not process < 21:
+        return await event.reply("⚠️ Bot is overloaded with 20/20 proccesses, please wait or buy premium from @DroneBots")
     emoji = await event.reply("🔗")
     f = await force_sub(event.sender_id)
     if f:
@@ -92,24 +92,7 @@ async def clone(event):
         # await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/3**")
         return edit.edit(str("⚠️ Public channel links are only for Paid users, check @Dronebots"))
     if 't.me/+' in link:
-        userbot = ""
-        i, h, s = await db.get_credentials(event.chat.id)
-        userbot = None
-        if i and h and s is not None:
-            try:
-                userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
-                await userbot.start()
-            except Exception as e:
-                print(e)
-                return await edit.edit(str(e))
-        else:
-            return await edit.edit("Please login in order to use.")
-        try: 
-            j = await join(userbot, link)
-            await edit.edit(j)
-        except Exception as e:
-            print(e)
-            pass
+        return await edit.edit("JOIN yourself manually.")
     if 't.me/c/' in link or 't.me/b/' in link:
         userbot = ""
         i, h, s = await db.get_credentials(event.chat.id)
