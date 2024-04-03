@@ -81,6 +81,9 @@ async def linc(event):
     passcode = ""
     ai = ''
     ah = ''
+    process = 0
+    if not process < 10:
+        return await event.reply("Too many logins, try again in some mins.")
     i, h, s = await db.get_credentials(event.sender_id)
     if i and h and s is not None:
         return await event.client.send_message(event.sender_id, "⚠️ You are already logged in.")
@@ -171,6 +174,9 @@ async def linc(event):
         await db.update_number(event.sender_id, number)
         await Drone.send_message(event.chat_id, "✅ Login credentials saved.")
         await client.disconnect()
+        process += 1
+        await asyncio.sleep(60)
+        process -= 1
         
 @bot.on(events.NewMessage(incoming=True, pattern="/logout"))
 async def louc(event):
