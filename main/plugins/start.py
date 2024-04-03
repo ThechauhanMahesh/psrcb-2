@@ -175,7 +175,7 @@ async def linc(event):
         await Drone.send_message(event.chat_id, "✅ Login credentials saved.")
         await client.disconnect()
         process += 1
-        await asyncio.sleep(60)
+        await asyncio.sleep(30)
         process -= 1
         
 @bot.on(events.NewMessage(incoming=True, pattern="/logout"))
