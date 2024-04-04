@@ -107,6 +107,7 @@ async def clone(event):
         await db.update_trial_count(event.sender_id)
         await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/3**")
         await set_timer(Drone, event.sender_id, ut)
+        return
     if 't.me' in link:
         await db.update_process(event.sender_id)
         try:
