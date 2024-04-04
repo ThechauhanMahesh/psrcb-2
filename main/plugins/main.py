@@ -105,6 +105,7 @@ async def clone(event):
         try: 
             await get_msg(userbot, Bot, Drone,event.sender_id, to, edit.id, link, 0)
         except Exception as e:
+            await edit.edit(str(e))
             print(e)
             pass
         await userbot.stop()
@@ -120,6 +121,6 @@ async def clone(event):
         except Exception as e:
             print(e)
             pass
-        await set_timer(Drone, event.sender_id, ut)
         await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/3**")
+        await set_timer(Drone, event.sender_id, ut)
         # return edit.edit(str("⚠️ Public channel links are only for Paid users, check @Dronebots"))
