@@ -81,7 +81,7 @@ async def clone(event):
     to = await db.get_chat(event.chat.id)
     if to == None:
         to = event.sender_id
-    if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link:
+    if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link and not 't.me/+' in link:
         # await db.update_process(event.sender_id)
         # try:
         #     await get_msg(None, Bot, Drone, event.sender_id, to, edit.id, link, 0)
