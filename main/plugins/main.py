@@ -81,16 +81,6 @@ async def clone(event):
     to = await db.get_chat(event.chat.id)
     if to == None:
         to = event.sender_id
-    if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link and not 't.me/+' in link:
-        # await db.update_process(event.sender_id)
-        # try:
-        #     await get_msg(None, Bot, Drone, event.sender_id, to, edit.id, link, 0)
-        # except Exception as e:
-        #     print(e)
-        #     pass
-        # await set_timer(Drone, event.sender_id, ut)
-        # await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/3**")
-        return edit.edit(str("⚠️ Public channel links are only for Paid users, check @Dronebots"))
     if 't.me/+' in link:
         return await edit.edit("JOIN yourself manually.")
     if 't.me/c/' in link or 't.me/b/' in link:
@@ -116,4 +106,14 @@ async def clone(event):
         process -= 1
         await db.update_trial_count(event.sender_id)
         await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/3**")
-        await set_timer(Drone, event.sender_id, ut) 
+        await set_timer(Drone, event.sender_id, ut)
+    if 't.me' in link:
+        await db.update_process(event.sender_id)
+        try:
+            await get_msg(None, Bot, Drone, event.sender_id, to, edit.id, link, 0)
+        except Exception as e:
+            print(e)
+            pass
+        await set_timer(Drone, event.sender_id, ut)
+        await Drone.send_message(event.sender_id, "**Check this 🔥\n\nt.me/DroneBots/3**")
+        # return edit.edit(str("⚠️ Public channel links are only for Paid users, check @Dronebots"))
