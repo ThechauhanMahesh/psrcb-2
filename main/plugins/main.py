@@ -92,7 +92,12 @@ async def clone(event):
                 await userbot.start()
             except Exception as e:
                 print(e)
-                return await edit.edit(str(e))
+                if "AUTH_KEY_UNREGISTERED" in str(e):
+                     return edit.edit("⚠️ Please /logout and /login again.")
+                if "SESSION_REVOKED" in str(e):
+                     return edit.edit("⚠️ You terminated your session, please /logout and /login again.")
+                else:
+                     return await edit.edit(str(e))
         else:
             return await edit.edit("⚠️ Please /login in order to use this bot.")
         await db.update_process(event.sender_id)
