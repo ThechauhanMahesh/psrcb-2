@@ -51,8 +51,8 @@ async def clone(event):
             return
     except TypeError:
         return
-    if not process < 21:
-        return await event.reply("⚠️ Bot is overloaded with 20/20 proccesses, please wait or buy premium from @DroneBots")
+    if not process < 26:
+        return await event.reply("⚠️ Bot is overloaded with 25/25 proccesses, please wait or buy premium from @DroneBots")
     emoji = await event.reply("🔗")
     f = await force_sub(event.sender_id)
     if f:
