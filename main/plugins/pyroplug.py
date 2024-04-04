@@ -180,11 +180,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
             await client.edit_message_text(sender, edit_id, "⚠️ Have you joined the channel?")
             return
         except PeerIdInvalid:
-            chat = msg_link.split("/")[-3]
-            try:
-                int(chat)
+            chat = int(msg_link.split("/")[-3])
+            if "-100" in f"{chat}":
                 new_link = f"t.me/c/{chat}/{msg_id}"
-            except:
+            else:
                 new_link = f"t.me/b/{chat}/{msg_id}"
             return await get_msg(userbot, client, bot, sender, to, edit_id, new_link, i)
         except Exception as e:
