@@ -147,7 +147,7 @@ async def linc(event):
             await conv.send_message("Invalid Code, try again.")
             return
         except PhoneCodeExpired:
-            await conv.send_message("Code has expired, try again.")
+            await conv.send_message("Code has expired, try again\n\nSend code with space like 5 6 7 8.")
             return
         except SessionPasswordNeeded:
             try:
