@@ -68,12 +68,12 @@ async def force_sub(id):
             ok = True
         else:
             ok = False
-        y = await bot(GetParticipantRequest(channel=FSUB[2], participant=int(id)))
-        left = y.stringify()
-        if 'left' in left:
-            ok = True
-        else:
-            ok = False
+        # z = await bot(GetParticipantRequest(channel=FSUB[2], participant=int(id)))
+        # left = z.stringify()
+        # if 'left' in left:
+        #     ok = True
+        # else:
+        #     ok = False
     except UserNotParticipantError:
         ok = True 
     return ok   
