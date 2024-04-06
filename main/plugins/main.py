@@ -51,15 +51,13 @@ async def clone(event):
             return
     except TypeError:
         return
-    if not process < 26:
-        return await event.reply("⚠️ Bot is overloaded with 25/25 proccesses, please wait or buy premium from @DroneBots")
     emoji = await event.reply("🔗")
     f = await force_sub(event.sender_id)
     if f:
         await emoji.delete()
-        return await event.reply("⚠️ To use this bot you must **join** all below 3 channels", buttons=[[Button.url("JOIN 1", url="t.me/save_restricted_message")],
-                                                                                                      [Button.url("JOIN 2", url="t.me/save_restricted_content_1")],
-                                                                                                      [Button.url("JOIN 3", url="t.me/useful_premium_bots")]])
+        return await event.reply("⚠️ To use this bot you must **join** all below channels", buttons=[[Button.url("JOIN 1", url="t.me/save_restricted_message")],
+                                                                                                      [Button.url("JOIN 2", url="t.me/save_restricted_content_1")]])
+                                                                                                      # [Button.url("JOIN 3", url="t.me/useful_premium_bots")]])
     count = await db.get_trial_count(event.sender_id)
     if count == 50:
         await emoji.delete()
@@ -72,6 +70,9 @@ async def clone(event):
     if not n:
         await emoji.delete()
         return await event.reply("⚠️ Trials on this number is already over, buy premium subscription from @DroneBOTs")
+    if not process < 26:
+        await emoji.delete()
+        return await event.reply("⚠️ Bot is overloaded with 25/25 proccesses, please wait or buy premium from @DroneBots")
     await emoji.delete()
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
