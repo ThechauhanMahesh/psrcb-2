@@ -70,9 +70,9 @@ async def clone(event):
     if not n:
         await emoji.delete()
         return await event.reply("⚠️ Trials on this number is already over, buy premium subscription from @DroneBOTs")
-    if not process < 20:
+    if not process < 15:
         await emoji.delete()
-        return await event.reply("⚠️ Bot is overloaded with 20/20 proccesses, please wait or buy premium from @DroneBots")
+        return await event.reply("⚠️ Bot is overloaded with 15/15 proccesses, please wait or buy premium from @DroneBots")
     await emoji.delete()
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
