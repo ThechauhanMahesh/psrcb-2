@@ -18,6 +18,9 @@ from telethon import events
 
 from main.Database.database import db
 
+from hachoir.metadata import extractMetadata
+from hachoir.parser import createParser
+
 def thumbnail(sender):
     if os.path.exists(f'{sender}.jpg'):
         return f'{sender}.jpg'
@@ -27,6 +30,7 @@ def thumbnail(sender):
 async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
     edit = ""
     chat = ""
+    width, height, duration = 90, 90, 0
     round_message = False
     if "?single" in msg_link:
         msg_link = msg_link.split("?single")[0]
@@ -103,14 +107,21 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         caption = caption_data["string"]
             if msg.media==MessageMediaType.VIDEO_NOTE:
                 round_message = True
-                print("Trying to get metadata")
-                data = video_metadata(file)
-                height, width, duration = data["height"], data["width"], data["duration"]
-                print(f'd: {duration}, w: {width}, h:{height}')
-                try:
-                    thumb_path = await screenshot(file, duration, sender)
-                except Exception:
-                    thumb_path = None
+                if metadata and metadata.has("duration"):
+                    duration = metadata.get("duration").seconds
+                    try:
+                        thumb_path = await screenshot(file, duration, sender)
+                    except Exception:
+                        thumb_path = None
+                    if thumb_path != None:
+                        try:
+                            metadata = extractMetadata(createParser(thumb))
+                            if metadata and metadata.has("width"):
+                                width = metadata.get("width")
+                            if metadata and metadata.has("height"):
+                                height = metadata.get("height")
+                        except: 
+                            width, height = 90, 90
                 await client.send_video_note(
                     chat_id=to,
                     video_note=file,
@@ -125,14 +136,21 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     )
                 )
             elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]:
-                print("Trying to get metadata")
-                data = video_metadata(file)
-                height, width, duration = data["height"], data["width"], data["duration"]
-                print(f'd: {duration}, w: {width}, h:{height}')
-                try:
-                    thumb_path = await screenshot(file, duration, sender)
-                except Exception:
-                    thumb_path = None
+                if metadata and metadata.has("duration"):
+                    duration = metadata.get("duration").seconds
+                    try:
+                        thumb_path = await screenshot(file, duration, sender)
+                    except Exception:
+                        thumb_path = None
+                    if thumb_path != None:
+                        try:
+                            metadata = extractMetadata(createParser(thumb))
+                            if metadata and metadata.has("width"):
+                                width = metadata.get("width")
+                            if metadata and metadata.has("height"):
+                                height = metadata.get("height")
+                        except: 
+                            width, height = 90, 90
                 await client.send_video(
                     chat_id=to,
                     video=file,
@@ -228,15 +246,10 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                             pass 
                         return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nPurchase pro plan to save 2gb+ files.')
                     if msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
-                        print("Trying to get metadata")
-                        data = video_metadata(file)
-                        height, width, duration = data["height"], data["width"], data["duration"]
-                        print(f'd: {duration}, w: {width}, h:{height}')
                         try:
                             thumb_path = await screenshot(file, duration, sender)
                         except Exception:
                             thumb_path = None
-
                         await userbot.send_video(to, video=file, caption=caption, 
                         supports_streaming=True, 
                         height=height, width=width, duration=duration, 
