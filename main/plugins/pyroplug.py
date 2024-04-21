@@ -107,6 +107,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         caption = caption_data["string"]
             if msg.media==MessageMediaType.VIDEO_NOTE:
                 round_message = True
+                metadata = extractMetadata(createParser(file))
                 if metadata and metadata.has("duration"):
                     duration = metadata.get("duration").seconds
                     try:
@@ -136,6 +137,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     )
                 )
             elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]:
+                metadata = extractMetadata(createParser(file))
                 if metadata and metadata.has("duration"):
                     duration = metadata.get("duration").seconds
                     try:
