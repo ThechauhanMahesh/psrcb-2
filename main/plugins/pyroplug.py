@@ -18,8 +18,8 @@ from telethon import events
 
 from main.Database.database import db
 
-from hachoir.metadata import extractMetadata
-from hachoir.parser import createParser
+# from hachoir.metadata import extractMetadata
+# from hachoir.parser import createParser
 
 def thumbnail(sender):
     if os.path.exists(f'{sender}.jpg'):
