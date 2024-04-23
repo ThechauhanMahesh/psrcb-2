@@ -107,22 +107,13 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         caption = caption_data["string"]
             if msg.media==MessageMediaType.VIDEO_NOTE:
                 round_message = True
-                metadata = extractMetadata(createParser(file))
-                if metadata and metadata.has("duration"):
-                    duration = metadata.get("duration").seconds
-                    try:
-                        thumb_path = await screenshot(file, duration, sender)
-                    except Exception:
-                        thumb_path = None
-                    if thumb_path != None:
-                        try:
-                            metadata = extractMetadata(createParser(thumb))
-                            if metadata and metadata.has("width"):
-                                width = metadata.get("width")
-                            if metadata and metadata.has("height"):
-                                height = metadata.get("height")
-                        except: 
-                            width, height = 90, 90
+                data = video_metadata(file)
+                height, width, duration = data["height"], data["width"], data["duration"]
+                print(f'd: {duration}, w: {width}, h:{height}')
+                try:
+                    thumb_path = await screenshot(file, duration, sender)
+                except Exception:
+                    thumb_path = None
                 await client.send_video_note(
                     chat_id=to,
                     video_note=file,
@@ -137,22 +128,13 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                     )
                 )
             elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]:
-                metadata = extractMetadata(createParser(file))
-                if metadata and metadata.has("duration"):
-                    duration = metadata.get("duration").seconds
-                    try:
-                        thumb_path = await screenshot(file, duration, sender)
-                    except Exception:
-                        thumb_path = None
-                    if thumb_path != None:
-                        try:
-                            metadata = extractMetadata(createParser(thumb))
-                            if metadata and metadata.has("width"):
-                                width = metadata.get("width")
-                            if metadata and metadata.has("height"):
-                                height = metadata.get("height")
-                        except: 
-                            width, height = 90, 90
+                data = video_metadata(file)
+                height, width, duration = data["height"], data["width"], data["duration"]
+                print(f'd: {duration}, w: {width}, h:{height}')
+                try:
+                    thumb_path = await screenshot(file, duration, sender)
+                except Exception:
+                    thumb_path = None
                 await client.send_video(
                     chat_id=to,
                     video=file,
