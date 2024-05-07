@@ -1,25 +1,22 @@
 # Github.com/Vasusen-code
 
-from .. import bot as Drone, uploader_ubot
-import asyncio, time, os, shutil, datetime 
+from .. import bot as Drone
+import asyncio, time, os 
 
 from main.plugins.progress import progress_for_pyrogram
-from main.plugins.helpers import screenshot, findVideoResolution
+from main.plugins.helpers import screenshot
 from main.plugins.helpers import duration as dr
 from main.Database.database import db
 
-from pyrogram import Client, filters
+from pyrogram import Client
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid, PeerIdInvalid
-from pyrogram.enums import MessageMediaType, ChatType
+from pyrogram.enums import MessageMediaType
 from ethon.pyfunc import video_metadata
 from ethon.telefunc import fast_upload
 from telethon.tl.types import DocumentAttributeVideo
 from telethon import events
 
 from main.Database.database import db
-
-# from hachoir.metadata import extractMetadata
-# from hachoir.parser import createParser
 
 def thumbnail(sender):
     if os.path.exists(f'{sender}.jpg'):
@@ -175,12 +172,15 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                 os.remove(file)
                 if os.path.isfile(file) == True:
                     os.remove(file)
-            except Exception as e:
-                print(e)
+            except:
+                pass
             await edit.delete()
-        except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
-            await client.edit_message_text(sender, edit_id, "⚠️ Have you joined the channel?")
-            return
+        except ChannelBanned:
+            return await client.edit_message_text(sender, edit_id, "⚠️ Banned from this channel.")
+        except ChannelPrivate:
+            return await client.edit_message_text(sender, edit_id, "⚠️ Have you joined the channel?")
+        except (ChannelInvalid, ChatIdInvalid, ChatInvalid):
+            return await client.edit_message_text(sender, edit_id, "⚠️ Check your setchat ID or add bot as admin in your setchat channel/chat.")
         except PeerIdInvalid:
             chat = int(msg_link.split("/")[-3])
             if "-100" in f"{chat}":
@@ -218,7 +218,7 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                         await bot.send_file(to, uploader, caption=caption, thumb=thumb_path, force_document=True)
                     if os.path.isfile(file) == True:
                         os.remove(file)
-                except exception as e:
+                except Exception as e:
                     print("Tried telethon but failed because ", e)
                     return await client.edit_message_text(sender, edit_id, f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
             elif "2000" in str(e):
@@ -259,38 +259,6 @@ async def get_msg(userbot, client, bot, sender, to, edit_id, msg_link, i):
                                 time.time()
                             )
                         )
-                        """
-
-                        bigfilemsg = await uploader_ubot.send_video(chat_id="bigsizecontent", video=file, caption=caption, 
-                                                supports_streaming=True, 
-                                                height=height, width=width, duration=duration, 
-                                                thumb=thumb_path,
-                                                progress=progress_for_pyrogram,
-                                                progress_args=(
-                                                    client,
-                                                    '**🔺 UPLOADING:**\n',
-                                                    edit,
-                                                    time.time()))
-                        
-                    else:
-                        thumb_path=thumbnail(sender)
-                        bigfilemsg = await uploader_ubot.send_document(
-                            "bigsizecontent",
-                            file, 
-                            caption=caption,
-                            thumb=thumb_path,
-                            progress=progress_for_pyrogram,
-                            progress_args=(
-                                client,
-                                '**🔺 UPLOADING:**\n',
-                                edit,
-                                time.time()
-                            )
-                        )
-                    await client.copy_message(to, chat, bigfilemsg.id)
-                    await bigfilemsg.delete()
-                """
-                    
                 except Exception as e:
                     if "SaveBigFilePartRequest" in str(e):
                         await client.edit_message_text(sender, edit_id, f'FILE from `{msg_link}` has been uploaded in your saved messages.')
