@@ -5,20 +5,16 @@
 Plugin for both public & private channels!
 """
 
-import time, os, asyncio
+import asyncio
 
-from .. import bot as Drone, Bot, FORCESUB as fs, AUTH_USERS  as AUTH
+from .. import bot as Drone, Bot, AUTH_USERS  as AUTH
 from main.plugins.pyroplug import get_bulk_msg
-from main.plugins.helpers import get_link, screenshot, force_sub, set_subscription, check_subscription
+from main.plugins.helpers import get_link, set_subscription, check_subscription
 from main.Database.database import db
 
-from telethon import events, Button, errors
-from telethon.tl.types import DocumentAttributeVideo
-
+from telethon import events, Button
 from pyrogram import Client 
 from pyrogram.errors import FloodWait
-
-from ethon.pyfunc import video_metadata
 
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
@@ -208,13 +204,13 @@ async def run_batch(userbot, client, sender, chat, link, _range):
             await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
             break
         try:
-            await get_bulk_msg(userbot, client, sender, chat, link, i) 
+            await get_bulk_msg(userbot, client, sender, chat, link, i=i) 
         except FloodWait as fw:
             if int(fw.x) > 299:
                 await client.send_message(sender, "❌ Cancelling batch since you have floodwait more than 5 minutes.")
                 break
             await asyncio.sleep(fw.x + 5)
-            await get_bulk_msg(userbot, client, sender, chat, link, i)
+            await get_bulk_msg(userbot, client, sender, chat, link, i=i)
         await userbot.stop()
         protection = await client.send_message(chat, f"⚠️ Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
         await asyncio.sleep(timer)
