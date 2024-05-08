@@ -7,8 +7,6 @@ from main.Database.database import db
 
 from pyrogram.enums import MessageMediaType
 
-from main.Database.database import db
-
 def thumbnail(sender):
     if os.path.exists(f'{sender}.jpg'):
         return f'{sender}.jpg'
