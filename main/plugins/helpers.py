@@ -1,86 +1,45 @@
 #Github.com/Vasusen-code
-
-from .. import bot
-from .. import FORCESUB as FSUB
-
-from main.Database.database import db
+import subprocess
+import shlex
+import json
 
 from pyrogram import Client
-from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant, BadRequest
+from pyrogram.enums import MessageMediaType
+from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant
+from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid, PeerIdInvalid
+from pyrogram.errors import UserNotParticipant
+from pyrogram.enums import ChatMemberStatus
 
-# from decouple import config
-from pathlib import Path
+from progress import progress_for_pyrogram
+
 from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
+from hachoir.metadata import extractMetadata
+from hachoir.parser import createParser
 
-from telethon import errors, events
-from telethon.errors.rpcerrorlist import UserNotParticipantError
-from telethon.tl.functions.channels import GetParticipantRequest
-
-#Subscription-------------------------------------------------------------------------------------------------------------
-
-from datetime import timedelta
-from datetime import date
-from datetime import datetime
-
-async def check_subscription(id):
-    try: 
-        doe = (await db.get_data(id))["doe"]
-    except Exception:
-        return
-    z = doe.split("-")
-    e = int(z[0] + z[1] + z[2])
-    x = str(datetime.today()).split(" ")[0]
-    w = x.split("-")
-    today = int(w[0] + w[1] + w[2])
-    if today > e:
-        await db.rem_data(id)
-        await bot.edit_permissions(FSUB, id, view_messages=False)
-        await bot.edit_permissions(FSUB, id, view_messages=True)
-    else:
-        return 
-            
-async def set_subscription(user_id, dos, days, plan):
-    if not dos:
-        x = str(datetime.today()).split(" ")[0]
-        dos_ = x.split("-")
-        today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
-    else:
-        dos_ = dos.split("-")
-        today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
-    expiry_date = today + timedelta(days=days)
-    data = {"dos":str(today), "doe":str(expiry_date), "plan":plan}
-    await db.update_data(user_id, data)
-    
 #Forcesub-----------------------------------------------------------------------------------
 
-async def force_sub(id):
+async def force_sub(client: Client, channel, id):
+    s, r = False, None
     try:
-        x = await bot(GetParticipantRequest(channel=FSUB, participant=int(id)))
-        left = x.stringify()
-        if 'left' in left:
-            ok = True
+        # In Pyrogram, IDs should be directly usable, so ensure 'id' is integer if not handled externally.
+        x = await client.get_chat_member(channel, id)
+        
+        # Check if the participant has left the channel
+        if x.status in [ChatMemberStatus.LEFT, ChatMemberStatus.BANNED]:
+            s, r = True, f"To use this bot you must JOIN @{channel}"
         else:
-            ok = False
-    except UserNotParticipantError:
-        ok = True 
-    return ok   
+            s, r = False, None
+    except UserNotParticipant:
+        s, r = True, f"To use this bot you must JOIN @{channel}"
+    except Exception as e:
+        s, r = True, f"ERROR: Add in ForceSub channel, or check your channel id. Details: {str(e)}"
+    return s, r
 
-#Multi client-------------------------------------------------------------------------------------------------------------
 
-async def login(sender, i, h, s):
-    await db.update_api_id(sender, i)
-    await db.update_api_hash(sender, h)
-    await db.update_session(sender, s)
-    
-async def logout(sender):
-    await db.rem_api_id(sender)
-    await db.rem_api_hash(sender)
-    await db.rem_session(sender)
-   
 #Join private chat-------------------------------------------------------------------------------------------------------------
 
-async def join(client, invite_link):
+async def join(client: Client, invite_link):
     try:
         await client.join_chat(invite_link)
         return "Successfully joined the Channel"
@@ -110,25 +69,17 @@ def get_link(string):
     except Exception:
         return False
     
-#Anti-Spam---------------------------------------------------------------------------------------------------------------
-
-#Set timer to avoid spam
-async def set_timer(bot, sender, t):
-    await bot.send_message(sender, f'You can start a new process again after {t} seconds.')
-    await asyncio.sleep(int(t))
-    await db.rem_process(sender)
-    
-# ---------------------------------------------------------------------------------------------------------------
+# screenshot ---------------------------------------------------------------------------------------------------------------
     
 def hhmmss(seconds):
     x = time.strftime('%H:%M:%S',time.gmtime(seconds))
     return x
 
-async def screenshot(video, duration, sender):
-    if os.path.exists(f'{sender}.jpg'):
-        return f'{sender}.jpg'
+async def screenshot(video, duration):
+    # if os.path.exists(f'{sender}.jpg'):
+    #     return f'{sender}.jpg'
     time_stamp = hhmmss(int(duration)/2)
-    out = f'{sender}-' + dt.now().isoformat("_", "seconds") + ".jpg"
+    out = dt.now().isoformat("_", "seconds") + ".jpg"
     cmd = ["ffmpeg",
            "-ss",
            f"{time_stamp}", 
@@ -152,32 +103,200 @@ async def screenshot(video, duration, sender):
     else:
         None       
 
-import subprocess
-import shlex
-import json
+# metadata ---------------------------------------------------------------------------------------------------------------
+ 
+# function to find the metadata of the input video file
+async def findVideoMetadata(pathToInputVideo):
 
-# function to find the resolution of the input video file
-def findVideoResolution(pathToInputVideo):
-    cmd = "ffprobe -v quiet -print_format json -show_streams"
-    args = shlex.split(cmd)
-    args.append(pathToInputVideo)
-    # run the ffprobe process, decode stdout into utf-8 & convert to JSON
-    ffprobeOutput = subprocess.check_output(args).decode('utf-8')
-    ffprobeOutput = json.loads(ffprobeOutput)
+    height, width, duration_seconds = 90, 90, 0
 
-    # find height and width
-    height = ffprobeOutput['streams'][0]['height']
-    width = ffprobeOutput['streams'][0]['width']
+    try:
+        metadata = extractMetadata(createParser(pathToInputVideo))
+        if metadata and metadata.has("duration"):
+            duration_seconds = metadata.get("duration").seconds
+            try:
+                thumb = await screenshot(pathToInputVideo, duration_seconds)
+            except:
+                thumb = None
+            if thumb != None:
+                metadata = extractMetadata(createParser(thumb))
+                if metadata and metadata.has("width"):
+                    width = metadata.get("width")
+                if metadata and metadata.has("height"):
+                    height = metadata.get("height")
+        else:
+            cmd = "ffprobe -v quiet -print_format json -show_streams"
+            args = shlex.split(cmd)
+            args.append(pathToInputVideo)
+            # run the ffprobe process, decode stdout into utf-8 & convert to JSON
+            ffprobeOutput = subprocess.check_output(args).decode('utf-8')
+            ffprobeOutput = json.loads(ffprobeOutput)
 
-    # find duration
-    out = subprocess.check_output(["ffprobe", "-v", "quiet", "-show_format", "-print_format", "json", pathToInputVideo])
-    ffprobe_data = json.loads(out)
-    duration_seconds = float(ffprobe_data["format"]["duration"])
+            # find height and width
+            height = ffprobeOutput['streams'][0]['height']
+            width = ffprobeOutput['streams'][0]['width']
+
+            # find duration
+            out = subprocess.check_output(["ffprobe", "-v", "quiet", "-show_format", "-print_format", "json", pathToInputVideo])
+            ffprobe_data = json.loads(out)
+            duration_seconds = float(ffprobe_data["format"]["duration"])
+    except:
+        return 90, 90, 0
 
     return int(height), int(width), int(duration_seconds)
 
-def duration(pathToInputVideo):
-    out = subprocess.check_output(["ffprobe", "-v", "quiet", "-show_format", "-print_format", "json", pathToInputVideo])
-    ffprobe_data = json.loads(out)
-    duration_seconds = float(ffprobe_data["format"]["duration"])
-    return int(duration_seconds)
+# download ---------------------------------------------------------------------------------------------------------------
+
+async def download(client:Client, msg, editable_msg, file_name=None):
+    file = ""
+    try:
+        if file_name:
+            file = await client.download_media(
+                msg,
+                file_name=new_name,
+                progress=progress_for_pyrogram,
+                progress_args=(
+                    client,
+                    "**🔻 DOWNLOADING:**\n",
+                    editable_msg,
+                    time.time()
+                )
+            )
+        else:
+            file = await client.download_media(
+                msg,
+                progress=progress_for_pyrogram,
+                progress_args=(
+                    client,
+                    "**🔻 DOWNLOADING:**\n",
+                    editable_msg,
+                    time.time()
+                )
+            )
+        return True, file
+    except FileNotFoundError:
+        new_name = file.split("downloads/")[1].replace("/", "-")
+        return await download(client, msg, editable_msg, file_name=new_name)
+    except PeerIdInvalid:
+        return False, PeerIdInvalid
+    except ChannelBanned:
+        return False, "⚠️ You are banned from this chat"
+    except ChannelPrivate:
+        return False, "⚠️ You are not joined in this channel"
+    except Exception as e:
+        if "This message doesn't contain any downloadable media" in str(e):
+            return False, None
+        return False, str(e)
+
+# upload ---------------------------------------------------------------------------------------------------------------
+  
+async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, caption=None):
+    try:
+        if msg.media==MessageMediaType.VIDEO_NOTE:
+            height, width, duration = findVideoMetadata(file)
+            print(f'd: {duration}, w: {width}, h:{height}')
+            try:
+                if not thumb_path:
+                    thumb_path = await screenshot(file, duration)
+            except Exception:
+                thumb_path = None
+            await client.send_video_note(
+                chat_id=to,
+                video_note=file,
+                length=height, duration=duration, 
+                thumb=thumb_path,
+                progress=progress_for_pyrogram,
+                progress_args=(
+                    client,
+                    '**🔺 UPLOADING:**\n',
+                    editable_msg,
+                    time.time()
+                )
+            )
+        elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]:
+            height, width, duration = findVideoMetadata(file)
+            print(f'd: {duration}, w: {width}, h:{height}')
+            try:
+                if not thumb_path:
+                    thumb_path = await screenshot(file, duration)
+            except Exception:
+                thumb_path = None
+            await client.send_video(
+                chat_id=to,
+                video=file,
+                caption=caption,
+                supports_streaming=True,
+                height=height, width=width, duration=duration, 
+                thumb=thumb_path,
+                progress=progress_for_pyrogram,
+                progress_args=(
+                    client,
+                    '**🔺 UPLOADING:**\n',
+                    editable_msg,
+                    time.time()
+                )
+            )
+        elif msg.media==MessageMediaType.VOICE:
+            await client.send_voice(to, file, caption=caption)
+            
+        elif msg.media==MessageMediaType.PHOTO:
+            await editable_msg.edit("🔺 Uploading photo...")
+            await client.send_photo(to, file, caption=caption)
+        else:
+            await client.send_document(
+                to,
+                file, 
+                caption=caption,
+                thumb=thumb_path,
+                progress=progress_for_pyrogram,
+                progress_args=(
+                    client,
+                    '**🔺 UPLOADING:**\n',
+                    editable_msg,
+                    time.time()
+                )
+            )
+        try:
+            os.remove(file)
+            if os.path.isfile(file) == True:
+                os.remove(file)
+        except:
+            pass
+        await editable_msg.delete()
+    except (ChannelInvalid, ChatInvalid, ChatIdInvalid, PeerIdInvalid):
+        return False, "⚠️ Please check your Link or check your setchat ID or add bot as admin in your setchat channel."
+    except Exception as e:
+        if "size equals" in str(e):
+            await asyncio.sleep(60)
+            try:
+                os.remove(file)
+            except:
+                pass
+            return False, None
+        elif "messages.SendMedia" in str(e) \
+        or "SaveBigFilePartRequest" in str(e) \
+        or "SendMediaRequest" in str(e):
+            try:
+                await client.send_document(
+                    to,
+                    file, 
+                    caption=caption,
+                    thumb=thumb_path,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        client,
+                        '**🔺 UPLOADING:**\n',
+                        editable_msg,
+                        time.time()
+                    )
+                )
+                try:
+                    os.remove(file)
+                    if os.path.isfile(file) == True:
+                        os.remove(file)
+                except:
+                    pass
+            except Exception as e:
+                return False, str(e)
+        return False, str(e)
+
