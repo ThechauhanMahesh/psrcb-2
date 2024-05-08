@@ -185,7 +185,7 @@ async def download(client:Client, msg, editable_msg, file_name=None):
         return False, "⚠️ You are not joined in this channel"
     except Exception as e:
         if "This message doesn't contain any downloadable media" in str(e):
-            return False, None
+            return False, "This message cannot be saved now, try after few hours."
         return False, str(e)
 
 # upload ---------------------------------------------------------------------------------------------------------------
