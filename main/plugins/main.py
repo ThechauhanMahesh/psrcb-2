@@ -2,19 +2,15 @@
 
 from .. import bot as Drone
 from .. import Bot, AUTH_USERS 
-from .. import FORCESUB as fs
 
-from main.plugins.helpers import get_link, join, set_timer, screenshot, check_subscription
-from main.plugins.progress import progress_for_pyrogram
+from main.plugins.helpers import get_link, check_subscription
 from main.Database.database import db
 from main.plugins.pyroplug import get_msg
 
-from pyrogram.errors import FloodWait, BadRequest
-from pyrogram import Client, filters, idle
-from ethon.pyfunc import video_metadata
+from pyrogram import Client
 from telethon import events
 
-import re, time, asyncio
+import asyncio
 # from decouple import config
 
 message = "Send me the message link you want to start saving from, as a reply to this message."
@@ -56,43 +52,15 @@ async def clone(event):
     edit = await event.reply("Processing!")
     if (await db.get_process(event.sender_id))["process"] == True:
         return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
-    pt = 10
-    ut = 10
+    timer = 10
     if (await db.get_data(event.sender_id))["plan"] == "pro":
-        ut = 2
-        pt = 2
+        timer = 2
     to = await db.get_chat(event.chat.id)
     if to == None:
         to = event.sender_id
-    if 't.me' in link and not 't.me/c/' in link and not 't.me/b/' in link:
-        await db.update_process(event.sender_id)
-        try:
-            await get_msg(None, Bot, Drone, event.sender_id, to, edit.id, link, 0)
-        except Exception as e:
-            print(e)
-            pass
-        await set_timer(Drone, event.sender_id, ut) 
-        return
     if 't.me/+' in link:
-        userbot = ""
-        i, h, s = await db.get_credentials(event.chat.id)
-        userbot = None
-        if i and h and s is not None:
-            try:
-                userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
-                await userbot.start()
-            except Exception as e:
-                print(e)
-                return await edit.edit(str(e))
-        else:
-            return await edit.edit("⚠️ Your login credentials not found.")
-        try: 
-            j = await join(userbot, link)
-            await edit.edit(j)
-        except Exception as e:
-            print(e)
-            pass
-    if 't.me/c/' in link or 't.me/b/' in link:
+        return await edit.edit("Join yourself manually.")
+    if 't.me' in link:
         userbot = ""
         i, h, s = await db.get_credentials(event.chat.id)
         if i and h and s is not None:
@@ -106,9 +74,9 @@ async def clone(event):
             return await edit.edit("⚠️ Your login credentials not found.")
         await db.update_process(event.sender_id)
         try: 
-            await get_msg(userbot, Bot, Drone,event.sender_id, to, edit.id, link, 0)
+            await get_msg(userbot, Bot, event.sender_id, to, edit, link, i=0)
         except Exception as e:
             print(e)
             pass
         await userbot.stop()
-        await set_timer(Drone, event.sender_id, ut) 
+        # add waiting period limit here of timer seconds
