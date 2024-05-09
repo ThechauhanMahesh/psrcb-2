@@ -18,4 +18,4 @@ for name in files:
 print("Successfully deployed!")
 
 if __name__ == "__main__":
-    bot.run_until_disconnected()
+    bot.run()
