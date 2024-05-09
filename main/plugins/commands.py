@@ -6,14 +6,14 @@ from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_U
 from pyrogram import Client, filters, types
 from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
 
-from main.plugins.helpers import login, logout
+from main.plugins.helpers import login_credentials, logout_credentials
 from main.Database.database import db
 
 APIID = [API_ID, 29841594]
 APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
 @Drone.on_message(filters=filters.private & filters.incoming, group=1)
-async def incomming(client, message: types.Message):
+async def incomming(_, message: types.Message):
     user_id = message.from_user.id
     if not await db.is_user_exist(user_id):
         await db.add_user(user_id)
@@ -43,10 +43,7 @@ async def start(_, message: types.Message):
 @Drone.on_message(filters=filters.command('login') & filters.incoming)
 async def login(_, message: types.Message):
     number, otp, code = 0, 0, 0
-    session = None 
-    passcode = None
-    ai = None
-    ah = None
+    session, passcode, ai, ah= None, None, None, None
     user_id = message.from_user.id
 
     contact = await Drone.ask(user_id, "Send me your contact number with country code(eg +1 or +91) to login.", filters=filters.text)
@@ -115,14 +112,14 @@ async def login(_, message: types.Message):
         await message.reply(f"**ERROR:** {str(e)}")
         return
     
-    await login(user_id, ai, ah, session) 
+    await login_credentials(user_id, ai, ah, session) 
     await message.reply("✅ Login credentials saved.\n\n⚠️ click on 'yes its me' when telegram asks if is it you who logged in.")
     await client.disconnect()
 
 @Drone.on_message(filters=filters.command('logout') & filters.incoming)
 async def logout(_, message: types.Message):
     edit = await message.reply("Trying to logout.")
-    await logout(message.from_user.id)
+    await logout_credentials(message.from_user.id)
     await edit.edit('✅ successfully Logged out.')
 
 @Drone.on_message(filters=filters.command('logout') & filters.incoming)
@@ -148,9 +145,3 @@ async def remthumb(_, message: types.Message):
         await edit.edit('✅ Removed!')
     except Exception:
         await edit.edit("No thumbnail was saved.")     
-
-    
-    
-    
-    
-    
