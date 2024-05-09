@@ -84,6 +84,38 @@ async def login(_, message: types.Message):
             return
         await code_alert.delete()
 
+    ask_code = await Drone.ask(user_id, otp_text, filters=filters.text)
+    otp = ask_code.text
+    try:
+        await client.sign_in(number, code.phone_code_hash, phone_code=' '.join(str(otp)))
+    except PhoneCodeInvalid:
+        await message.reply("Invalid Code, try again.")
+        return
+    except PhoneCodeExpired:
+        await message.reply("Code has expired, try again.")
+        return
+    except SessionPasswordNeeded:
+        two_step = await Drone.ask(user_id, "Send your Two-Step Verification password.", filters=filters.text)
+        passcode = two_step.text
+        try:
+            await client.check_password(passcode)
+        except Exception as e:
+            await message.reply(f"**ERROR:** {str(e)}")
+            return
+    except Exception as e:
+        await message.reply(f"**ERROR:** {str(e)}")
+        return
+    
+    try:
+        session = await client.export_session_string()
+    except Exception as e:
+        await message.reply(f"**ERROR:** {str(e)}")
+        return
+    
+    await login(user_id, ai, ah, session) 
+    await message.reply("✅ Login credentials saved.\n\n⚠️ click on 'yes its me' when telegram asks if is it you who logged in.")
+    await client.disconnect()
+
 @Drone.on_message(filters=filters.command('logout') & filters.incoming)
 async def logout(_, message: types.Message):
     edit = await message.reply("Trying to logout.")
