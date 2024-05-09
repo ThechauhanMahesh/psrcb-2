@@ -86,7 +86,7 @@ async def get_msg(userbot, client, sender, to, editable_msg, msg_link, i=0):
                     return await get_msg(userbot, client, sender, to, editable_msg, msg_link, i=0)
                 else:
                     await editable_msg.edit(f"❌ Failed to upload: `{msg_link}`\n\Error: {update}")
-                
+
             try:
                 os.remove(file)
             except:
