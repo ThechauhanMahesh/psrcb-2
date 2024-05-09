@@ -6,6 +6,7 @@ from main.plugins.helpers import download, upload
 from main.Database.database import db
 
 from pyrogram.enums import MessageMediaType
+from pyrogram import Client
 
 def thumbnail(sender):
     if os.path.exists(f'{sender}.jpg'):
@@ -13,9 +14,9 @@ def thumbnail(sender):
     else:
          return None
       
-async def get_msg(userbot, client, sender, to, editable_msg, msg_link, i=0):
+async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=0):
 
-    file, chat, caption, thumb_path = None, None, None, thumbnail(sender)
+    file, chat, caption, thumb_path, upload_client = None, None, None, thumbnail(sender), client
     plan = await db.get_data(sender)["plan"]
 
     if "?single" in msg_link:
@@ -31,8 +32,6 @@ async def get_msg(userbot, client, sender, to, editable_msg, msg_link, i=0):
 
         try:
             msg = await userbot.get_messages(chat, msg_id)
-
-            # check file size here
 
             if not msg.media:
                 if msg.text:
@@ -54,6 +53,15 @@ async def get_msg(userbot, client, sender, to, editable_msg, msg_link, i=0):
                         return
                     else:
                         file = update
+
+            if int(msg.video.file_size) > 2097152000:
+                if plan != "pro":
+                    return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
+                else:
+                    upload_client = userbot
+                    if to == sender:
+                        me = await client.get_me()
+                        to = me.username
 
             if msg.caption is not None:
                 caption = msg.caption
@@ -78,7 +86,8 @@ async def get_msg(userbot, client, sender, to, editable_msg, msg_link, i=0):
                         caption = caption_data["string"]
 
             await editable_msg.edit("Preparing to upload...")
-            uploaded, update = await upload(client, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
+            
+            uploaded, update = await upload(upload_client, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
             if uploaded:
                 await editable_msg.delete()
             else:
