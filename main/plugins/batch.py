@@ -35,9 +35,11 @@ async def myplan(_, message: types.Message):
 
 @Drone.on_message(filters=filters.command('x') & filters.incoming)
 async def ss(_, message: types.Message):
+    if AUTH_USERS != message.from_user.id:
+        return 
     edit = await message.reply("Processing...")
     msg = message.reply_to_message
-    data = str(msg.text).split("")
+    data = str(msg.text).split(" ")
     date = data[1]
     if date == "None":
         date = False
