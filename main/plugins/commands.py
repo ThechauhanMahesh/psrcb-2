@@ -43,7 +43,10 @@ async def start(_, message: types.Message):
 @Drone.on_message(filters=filters.command('login') & filters.incoming)
 async def login(_, message: types.Message):
     number, otp, code = 0, 0, 0
-    session, passcode, ai, ah= None, None, None, None
+    session = None 
+    passcode = None
+    ai = None
+    ah = None
     user_id = message.from_user.id
 
     contact = await Drone.ask(user_id, "Send me your contact number with country code(eg +1 or +91) to login.", filters=filters.text)
