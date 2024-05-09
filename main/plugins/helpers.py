@@ -57,7 +57,7 @@ async def login_credentials(sender, i, h, s):
     await db.update_api_hash(sender, h)
     await db.update_session(sender, s)
     
-async def logologout_credentials(sender):
+async def logout_credentials(sender):
     await db.rem_api_id(sender)
     await db.rem_api_hash(sender)
     await db.rem_session(sender)
