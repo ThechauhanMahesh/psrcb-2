@@ -2,6 +2,13 @@
 import subprocess
 import shlex
 import json
+from datetime import timedelta
+from datetime import date
+from datetime import datetime
+from datetime import datetime as dt
+import asyncio, subprocess, re, os, time
+from hachoir.metadata import extractMetadata
+from hachoir.parser import createParser
 
 from pyrogram import Client
 from pyrogram.enums import MessageMediaType
@@ -10,14 +17,60 @@ from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatI
 from pyrogram.errors import UserNotParticipant
 from pyrogram.enums import ChatMemberStatus
 
-from progress import progress_for_pyrogram
+from main.plugins.progress import progress_for_pyrogram
+from main.Database.database import db
 
-from datetime import datetime as dt
-import asyncio, subprocess, re, os, time
-from hachoir.metadata import extractMetadata
-from hachoir.parser import createParser
 
-#Forcesub-----------------------------------------------------------------------------------
+# Subscription ----------------------------------------------------------------------------------
+
+async def check_subscription(id):
+    try: 
+        doe = (await db.get_data(id))["doe"]
+    except Exception:
+        return
+    z = doe.split("-")
+    e = int(z[0] + z[1] + z[2])
+    x = str(datetime.today()).split(" ")[0]
+    w = x.split("-")
+    today = int(w[0] + w[1] + w[2])
+    if today > e:
+        await db.rem_data(id)
+    else:
+        return 
+            
+async def set_subscription(user_id, dos, days, plan):
+    if not dos:
+        x = str(datetime.today()).split(" ")[0]
+        dos_ = x.split("-")
+        today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
+    else:
+        dos_ = dos.split("-")
+        today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
+    expiry_date = today + timedelta(days=days)
+    data = {"dos":str(today), "doe":str(expiry_date), "plan":plan}
+    await db.update_data(user_id, data)
+
+#Multi client-------------------------------------------------------------------------------------------------------------
+
+async def login(sender, i, h, s):
+    await db.update_api_id(sender, i)
+    await db.update_api_hash(sender, h)
+    await db.update_session(sender, s)
+    
+async def logout(sender):
+    await db.rem_api_id(sender)
+    await db.rem_api_hash(sender)
+    await db.rem_session(sender)
+
+#Anti-Spam---------------------------------------------------------------------------------------------------------------
+
+#Set timer to avoid spam
+async def set_timer(bot, sender, t):
+    await bot.send_message(sender, f'You can start a new process again after {t} seconds.')
+    await asyncio.sleep(int(t))
+    await db.rem_process(sender)
+        
+#Forcesub -----------------------------------------------------------------------------------
 
 async def force_sub(client: Client, channel, id):
     s, r = False, None
