@@ -16,7 +16,7 @@ def thumbnail(sender):
       
 async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=0):
 
-    file, chat, caption, thumb_path, upload_client = None, None, None, thumbnail(sender), client
+    file, file_size, chat, caption, thumb_path, upload_client = None, None, None, None, thumbnail(sender), client
     plan = await db.get_data(sender)["plan"]
 
     if "?single" in msg_link:
@@ -54,7 +54,11 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=
                     else:
                         file = update
 
-            if int(msg.video.file_size) > 2097152000:
+            if msg.document:
+                file_size = msg.document.file_size
+            else:
+                file_size = msg.video.file_size
+            if file_size > 2097152000:
                 if plan != "pro":
                     return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
                 else:
