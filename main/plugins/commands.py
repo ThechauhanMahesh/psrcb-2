@@ -12,7 +12,7 @@ from main.Database.database import db
 APIID = [API_ID, 29841594]
 APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
-@Drone.on_message(filters=filters.private & filters.incoming, group=3)
+@Drone.on_message(filters=filters.private & filters.incoming, group=1)
 async def incomming(client, message: types.Message):
     user_id = message.from_user.id
     if not await db.is_user_exist(user_id):
@@ -24,7 +24,6 @@ async def incomming(client, message: types.Message):
         if (await db.get_data(user_id))["dos"] == None:
             tag = f'[{message.from_user.first_name}](t.me/@id{user_id})'
             await Drone.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {user_id}') 
-            await message.reply("Make a purchase from @SubscriptionForBot")
 
 # @Drone.on(events.NewMessage(incoming=True, pattern="^/setchat (.*)" ))
 # async def update_chat(event):
