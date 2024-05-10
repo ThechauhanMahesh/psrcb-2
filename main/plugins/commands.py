@@ -81,7 +81,10 @@ async def handle_set_chat(_, message: types.Message):
                         peer_type=RequestPeerTypeChat()
                     )
                 ]
-            ]
+            ], 
+            resize_keyboard = True, 
+            one_time_keyboard = True, 
+            placeholder = "🥵"
         ),
     )
 
