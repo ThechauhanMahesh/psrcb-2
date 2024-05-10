@@ -15,7 +15,7 @@ from main.Database.database import db
 from pyrogram import Client, filters, types
 from pyrogram.errors import FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from asyncio import TimeoutError
+from pyromod.exceptions import ListenerTimeout
 
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
@@ -119,15 +119,20 @@ async def batch(client, message: types.Message):
     batch_link = True
     try:
         link = await Drone.ask(chat_id=user_id, text="Send me the message link you want to start saving from.", filters=filters.text, timeout=60)
-        try:
-            link = get_link(link.text)
-        except Exception:
-            return await message.reply("⚠️ No link found.")
-        batch_link = False
-        
-        range_ = await Drone.ask(chat_id=user_id, text="Send me the number of files/range you want to save from the given message.", filters=filters.text, timeout=60)
-    except TimeoutError:
+    except ListenerTimeout:
         await message.reply("You took too long to respond.")
+    try:
+        link = get_link(link.text)
+    except Exception:
+        return await message.reply("⚠️ No link found.")
+    batch_link = True
+    try:
+        range_ = await Drone.ask(chat_id=user_id, text="Send me the number of files/range you want to save from the given message.", filters=filters.text, timeout=60)
+    except ListenerTimeout:
+        await message.reply("You took too long to respond.")
+        batch_link = False
+        return 
+    batch_link = False
     try:
         range_ = range_.text
         value = int(range_)
