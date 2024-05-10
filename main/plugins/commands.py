@@ -3,7 +3,7 @@
 import os, asyncio
 from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS
 
-from asyncio import TimeoutError
+from pyromod.exceptions import ListenerTimeout
 from pyrogram import Client, filters, types
 from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
  
@@ -107,7 +107,7 @@ async def login(_, message: types.Message):
         except Exception as e:
             await message.reply(f"**ERROR:** {str(e)}")
             return
-    except TimeoutError:
+    except ListenerTimeout:
         return await message.reply("You took too long to respond.")
     try:
         session = await client.export_session_string()
@@ -134,7 +134,7 @@ async def setthumb(client, message: types.Message):
     user_id = message.from_user.id
     try:
         image = await Drone.ask(chat_id=user_id, text="Send me any image for thumbnail.", filters=filters.photo, timeout=60)   
-    except TimeoutError:
+    except ListenerTimeout:
         return await message.reply("You took too long to respond.")      
     edit = await message.reply("Trying to download..")
     path = await client.download_media(image)
