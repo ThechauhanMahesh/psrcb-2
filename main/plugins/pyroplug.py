@@ -26,7 +26,7 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
         if 't.me/b/' in msg_link:
             chat = str(msg_link.split("/b/")[1].split("/")[0])
         elif 't.me/c/' in msg_link:
-            chat = int('-100' + str(msg_link.split("/c/")1]).split("/")[0])
+            chat = int('-100' + str(msg_link.split("/c/")[1]).split("/")[0])
         try:
             msg = await userbot.get_messages(chat, msg_id)
             
