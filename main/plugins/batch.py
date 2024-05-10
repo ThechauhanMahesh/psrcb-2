@@ -7,7 +7,7 @@ Plugin for both public & private channels!
 
 import asyncio
 
-from .. import bot as Drone, AUTH_USERS 
+from .. import bot as Drone, AUTH_USERS
 from main.plugins.pyroplug import get_bulk_msg
 from main.plugins.helpers import get_link, set_subscription, check_subscription
 from main.Database.database import db
@@ -101,10 +101,13 @@ async def replace(_, cb: CallbackQuery):
 async def batch(client, message: types.Message):
     global batch_link
     user_id = message.from_user.id
-
+    data = await db.get_data(user_id)
+    plan = data["plan"]
+    caption_data = await db.get_caption(user_id)
+    
     await check_subscription(user_id)
 
-    if (await db.get_data(user_id))["plan"] == "basic":
+    if plan == "basic":
         await message.reply("⚠️ Buy Monthly subscription or Pro subscription.")
         return
     
@@ -125,7 +128,7 @@ async def batch(client, message: types.Message):
         range = range.text
         value = int(range)
         if value > 30:
-            if not (await db.get_data(user_id))["plan"] == "pro":
+            if not plan == "pro":
                 await message.reply("⚠️ You can only get upto 30 files in a single batch.")
                 return
             elif value > 100:
@@ -146,10 +149,10 @@ async def batch(client, message: types.Message):
         await message.reply("⚠️ Your login credentials not found.")
         return
     await db.update_process(user_id, batch=True)
-    await run_batch(userbot, client, user_id, chat, link, value) 
+    await run_batch(userbot, client, user_id, chat, link, value, caption_data, plan) 
     await db.rem_process(user_id)
             
-async def run_batch(userbot, client, sender, chat, link, value):
+async def run_batch(userbot, client, sender, chat, link, value, caption_data, plan):
     for i in range(value):
         if i < 50:
             timer = 10
@@ -187,7 +190,7 @@ async def run_batch(userbot, client, sender, chat, link, value):
             await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
             break
         try:
-            await get_bulk_msg(userbot, client, sender, chat, link, i=i) 
+            await get_bulk_msg(userbot, client, sender, chat, link, caption_data, i=i, plan=plan) 
         except FloodWait as fw:
             if int(fw.x) > 299:
                 await client.send_message(sender, "❌ Cancelling batch since you have floodwait more than 5 minutes.")
@@ -198,4 +201,3 @@ async def run_batch(userbot, client, sender, chat, link, value):
         protection = await client.send_message(chat, f"⚠️ Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
         await asyncio.sleep(timer)
         await protection.delete()
-            
