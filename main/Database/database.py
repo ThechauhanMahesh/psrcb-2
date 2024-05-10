@@ -170,3 +170,10 @@ class Database:
         await self.col.update_one({'id': self.default_id}, {'$set': {'expired': expired}})
     
 db = Database(MONGODB_URI, SESSION_NAME)
+
+_client = pymongo.MongoClient(MONGODB_URI)
+_db = _client[SESSION_NAME] 
+collection = _db["users"]  
+process = {"process":{"process":False, "batch":False}}
+collection.update_many({}, {"$set":process})
+print("All users have been set free.")
