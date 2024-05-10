@@ -47,6 +47,9 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
                 else:
                     downloaded, update = await download(userbot, msg, editable_msg)
                     if not downloaded:
+                        if not update:
+                            await editable_msg.delete()
+                            return
                         await editable_msg.edit(f"❌ Failed to save: `{msg_link}`\n\Error: {update}")
                         return
                     else:
