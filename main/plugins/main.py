@@ -39,15 +39,16 @@ async def clone(client, message: types.Message):
     except TypeError:
         return
     await check_subscription(user_id)
-    s = await db.get_data(user_id)
-    if s["dos"] == None:
+    data = await db.get_data(user_id)
+    plan = data["plan"]
+    if data["dos"] == None:
         await message.reply("⚠️ You are not subscribed to premium bot, pay in @SubscriptionForBot to buy.")
         return
     edit = await message.reply("Processing!")
     if (await db.get_process(user_id))["process"] == True:
         return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
     timer = 10
-    if (await db.get_data(user_id))["plan"] == "pro":
+    if plan == "pro":
         timer = 2
     to = await db.get_chat(user_id)
     if to == None:
@@ -67,8 +68,9 @@ async def clone(client, message: types.Message):
         else:
             return await edit.edit("⚠️ Your login credentials not found.")
         await db.update_process(user_id)
+        caption_data = await db.get_caption(user_id)
         try: 
-            await get_msg(userbot, client, user_id, to, edit, link, i=0)
+            await get_msg(userbot, client, user_id, to, edit, link, caption_data, i=0, plan=plan)
             await userbot.stop()
         except Exception as e:
             print(e)
