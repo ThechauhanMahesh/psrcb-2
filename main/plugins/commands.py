@@ -9,7 +9,7 @@ from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, 
 
 from main.plugins.helpers import login_credentials, logout_credentials
 from main.Database.database import db
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, ReplyKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, ReplyKeyboardMarkup, ReplyKeyboardRemove 
 
 from pyrogram.utils import get_peer_id
 from pyrogram.raw.types import RequestPeerTypeBroadcast, RequestPeerTypeChat
@@ -84,7 +84,7 @@ async def handle_set_chat(_, message: types.Message):
             ], 
             resize_keyboard = True, 
             one_time_keyboard = True, 
-            placeholder = "🥵"
+            placeholder = "🥵🍑"
         ),
     )
 
