@@ -28,11 +28,11 @@ async def clone(client, message: types.Message):
 
     emoji = await message.reply("🔗")
 
-    f = await force_sub(client, FORCESUB[0], user_id)
+    f, u = await force_sub(client, FORCESUB[0], user_id)
     if f:
         await emoji.delete()
         return await message.reply(f"⚠️ To use this bot you must **join** all below channels\n\n@{FORCESUB[0]}\n@{FORCESUB[1]}")
-    f = await force_sub(client, FORCESUB[1], user_id)
+    f, u = await force_sub(client, FORCESUB[1], user_id)
     if f:
         await emoji.delete()
         return await message.reply(f"⚠️ To use this bot you must **join** all below channels\n\n@{FORCESUB[0]}\n@{FORCESUB[1]}")
