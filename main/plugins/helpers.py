@@ -317,6 +317,7 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
         except:
             pass
         await editable_msg.delete()
+        return True, None
     except (ChannelInvalid, ChatInvalid, ChatIdInvalid, PeerIdInvalid):
         return False, "⚠️ Please check your Link or check your setchat ID or add bot as admin in your setchat channel."
     except Exception as e:
