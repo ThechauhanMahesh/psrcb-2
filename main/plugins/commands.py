@@ -3,7 +3,7 @@
 import os, asyncio
 from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS
 
-from asyncio import TimeoutError
+from pyromod.exceptions import ListenerTimeout
 from pyrogram import Client, filters, types
 from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
 
@@ -43,7 +43,7 @@ async def login(_, message: types.Message):
         return await message.reply("⚠️ You are already logged in.")
 
     try:
-        contact = await Drone.ask(user_id, "Send me your contact number with country code(eg +1 or +91) to login.", filters=filters.text, timeout=60)
+        contact = await Drone.ask(chat_id=user_id, text="Send me your contact number with country code(eg +1 or +91) to login.", filters=filters.text, timeout=60)
         number = ' '.join(str(contact.text))
         if "-" in number:
             number = '-'.join(number)
@@ -86,7 +86,7 @@ async def login(_, message: types.Message):
                 return
             await code_alert.delete()
 
-        ask_code = await Drone.ask(user_id, otp_text, filters=filters.text, timeout=60)
+        ask_code = await Drone.ask(chat_id=user_id, text=otp_text, filters=filters.text, timeout=60)
         otp = ask_code.text
         try:
             await client.sign_in(number, code.phone_code_hash, phone_code=' '.join(str(otp)))
@@ -97,7 +97,7 @@ async def login(_, message: types.Message):
             await message.reply("Code has expired, try again.")
             return
         except SessionPasswordNeeded:
-            two_step = await Drone.ask(user_id, "Send your Two-Step Verification password.", filters=filters.text, timeout=60)
+            two_step = await Drone.ask(chat_id=user_id, text="Send your Two-Step Verification password.", filters=filters.text, timeout=60)
             passcode = two_step.text
             try:
                 await client.check_password(passcode)
@@ -107,7 +107,7 @@ async def login(_, message: types.Message):
         except Exception as e:
             await message.reply(f"**ERROR:** {str(e)}")
             return
-    except TimeoutError:
+    except ListenerTimeout:
         return await message.reply("You took too long to respond.")
     try:
         session = await client.export_session_string()
@@ -135,8 +135,8 @@ async def help(_, message: types.Message):
 async def setthumb(client, message: types.Message):   
     user_id = message.from_user.id
     try:
-        image = await Drone.ask(user_id, "Send me any image for thumbnail.", filters=filters.photo, timeout=60)   
-    except TimeoutError:
+        image = await Drone.ask(chat_id=user_id, text="Send me any image for thumbnail.", filters=filters.photo, timeout=60)   
+    except ListenerTimeout:
         return await message.reply("You took too long to respond.")      
     edit = await message.reply("Trying to download..")
     path = await client.download_media(image)
