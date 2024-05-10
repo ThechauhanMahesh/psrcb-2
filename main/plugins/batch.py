@@ -15,6 +15,7 @@ from main.Database.database import db
 from pyrogram import Client, filters, types
 from pyrogram.errors import FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyromod.exceptions import ListenerTimeout
 
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
@@ -116,17 +117,20 @@ async def batch(client, message: types.Message):
         return await message.reply("⚠️ You've already started one process, wait for it to complete!")
     
     batch_link = True
-    link = await Drone.ask(user_id, "Send me the message link you want to start saving from, as a reply to this message.", filters=filters.text)
     try:
-        link = get_link(link.text)
-    except Exception:
-        return await message.reply("⚠️ No link found.")
-    batch_link = False
-    
-    range = await Drone.ask(user_id, "Send me the number of files/range you want to save from the given message, as a reply to this message.", filters=filters.text)
+        link = await Drone.ask(user_id, "Send me the message link you want to start saving from.", filters=filters.text, timeout=60)
+        try:
+            link = get_link(link.text)
+        except Exception:
+            return await message.reply("⚠️ No link found.")
+        batch_link = False
+        
+        range_ = await Drone.ask(user_id, "Send me the number of files/range you want to save from the given message.", filters=filters.text, timeout=60)
+    except ListenerTimeout:
+        await message.reply("You took too long to respond.")
     try:
-        range = range.text
-        value = int(range)
+        range_ = range_.text
+        value = int(range_)
         if value > 30:
             if not plan == "pro":
                 await message.reply("⚠️ You can only get upto 30 files in a single batch.")
