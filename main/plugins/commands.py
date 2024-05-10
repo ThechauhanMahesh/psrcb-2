@@ -74,6 +74,7 @@ async def handle_set_chat(_, message: types.Message):
                         button_id=100,
                         peer_type=RequestPeerTypeBroadcast()
                     ), 
+                ],[
                     RequestPeer(
                         text="Group",
                         button_id=101,
