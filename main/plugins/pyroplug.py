@@ -17,7 +17,7 @@ def thumbnail(sender):
 async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=0):
 
     file, file_size, chat, caption, thumb_path, upload_client = None, None, None, None, thumbnail(sender), client
-    plan = await db.get_data(sender)["plan"]
+    plan = (await db.get_data(sender))["plan"]
 
     if "?single" in msg_link:
         msg_link = msg_link.split("?single")[0]
