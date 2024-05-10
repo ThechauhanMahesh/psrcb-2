@@ -13,6 +13,18 @@ from main.Database.database import db
 APIID = [API_ID, 29841594]
 APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
+
+@Drone.on_message(filters=filters.command('free') & filters.incoming)
+async def free(_, message: types.Message):
+    user_id = message.from_user.id
+    if not (await db.get_process(user_id))["process"]:
+        return
+    if (await db.get_process(user_id))["batch"]:
+        return await message.reply("Use /cancel to stop batch.")
+    await message.reply("Done, try after 10 minutes.")
+    await asyncio.sleep(600)
+    return await db.rem_process(user_id)
+
 @Drone.on_message(filters=filters.private & filters.incoming, group=1)
 async def incomming(_, message: types.Message):
     user_id = message.from_user.id
