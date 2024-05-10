@@ -68,7 +68,7 @@ async def caption(_, message: types.Message):
 
 @Drone.on_callback_query(filters.regex(r"add"))
 async def add(_, cb: CallbackQuery):
-    await cb.delete()
+    await cb.message.delete()
     user_id = cb.from_user.id
     try:
         add = await Drone.ask(chat_id=user_id, text="Send the text you want to add in captions.", filters=filters.text, timeout=60)
@@ -79,7 +79,7 @@ async def add(_, cb: CallbackQuery):
         
 @Drone.on_callback_query(filters.regex(r"delete"))
 async def delete(_, cb: CallbackQuery):
-    await cb.delete()
+    await cb.message.delete()
     user_id = cb.from_user.id
     try:
         delete = await Drone.ask(chat_id=user_id, text="Send the text you want to delete in captions.", filters=filters.text, timeout=60)
@@ -90,14 +90,14 @@ async def delete(_, cb: CallbackQuery):
         
 @Drone.on_callback_query(filters.regex(r"off"))
 async def off(_, cb: CallbackQuery):
-    await cb.delete()
+    await cb.message.delete()
     user_id = cb.from_user.id
     await db.disable_caption(user_id)
     await Drone.send_message(user_id, "No changes will be made in captions ✅")
     
 @Drone.on_callback_query(filters.regex(r"replace"))
 async def replace(_, cb: CallbackQuery):
-    await cb.delete()
+    await cb.message.delete()
     user_id = cb.from_user.id
     try:
         delete = await Drone.ask(chat_id=user_id, text="Send the text you want to replace in captions.", filters=filters.text, timeout=60)
