@@ -267,7 +267,7 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
                     time.time()
                 )
             )
-        elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"] or file.split(".")[-1].lower() in ["mp4", "mkv"]:
+        elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
             height, width, duration = await findVideoMetadata(file)
             print(f'd: {duration}, w: {width}, h:{height}')
             try:
