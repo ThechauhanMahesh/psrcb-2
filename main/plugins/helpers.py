@@ -230,16 +230,17 @@ async def download(client:Client, msg, editable_msg, file_name=None):
     except FileNotFoundError:
         new_name = file.split("downloads/")[1].replace("/", "-")
         return await download(client, msg, editable_msg, file_name=new_name)
-    except PeerIdInvalid:
-        return False, PeerIdInvalid
+    except (ChannelInvalid, ChatInvalid, ChatIdInvalid, PeerIdInvalid):
+        return False, "⚠️ Invalid link"
     except ChannelBanned:
         return False, "⚠️ You are banned from this chat"
     except ChannelPrivate:
         return False, "⚠️ You are not joined in this channel"
     except Exception as e:
         if "This message doesn't contain any downloadable media" in str(e):
-            return False, "This message cannot be saved now, try after few hours."
-        return False, str(e)
+            return False, None
+        else:
+            return False, str(e)
 
 # upload ---------------------------------------------------------------------------------------------------------------
   
