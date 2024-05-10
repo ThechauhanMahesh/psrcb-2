@@ -10,12 +10,10 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "5558723055:AAF6Dw7otUWetI5m-lNPAnblZ68kaNKB14w"
-FORCESUB = int("-1001711957758")
-ACCESS = int("-1001879806908")
+BOT_TOKEN = "6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc"
+FORCESUB = ["Savre_Restricted_Message", "Save_Restricted_Content_1"]
 MONGODB_URI = "mongodb+srv://thechauhanmahesh:XgbFpSEe3pM9P45z@cluster0.mkaomd0.mongodb.net"
 AUTH_USERS = 1807573686
-
 
 help_text = """Help:
 
