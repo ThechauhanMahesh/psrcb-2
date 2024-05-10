@@ -3,7 +3,6 @@
 import os 
 
 from main.plugins.helpers import download, upload
-from main.Database.database import db
 
 from pyrogram.enums import MessageMediaType
 from pyrogram import Client
@@ -14,10 +13,9 @@ def thumbnail(sender):
     else:
          return None
       
-async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=0):
+async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, caption_data, i=0, plan="basic"):
 
-    file, file_size, chat, caption, thumb_path, upload_client = None, None, None, None, thumbnail(sender), client
-    plan = (await db.get_data(sender))["plan"]
+    file, chat, caption, thumb_path, upload_client = None, None, None, thumbnail(sender), client
 
     if "?single" in msg_link:
         msg_link = msg_link.split("?single")[0]
@@ -54,11 +52,7 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=
                     else:
                         file = update
 
-            if msg.document:
-                file_size = msg.document.file_size
-            else:
-                file_size = msg.video.file_size
-            if file_size > 2097152000:
+            if int(msg.video.file_size) > 2097152000:
                 if plan != "pro":
                     return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
                 else:
@@ -71,7 +65,6 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=
                 caption = msg.caption
                 if plan == "pro":
                     new_caption = ""
-                    caption_data = await db.get_caption(sender)
                     action = caption_data["action"]
                     string = caption_data["string"]
                     if action is not None:
@@ -84,7 +77,6 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=
                         caption = new_caption
             else:
                 if plan == "pro":
-                    caption_data = await db.get_caption(sender)
                     action = caption_data["action"]
                     if action == "add":
                         caption = caption_data["string"]
@@ -96,7 +88,7 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=
                 await editable_msg.delete()
             else:
                 if not update:
-                    return await get_msg(userbot, client, sender, to, editable_msg, msg_link, i=0)
+                    return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, i=0, plan=plan)
                 else:
                     await editable_msg.edit(f"❌ Failed to upload: `{msg_link}`\n\Error: {update}")
 
@@ -119,7 +111,7 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=
             if msg.empty:
                 group = await userbot.get_chat(chat)
                 group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
-                return await get_msg(userbot, client, sender, to, editable_msg, group_link, i=i)
+                return await get_msg(userbot, client, sender, to, editable_msg, group_link, caption_data, i=0, plan=plan)
             else:
                 await client.copy_message(to, chat, msg_id)
         except Exception as e:
@@ -129,6 +121,6 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, i=
         await editable_msg.delete()
      
         
-async def get_bulk_msg(userbot, client, sender, to, msg_link, i=0):
+async def get_bulk_msg(userbot, client, sender, to, msg_link, caption_data, i=0, plan="basic"):
     x = await client.send_message(sender, "Processing!")
-    await get_msg(userbot, client, sender, to, x, msg_link, i=i)
+    await get_msg(userbot, client, sender, to, x, msg_link, caption_data, i=i, plan=plan)
