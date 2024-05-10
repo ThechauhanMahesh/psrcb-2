@@ -70,7 +70,10 @@ async def caption(_, message: types.Message):
 async def add(_, cb: CallbackQuery):
     await cb.delete()
     user_id = cb.from_user.id
-    add = await Drone.ask(user_id, "Send the text you want to add in captions.", filters=filters.text)
+    try:
+        add = await Drone.ask(chat_id=user_id, text="Send the text you want to add in captions.", filters=filters.text, timeout=60)
+    except ListenerTimeout:
+        return await Drone.send_message(user_id, "You took too long to respond.")
     await db.add_caption(user_id, add.text)
     await Drone.send_message(user_id, "Done ✅")
         
@@ -78,7 +81,10 @@ async def add(_, cb: CallbackQuery):
 async def delete(_, cb: CallbackQuery):
     await cb.delete()
     user_id = cb.from_user.id
-    delete = await Drone.ask(user_id, "Send the text you want to delete in captions.", filters=filters.text)
+    try:
+        delete = await Drone.ask(chat_id=user_id, text="Send the text you want to delete in captions.", filters=filters.text, timeout=60)
+    except ListenerTimeout:
+        return await Drone.send_message(user_id, "You took too long to respond.")
     await db.delete_caption(user_id, delete.text)
     await Drone.send_message(user_id, "Done ✅")
         
@@ -93,8 +99,11 @@ async def off(_, cb: CallbackQuery):
 async def replace(_, cb: CallbackQuery):
     await cb.delete()
     user_id = cb.from_user.id
-    delete = await Drone.ask(user_id, "Send the text you want to replace in captions.", filters=filters.text)
-    replace = await Drone.ask(user_id, "Send the text you want to replace by in captions.", filters=filters.text)
+    try:
+        delete = await Drone.ask(chat_id=user_id, text="Send the text you want to replace in captions.", filters=filters.text, timeout=60)
+        replace = await Drone.ask(chat_id=user_id, text="Send the text you want to replace by in captions.", filters=filters.text, timeout=60)
+    except ListenerTimeout:
+        return await Drone.send_message(user_id, "You took too long to respond.")
     await db.replace_caption(user_id, {"d":delete.text, "a":replace.text})
     await Drone.send_message(user_id, "Done ✅")
         
