@@ -47,8 +47,10 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
                 else:
                     if msg.video:
                         file_size = msg.video.file_size
-                    else:
+                    if msg.document:
                         file_size = msg.document.file_size
+                    else:
+                        file_size = 0
                     if file_size > 2097152000:
                         if plan != "pro":
                             return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
