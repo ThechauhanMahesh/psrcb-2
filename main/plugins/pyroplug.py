@@ -30,6 +30,15 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
 
         try:
             msg = await userbot.get_messages(chat, msg_id)
+            
+            if int(msg.video.file_size) > 2097152000:
+                if plan != "pro":
+                    return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
+                else:
+                    upload_client = userbot
+                    if to == sender:
+                        me = await client.get_me()
+                        to = me.username
 
             if not msg.media:
                 if msg.text:
@@ -54,15 +63,6 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
                         return
                     else:
                         file = update
-
-            if int(msg.video.file_size) > 2097152000:
-                if plan != "pro":
-                    return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
-                else:
-                    upload_client = userbot
-                    if to == sender:
-                        me = await client.get_me()
-                        to = me.username
 
             if msg.caption is not None:
                 caption = msg.caption
@@ -94,13 +94,9 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
                     return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, i=0, plan=plan)
                 else:
                     await editable_msg.edit(f"❌ Failed to upload: `{msg_link}`\n\Error: {update}")
-
-            try:
-                os.remove(file)
-            except:
-                pass
+                    
         except Exception as e:
-            pass
+            print(e)
 
         await editable_msg.delete()
 
