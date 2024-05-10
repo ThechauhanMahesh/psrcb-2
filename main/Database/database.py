@@ -2,9 +2,7 @@
 #Github.com/vasusen-code
 import datetime
 import motor.motor_asyncio
-from .. import MONGODB_URI
-
-SESSION_NAME = 'PremiumSRCB'
+from .. import MONGODB_URI, SESSION_NAME
 
 class Database:
   
