@@ -52,17 +52,6 @@ async def incomming(_, message: types.Message):
             tag = f'[{message.from_user.first_name}](t.me/@id{user_id})'
             await Drone.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {user_id}') 
 
-# @Drone.on(events.NewMessage(incoming=True, pattern="^/setchat (.*)" ))
-# async def update_chat(event):
-#     c = event.pattern_match.group(1)
-#     await db.update_chat(event.sender_id, int(c))
-#     await event.reply(f"Done.")
-
-# @Drone.on(events.NewMessage(incoming=True, pattern="/remchat" ))
-# async def rem_chat(event):
-#     await db.rem_chat(event.sender_id, event.sender_id)
-#     await event.reply(f"Done.")
-
 @Drone.on_message(filters=filters.command('remchat') & filters.incoming)
 async def remove_chat(_, message: types.Message):
     await db.rem_chat(message.chat.id, message.chat.id)
@@ -71,7 +60,7 @@ async def remove_chat(_, message: types.Message):
 
 @Drone.on_message(filters=filters.command('setchat') & filters.incoming)
 async def handle_set_chat(_, message: types.Message):
-    await app.send_message(
+    await Drone.send_message(
         chat_id=message.chat.id,
         text="Select a group/channel!",
         reply_markup=ReplyKeyboardMarkup(
@@ -102,7 +91,7 @@ async def handle_selected_peer(client, update, _, __):
     selected_chat = get_peer_id(update.message.action.peer)
 
     await db.update_chat(user_id, selected_chat)
-    await app.send_message(
+    await Drone.send_message(
         chat_id=user_id,
         text=f"You have selected {selected_chat}",
         reply_markup=ReplyKeyboardRemove()
