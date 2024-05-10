@@ -15,7 +15,7 @@ def thumbnail(sender):
       
 async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, caption_data, i=0, plan="basic"):
 
-    file, chat, caption, thumb_path, upload_client = None, None, None, thumbnail(sender), client
+    file, file_size, chat, caption, thumb_path, upload_client = None, None, None, None, thumbnail(sender), client
 
     if "?single" in msg_link:
         msg_link = msg_link.split("?single")[0]
@@ -31,15 +31,6 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
         try:
             msg = await userbot.get_messages(chat, msg_id)
             
-            if int(msg.video.file_size) > 2097152000:
-                if plan != "pro":
-                    return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
-                else:
-                    upload_client = userbot
-                    if to == sender:
-                        me = await client.get_me()
-                        to = me.username
-
             if not msg.media:
                 if msg.text:
                     await editable_msg.edit("Cloning.")
@@ -54,6 +45,18 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
                     await editable_msg.delete()
                     return
                 else:
+                    if msg.video:
+                        file_size = msg.video.file_size
+                    else:
+                        file_size = msg.document.file_size
+                    if file_size > 2097152000:
+                        if plan != "pro":
+                            return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
+                        else:
+                            upload_client = userbot
+                            if to == sender:
+                                me = await client.get_me()
+                                to = me.username
                     downloaded, update = await download(userbot, msg, editable_msg)
                     if not downloaded:
                         if not update:
