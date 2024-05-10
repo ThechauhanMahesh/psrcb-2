@@ -11,6 +11,10 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 from main.plugins.helpers import login_credentials, logout_credentials
 from main.Database.database import db
 
+from pyrogram.utils import get_peer_id
+from pyrogram.raw.types import RequestPeerTypeBroadcast, RequestPeerTypeChat
+from pyrogram.raw.types import MessageActionRequestedPeer, UpdateNewMessage, MessageService
+
 APIID = [API_ID, 29841594]
 APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
@@ -58,6 +62,52 @@ async def incomming(_, message: types.Message):
 # async def rem_chat(event):
 #     await db.rem_chat(event.sender_id, event.sender_id)
 #     await event.reply(f"Done.")
+
+@Drone.on_message(filters=filters.command('remchat') & filters.incoming)
+async def remove_chat(_, message: types.Message):
+    await db.rem_chat(message.chat.id, message.chat.id)
+    await message.reply("Done.")
+
+
+@Drone.on_message(filters=filters.command('setchat') & filters.incoming)
+async def handle_set_chat(_, message: types.Message):
+    await app.send_message(
+        chat_id=message.chat.id,
+        text="Select a group/channel!",
+        reply_markup=ReplyKeyboardMarkup(
+            [
+                [
+                    RequestPeer(
+                        text="Channel",
+                        button_id=100,
+                        peer_type=RequestPeerTypeBroadcast()
+                    ), 
+                    RequestPeer(
+                        text="Group",
+                        button_id=101,
+                        peer_type=RequestPeerTypeChat()
+                    )
+                ]
+            ]
+        ),
+    )
+
+
+@Drone.on_raw_update(group=10) # set to 10 to avoid any update takeover
+async def handle_selected_peer(client, update, _, __):
+    if not isinstance(update, UpdateNewMessage): return
+    if not isinstance(update.message, MessageService) and not isinstance(getattr(update.message, 'action', None), MessageActionRequestedPeer): return
+
+    user_id = get_peer_id(update.message.peer_id)
+    selected_chat = get_peer_id(update.message.action.peer)
+
+    await db.update_chat(user_id, selected_chat)
+    await app.send_message(
+        chat_id=user_id,
+        text=f"You have selected {selected_chat}",
+        reply_markup=ReplyKeyboardRemove()
+    )
+
 
 @Drone.on_message(filters=filters.command('start') & filters.incoming)
 async def start(_, message: types.Message):
