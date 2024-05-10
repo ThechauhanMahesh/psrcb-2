@@ -16,17 +16,6 @@ message = "Send me the message link you want to start saving from, as a reply to
      
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
-@Drone.on_message(filters=filters.command('free') & filters.incoming)
-async def free(_, message: types.Message):
-    user_id = message.from_user.id
-    if not (await db.get_process(user_id))["process"]:
-        return
-    if (await db.get_process(user_id))["batch"]:
-        return await message.reply("Use /cancel to stop batch.")
-    await message.reply("Done, try after 10 minutes.")
-    await asyncio.sleep(600)
-    return await db.rem_process(user_id)
-
 @Drone.on_message(filters=filters.private & filters.incoming, group=2)
 async def clone(client, message: types.Message):
     if batch_link:
