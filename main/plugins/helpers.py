@@ -57,7 +57,7 @@ async def login_credentials(sender, i, h, s):
     await db.update_api_hash(sender, h)
     await db.update_session(sender, s)
     
-async def logout_credentials(sender):
+async def logologout_credentials(sender):
     await db.rem_api_id(sender)
     await db.rem_api_hash(sender)
     await db.rem_session(sender)
@@ -201,7 +201,7 @@ async def findVideoMetadata(pathToInputVideo):
 # download ---------------------------------------------------------------------------------------------------------------
 
 async def download(client:Client, msg, editable_msg, file_name=None):
-    file = ""
+    file = None
     try:
         if file_name:
             file = await client.download_media(
@@ -312,8 +312,6 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
             )
         try:
             os.remove(file)
-            if os.path.isfile(file) == True:
-                os.remove(file)
         except:
             pass
         await editable_msg.delete()
@@ -354,4 +352,3 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
             except Exception as e:
                 return False, str(e)
         return False, str(e)
-
