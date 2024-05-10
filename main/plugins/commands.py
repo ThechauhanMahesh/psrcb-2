@@ -1,12 +1,18 @@
 # Github.com/Vasusen-code
 
 import os, asyncio
-from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS
+from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS, RequestPeer
 
 from pyromod.exceptions import ListenerTimeout
 from pyrogram import Client, filters, types
 from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
+
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, ReplyKeyboardRemove
+
+from main.plugins.helpers import login_credentials, logout_credentials
+from main.Database.database import db
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, ReplyKeyboardMarkup
+
 from pyrogram.utils import get_peer_id
 from pyrogram.raw.types import RequestPeerTypeBroadcast, RequestPeerTypeChat
 from pyrogram.raw.types import MessageActionRequestedPeer, UpdateNewMessage, MessageService
