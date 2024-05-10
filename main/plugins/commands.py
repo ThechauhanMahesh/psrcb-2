@@ -124,6 +124,7 @@ async def login(_, message: types.Message):
 async def logout(_, message: types.Message):
     edit = await message.reply("Trying to logout.")
     await logout_credentials(message.from_user.id)
+    await db.rem_number(message.from_user.id)
     await edit.edit('✅ successfully Logged out.')
 
 @Drone.on_message(filters=filters.command('help') & filters.incoming)
