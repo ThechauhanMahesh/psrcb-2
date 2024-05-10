@@ -22,12 +22,13 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
 
     msg_id = int(msg_link.split("/")[-1]) + int(i)
     
-    if 't.me/c/' in msg_link or 't.me/b/' in msg_link:
+    if 't.me/c/' in msg_link or 't.me/b/' in msg_link or or 't.me/g/' in msg_link:
         if 't.me/b/' in msg_link:
             chat = str(msg_link.split("/")[-2])
-        else:
+        elif 't.me/c/' in msg_link:
             chat = int('-100' + str(msg_link.split("/")[-2]))
-
+        else:
+            chat = int(str(msg_link.split("/")[-2]))
         try:
             msg = await userbot.get_messages(chat, msg_id)
             
@@ -114,7 +115,7 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
             msg = await client.get_messages(chat, msg_id)
             if msg.empty:
                 group = await userbot.get_chat(chat)
-                group_link = f't.me/c/{int(group.id)}/{int(msg_id)}'
+                group_link = f't.me/g/{int(group.id)}/{int(msg_id)}'
                 return await get_msg(userbot, client, sender, to, editable_msg, group_link, caption_data, i=0, plan=plan)
             else:
                 await client.copy_message(to, chat, msg_id)
