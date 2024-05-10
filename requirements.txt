@@ -9,3 +9,4 @@ pymongo[srv]
 dnspython
 cryptg
 hachoir==3.2.0
+pyromod
