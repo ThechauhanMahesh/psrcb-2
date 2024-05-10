@@ -244,7 +244,7 @@ async def download(client:Client, msg, editable_msg, file_name=None):
 
 # upload ---------------------------------------------------------------------------------------------------------------
   
-async def upload(client:Client, bot_client, file, to, msg, editable_msg, thumb_path=None, caption=None):
+async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, caption=None):
     try:
         if msg.media==MessageMediaType.VIDEO_NOTE:
             height, width, duration = await findVideoMetadata(file)
@@ -261,7 +261,7 @@ async def upload(client:Client, bot_client, file, to, msg, editable_msg, thumb_p
                 thumb=thumb_path,
                 progress=progress_for_pyrogram,
                 progress_args=(
-                    bot_client,
+                    client,
                     '**🔺 UPLOADING:**\n',
                     editable_msg,
                     time.time()
@@ -284,7 +284,7 @@ async def upload(client:Client, bot_client, file, to, msg, editable_msg, thumb_p
                 thumb=thumb_path,
                 progress=progress_for_pyrogram,
                 progress_args=(
-                    bot_client,
+                    client,
                     '**🔺 UPLOADING:**\n',
                     editable_msg,
                     time.time()
@@ -304,7 +304,7 @@ async def upload(client:Client, bot_client, file, to, msg, editable_msg, thumb_p
                 thumb=thumb_path,
                 progress=progress_for_pyrogram,
                 progress_args=(
-                    bot_client,
+                    client,
                     '**🔺 UPLOADING:**\n',
                     editable_msg,
                     time.time()
@@ -337,7 +337,7 @@ async def upload(client:Client, bot_client, file, to, msg, editable_msg, thumb_p
                     thumb=thumb_path,
                     progress=progress_for_pyrogram,
                     progress_args=(
-                        bot_client,
+                        client,
                         '**🔺 UPLOADING:**\n',
                         editable_msg,
                         time.time()
