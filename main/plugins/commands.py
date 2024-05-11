@@ -6,6 +6,7 @@ from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_U
 from pyromod.exceptions import ListenerTimeout
 from pyrogram import Client, filters, types
 from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from main.plugins.helpers import login_credentials, logout_credentials
 from main.Database.database import db
@@ -13,6 +14,16 @@ from main.Database.database import db
 APIID = [API_ID, 29841594]
 APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
+@Drone.on_message(filters=filters.command('tutorial') & filters.incoming)
+async def tutorial(_, message: types.Message):
+    await message.reply("click below for tutorial.", reply_markup=InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(f"TUTORIAL", url="https://t.me/SaveRestricted_Content/14")
+            ]
+        ]
+    ))
+    
 @Drone.on_message(filters=filters.private & filters.incoming, group=1)
 async def incomming(_, message: types.Message):
     user_id = message.from_user.id
