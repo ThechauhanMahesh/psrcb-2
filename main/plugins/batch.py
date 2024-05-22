@@ -106,7 +106,7 @@ async def replace(_, cb: CallbackQuery):
         return await Drone.send_message(user_id, "You took too long to respond.")
     await db.replace_caption(user_id, {"d":delete.text, "a":replace.text})
     await Drone.send_message(user_id, "Done ✅")
-        
+
 @Drone.on_message(filters=filters.command('batch') & filters.incoming & filters.private)
 async def batch(client, message: types.Message):
     global batch_link
@@ -118,51 +118,84 @@ async def batch(client, message: types.Message):
     await check_subscription(user_id)
 
     if plan == "basic":
-         await message.reply("⚠️ Buy Monthly subscription or Pro subscription.")
-         return
-
-     pr = (await db.get_process(user_id))["process"]
- @@ -145,13 +145,9 @@ async def batch(client, message: types.Message):
-     try:
-         range_ = range_.text
-         value = int(range_)
-         if value > 30:
-             if not plan == "pro":
-                 await message.reply("⚠️ You can only get upto 30 files in a single batch.")
-                 return
-             elif value > 100:
-                 await message.reply("⚠️ You can only get upto 100 files in a single batch.")
-                 return 
-     except ValueError:
-         await message.reply("Range must be an integer!")
-         return
- @@ -173,26 +169,15 @@ async def batch(client, message: types.Message):
- async def run_batch(userbot, client, sender, chat, link, value, caption_data, plan):
-     for i in range(value):
-         if i < 50:
-             timer = 10
-         elif i > 25 and i < 50:
-             timer = 15
-         elif i > 50 and i < 100:
-             timer = 20
-         elif i > 100:
-             timer = 25
-         if not 't.me/c/' in link and not 't.me/b/' in link:
-             timer = 5
-         if (await db.get_data(sender))["plan"] == "pro":
-             if not 't.me/c/' in link and not 't.me/b/' in link:
-                 timer = 3
-             else:
-                 timer = 2
-                 if i > 25 and i < 50:
-                     timer = 5
-                 elif i > 50 and i < 100:
-                     timer = 8
-                 elif i > 100:
-                     timer = 10
-         try: 
-             if not (await db.get_process(sender))["process"]:
-                 await client.send_message(sender, "✅ Batch completed.")
+        await message.reply("⚠️ Buy Monthly subscription or Pro subscription.")
+        return
+    
+    pr = (await db.get_process(user_id))["process"]
+    if pr:
+        return await message.reply("⚠️ You've already started one process, wait for it to complete!")
+    
+    batch_link = True
+    try:
+        link = await Drone.ask(chat_id=user_id, text="Send me the message link you want to start saving from.", filters=filters.text, timeout=60)
+    except ListenerTimeout:
+        await message.reply("You took too long to respond.")
+    try:
+        link = get_link(link.text)
+    except Exception:
+        return await message.reply("⚠️ No link found.")
+    batch_link = True
+    try:
+        range_ = await Drone.ask(chat_id=user_id, text="Send me the number of files/range you want to save from the given message.", filters=filters.text, timeout=60)
+    except ListenerTimeout:
+        await message.reply("You took too long to respond.")
+        batch_link = False
+        return 
+    batch_link = False
+    try:
+        range_ = range_.text
+        value = int(range_)
+        if value > 30:
+            if not plan == "pro":
+                await message.reply("⚠️ You can only get upto 30 files in a single batch.")
+                return
+            elif value > 100:
+                await message.reply("⚠️ You can only get upto 100 files in a single batch.")
+                return 
+    except ValueError:
+        await message.reply("Range must be an integer!")
+        return
+            
+    i, h, s = await db.get_credentials(user_id)
+    chat = await db.get_chat(user_id)
+    if chat == None:
+        chat = user_id
+    userbot = None
+    if s:
+        userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
+    else:
+        await message.reply("⚠️ Your login credentials not found.")
+        return
+    await db.update_process(user_id, batch=True)
+    await run_batch(userbot, client, user_id, chat, link, value, caption_data, plan) 
+    await db.rem_process(user_id)
+            
+async def run_batch(userbot, client, sender, chat, link, value, caption_data, plan):
+    for i in range(value):
+        if i < 50:
+            timer = 10
+        elif i > 25 and i < 50:
+            timer = 15
+        elif i > 50 and i < 100:
+            timer = 20
+        elif i > 100:
+            timer = 25
+        if not 't.me/c/' in link and not 't.me/b/' in link:
+            timer = 5
+        if (await db.get_data(sender))["plan"] == "pro":
+            if not 't.me/c/' in link and not 't.me/b/' in link:
+                timer = 3
+            else:
+                timer = 2
+                if i > 25 and i < 50:
+                    timer = 5
+                elif i > 50 and i < 100:
+                    timer = 8
+                elif i > 100:
+                    timer = 10
+        try: 
+            if not (await db.get_process(sender))["process"]:
+                await client.send_message(sender, "✅ Batch completed.")
                 break
         except Exception as e:
             print(e)
