@@ -321,6 +321,8 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
     except (ChannelInvalid, ChatInvalid, ChatIdInvalid, PeerIdInvalid):
         return False, "⚠️ Check your setchat ID or add bot as admin in your setchat channel."
     except Exception as e:
+        if "'NoneType' object has no attribute 'name'" in str(e):
+            return True, None
         if "size equals" in str(e):
             await asyncio.sleep(60)
             try:
