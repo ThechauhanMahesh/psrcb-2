@@ -39,9 +39,8 @@ Please send the OTP with space, example: `1 2 3 4 5`."""
 
 
 """
-dc2 : 6710941011:AAFVG83NRSnaohlnYR_KCM1MtnWPnsDbiuY
+me : 6710941011:AAFVG83NRSnaohlnYR_KCM1MtnWPnsDbiuY
 m1 : 6633102102:AAEZLOFpQUfOHvNgBdAlJ7H52hnOXaUMpfY
-m2 : 6727567600:AAHANjv_kposAf3R9B263O1IsfzWmeUs77Y
 """
 
 # variables
