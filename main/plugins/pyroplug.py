@@ -44,20 +44,6 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
                     await editable_msg.delete()
                     return
                 else:
-                    if msg.video:
-                        file_size = msg.video.file_size
-                    if msg.document:
-                        file_size = msg.document.file_size
-                    else:
-                        file_size = 0
-                    if file_size > 2097152000:
-                        if plan != "pro":
-                            return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
-                        else:
-                            upload_client = userbot
-                            if to == sender:
-                                me = await client.get_me()
-                                to = me.username
                     downloaded, update = await download(userbot, msg, editable_msg)
                     if not downloaded:
                         if not update:
@@ -89,6 +75,17 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
                         caption = caption_data["string"]
 
             await editable_msg.edit("Preparing to upload...")
+
+            file_size = os.path.getsize(file)
+            
+            if file_size > 2097152000:
+                if plan != "pro":
+                    return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
+                else:
+                    upload_client = userbot
+                    if to == sender:
+                        me = await client.get_me()
+                        to = me.username
             
             uploaded, update = await upload(upload_client, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
             if uploaded:
