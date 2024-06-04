@@ -1,7 +1,5 @@
-https://github.com/vasusen-code/ethon/archive/refs/tags/v0.1.5.zip
+https://github.com/KurimuzonAkuma/pyrogram/archive/dev.zip
 python-decouple
-Pyrogram
-telethon
 tgcrypto
 pymongo
 motor
