@@ -1,4 +1,4 @@
-pyrotgfork[fast]
+https://github.com/KurimuzonAkuma/pyrogram/archive/dev.zip
 python-decouple
 pymongo
 motor
