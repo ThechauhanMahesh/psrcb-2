@@ -1,7 +1,7 @@
 # Github.com/Vasusen-code
 
 import os, asyncio
-from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS, RequestPeer
+from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS
 
 from pyromod.exceptions import ListenerTimeout
 from pyrogram import Client, filters, types
@@ -12,7 +12,7 @@ from main.Database.database import db
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, ReplyKeyboardMarkup, ReplyKeyboardRemove 
 
 from pyrogram.utils import get_peer_id
-from pyrogram.raw.types import RequestPeerTypeBroadcast, RequestPeerTypeChat
+from pyrogram.raw.types import RequestPeerTypeBroadcast, RequestPeerTypeChat, KeyboardButtonRequestPeer
 from pyrogram.raw.types import MessageActionRequestedPeer, UpdateNewMessage, MessageService
 
 from main.plugins.helpers import login_credentials, logout_credentials
@@ -69,17 +69,19 @@ async def handle_set_chat(_, message: types.Message):
         reply_markup=ReplyKeyboardMarkup(
             [
                 [
-                    RequestPeer(
-                        text="Channel",
-                        button_id=100,
-                        peer_type=RequestPeerTypeBroadcast()
-                    ), 
+                    KeyboardButtonRequestPeer(
+                          text="Channel",
+                          button_id=100,
+                          peer_type=RequestPeerTypeBroadcast(),
+                          max_quantity=1
+                   )
                 ],[
-                    RequestPeer(
-                        text="Group",
-                        button_id=101,
-                        peer_type=RequestPeerTypeChat()
-                    )
+                    KeyboardButtonRequestPeer(
+                          text="Group",
+                          button_id=101,
+                          peer_type=RequestPeerTypeChat(),
+                          max_quantity=1
+                   )
                 ]
             ], 
             resize_keyboard = True, 

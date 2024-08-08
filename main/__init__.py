@@ -4,8 +4,6 @@ from pyrogram import Client
 from pyromod import listen
 import logging, sys, pymongo
 
-from pyrogram.raw.types import KeyboardButtonRequestPeer
-
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 
@@ -72,15 +70,3 @@ bot = Client(
     bot_token=BOT_TOKEN,
     workers=343
     ) # pyrogram bot
-
-
-class RequestPeer:
-    def __init__(self, text, button_id, peer_type):
-        self.text = text
-        self.button_id = button_id
-        self.peer_type = peer_type
-
-    def write(self):
-        return KeyboardButtonRequestPeer(
-            text=self.text, button_id=self.button_id, peer_type=self.peer_type
-        )
