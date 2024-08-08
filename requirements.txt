@@ -1,6 +1,5 @@
-https://github.com/KurimuzonAkuma/pyrogram/archive/dev.zip
+pyrotgfork[fast]
 python-decouple
-tgcrypto
 pymongo
 motor
 pymongo[srv]
