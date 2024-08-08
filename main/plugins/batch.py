@@ -8,7 +8,7 @@ Plugin for both public & private channels!
 import asyncio
 
 from .. import bot as Drone, AUTH_USERS
-from main.plugins.pyroplug import get_bulk_msg
+from main.plugins.pyroplug import get_msg
 from main.plugins.helpers import get_link, set_subscription, check_subscription
 from main.Database.database import db
 
@@ -208,13 +208,14 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
             await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
             break
         try:
-            await get_bulk_msg(userbot, client, sender, chat, link, caption_data, i=i, plan=plan) 
+            editable = await client.send_message("Processing...")
+            await get_msg(userbot, client, sender, chat, editable, link, caption_data, i=i, plan=plan)
         except FloodWait as fw:
-            if int(fw.value) > 299:
-                await client.send_message(sender, "❌ Cancelling batch since you have floodwait more than 5 minutes.")
-                break
-            await asyncio.sleep(fw.value + 5)
-            await get_bulk_msg(userbot, client, sender, chat, link, i=i)
+            await client.send_message(sender, f"❌ Cancelling batch since you have floodwait of {fw.value} seconds.")
+            break
+        except Exception as e:
+            print(e)
+            await client.send_message(sender, f"An error occured : {e}")
         await userbot.stop()
         protection = await client.send_message(chat, f"⚠️ Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
         await asyncio.sleep(timer)
