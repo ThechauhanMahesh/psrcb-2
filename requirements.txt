@@ -4,6 +4,6 @@ pymongo
 motor
 pymongo[srv]
 dnspython
-cryptg
+tgcrypto
 hachoir==3.2.0
 pyromod
