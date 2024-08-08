@@ -12,18 +12,19 @@ from main.Database.database import db
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, ReplyKeyboardMarkup, ReplyKeyboardRemove 
 
 from pyrogram.utils import get_peer_id
-from pyrogram.raw.types import RequestPeerTypeBroadcast, RequestPeerTypeChat, KeyboardButtonRequestPeer
+from pyrogram.raw.types import RequestPeerTypeBroadcast, RequestPeerTypeChat
 from pyrogram.raw.types import MessageActionRequestedPeer, UpdateNewMessage, MessageService
 
 from main.plugins.helpers import login_credentials, logout_credentials
 from main.Database.database import db
+from main.types import ButtonRequestPeer
 
 APIID = [API_ID, 29841594]
 APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
 @Drone.on_message(filters=filters.command('tutorial') & filters.incoming)
 async def tutorial(_, message: types.Message):
-    await message.reply("click below for tutorial.", reply_markup=InlineKeyboardMarkup(
+    await message.reply(text="click below for tutorial.", reply_markup=InlineKeyboardMarkup(
         [
             [
                 InlineKeyboardButton(f"TUTORIAL", url="https://t.me/SaveRestricted_Content/14")
@@ -69,14 +70,14 @@ async def handle_set_chat(_, message: types.Message):
         reply_markup=ReplyKeyboardMarkup(
             [
                 [
-                    KeyboardButtonRequestPeer(
+                    ButtonRequestPeer(
                           text="Channel",
                           button_id=100,
                           peer_type=RequestPeerTypeBroadcast(),
                           max_quantity=1
                    )
                 ],[
-                    KeyboardButtonRequestPeer(
+                    ButtonRequestPeer(
                           text="Group",
                           button_id=101,
                           peer_type=RequestPeerTypeChat(),
