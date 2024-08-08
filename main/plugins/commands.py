@@ -98,7 +98,7 @@ async def handle_selected_peer(client, update, _, __):
     if not isinstance(update.message, MessageService) and not isinstance(getattr(update.message, 'action', None), MessageActionRequestedPeer): return
 
     user_id = get_peer_id(update.message.peer_id)
-    selected_chat = get_peer_id(update.message.action.peer)
+    selected_chat = get_peer_id(update.message.action.peers[0])
 
     await db.update_chat(user_id, selected_chat)
     await Drone.send_message(
