@@ -76,6 +76,9 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
 
             await editable_msg.edit("Preparing to upload...")
 
+            if file == None:
+                return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nThis link is not downloadble.')
+                
             file_size = os.path.getsize(file)
             
             if file_size > 2097152000:
@@ -123,4 +126,4 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
         
 async def get_bulk_msg(userbot, client, sender, to, msg_link, caption_data, i=0, plan="basic"):
     x = await client.send_message(sender, "Processing!")
-    await get_msg(userbot, client, sender, to, x, msg_link, caption_data, i=i, plan=plan)
+    return await get_msg(userbot, client, sender, to, x, msg_link, caption_data, i=i, plan=plan)
