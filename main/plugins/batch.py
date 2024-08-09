@@ -8,7 +8,7 @@ Plugin for both public & private channels!
 import asyncio
 
 from .. import bot as Drone, AUTH_USERS
-from main.plugins.pyroplug import get_bulk_msg
+from main.plugins.pyroplug import get_msg
 from main.plugins.helpers import get_link, set_subscription, check_subscription
 from main.Database.database import db
 
