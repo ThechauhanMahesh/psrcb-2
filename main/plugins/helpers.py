@@ -318,7 +318,9 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
             pass
         await editable_msg.delete()
         return True, None
-    except (ChannelInvalid, ChatInvalid, ChatIdInvalid, PeerIdInvalid):
+    except (ChannelInvalid, ChatInvalid):
+        False, "⚠️ You are not joined this channel/chat with the logged in account"
+    except (ChatIdInvalid, PeerIdInvalid):
         return False, "⚠️ Check your setchat ID or add bot as admin in your setchat channel."
     except Exception as e:
         if "'NoneType' object has no attribute 'name'" in str(e):
