@@ -208,7 +208,7 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
             await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
             break
         try:
-            editable = await client.send_message("Processing...")
+            editable = await client.send_message(chat, "Processing...")
             await get_msg(userbot, client, sender, chat, editable, link, caption_data, i=i, plan=plan)
         except FloodWait as fw:
             await client.send_message(sender, f"❌ Cancelling batch since you have floodwait of {fw.value} seconds.")
