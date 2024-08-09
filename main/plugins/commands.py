@@ -1,7 +1,7 @@
 # Github.com/Vasusen-code
 
 import os, asyncio
-from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS, RequestPeer
+from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS
 
 from pyromod.exceptions import ListenerTimeout
 from pyrogram import Client, filters, types
@@ -17,13 +17,14 @@ from pyrogram.raw.types import MessageActionRequestedPeer, UpdateNewMessage, Mes
 
 from main.plugins.helpers import login_credentials, logout_credentials
 from main.Database.database import db
+from main.types import ButtonRequestPeer
 
 APIID = [API_ID, 29841594]
 APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
 @Drone.on_message(filters=filters.command('tutorial') & filters.incoming)
 async def tutorial(_, message: types.Message):
-    await message.reply("click below for tutorial.", reply_markup=InlineKeyboardMarkup(
+    await message.reply(text="click below for tutorial.", reply_markup=InlineKeyboardMarkup(
         [
             [
                 InlineKeyboardButton(f"TUTORIAL", url="https://t.me/SaveRestricted_Content/14")
@@ -69,17 +70,19 @@ async def handle_set_chat(_, message: types.Message):
         reply_markup=ReplyKeyboardMarkup(
             [
                 [
-                    RequestPeer(
-                        text="Channel",
-                        button_id=100,
-                        peer_type=RequestPeerTypeBroadcast()
-                    ), 
+                    ButtonRequestPeer(
+                          text="Channel",
+                          button_id=100,
+                          peer_type=RequestPeerTypeBroadcast(),
+                          max_quantity=1
+                   )
                 ],[
-                    RequestPeer(
-                        text="Group",
-                        button_id=101,
-                        peer_type=RequestPeerTypeChat()
-                    )
+                    ButtonRequestPeer(
+                          text="Group",
+                          button_id=101,
+                          peer_type=RequestPeerTypeChat(),
+                          max_quantity=1
+                   )
                 ]
             ], 
             resize_keyboard = True, 
@@ -95,7 +98,7 @@ async def handle_selected_peer(client, update, _, __):
     if not isinstance(update.message, MessageService) and not isinstance(getattr(update.message, 'action', None), MessageActionRequestedPeer): return
 
     user_id = get_peer_id(update.message.peer_id)
-    selected_chat = get_peer_id(update.message.action.peer)
+    selected_chat = get_peer_id(update.message.action.peers[0])
 
     await db.update_chat(user_id, selected_chat)
     await Drone.send_message(
@@ -146,7 +149,7 @@ async def login(_, message: types.Message):
                 code = await client.send_code(number)
                 await asyncio.sleep(1)
             except FloodWait as e:
-                await code_alert.edit(f"Can't send code, you have Floodwait of {e.value} Seconds.")
+                await code_alert.edit(f"Can't send code, you have Floodwait of {e.x} Seconds.")
                 return
             except Exception as e:
                 print(e)
