@@ -178,7 +178,12 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
         print(e)
         await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
         return
-    _, msg_id = extract_tg_link(link)
+    chat_id, msg_id = extract_tg_link(link)
+    async for last_msg in userbot.get_chat_history(chat_id = chat_id, limit=1):
+        break
+    if last_msg.id < (msg_id+value):
+        #await client.send_message(sender, "⚠️ Requested range is greater than the total files in the chat, sending till the last file.")
+        value = last_msg.id - (msg_id-1)
     for i in range(value):
         if i < 50:
             timer = 10
@@ -201,7 +206,7 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
                     timer = 8
                 elif i > 100:
                     timer = 10
-        try: 
+        try:
             if not (await db.get_process(sender))["process"]:
                 await client.send_message(sender, "✅ Batch completed.")
                 break
@@ -212,13 +217,13 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
         editable = await client.send_message(chat, "Processing...")
         new_link = rreplace(link, f"/{msg_id}", f"/{msg_id+i}")
         try:
-            await get_msg(userbot, client, sender, chat, editable, new_link, caption_data, retry=0, plan=plan)
+            await get_msg(userbot, client, sender, chat, editable, new_link, caption_data, retry=0, plan=plan, is_batch=True)
         except FloodWait as fw:
             fw.value += 5 #Add 5 seconds to the floodwait time
             print(f"Sleeping for {fw.value} seconds due to Floodwait.")
             await client.send_message(sender, f"⚠️ Sleeping for `{fw.value}` seconds due to Floodwait.")
             await asyncio.sleep(fw.value)
-            await get_msg(userbot, client, sender, chat, editable, new_link, caption_data, retry=1, plan=plan, specified_msg_id=msg_id)
+            await get_msg(userbot, client, sender, chat, editable, new_link, caption_data, retry=1, plan=plan, is_batch=True)
             continue #Skip the next sleep
         except Exception as e:
             logging.exception(e)
@@ -228,3 +233,4 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
         await protection.delete()
     #Stop the userbot
     await userbot.stop()
+    await client.send_message(sender, "✅ Batch completed.")

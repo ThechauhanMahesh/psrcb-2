@@ -14,7 +14,7 @@ def thumbnail(sender):
     else:
          return None
       
-async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, caption_data, retry=0, plan="basic"):
+async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, caption_data, retry=0, plan="basic", is_batch=False):
     if retry >= 3:
         return await editable_msg.edit(f"❌ Failed to save: `{msg_link}`\n\nError: Maximum retries exceeded.")
 
@@ -32,7 +32,14 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
 
     if chat and msg_id:
         try:
-            msg = await userbot.get_messages(chat, msg_id)
+            try:
+                msg = await userbot.get_messages(chat, msg_id)
+                if msg.empty:
+                    raise Exception("Message deleted or not exist.")
+            except Exception as e:
+                if is_batch:
+                    return await editable_msg.delete()
+                return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
             if msg.media:
                 if msg.media==MessageMediaType.WEB_PAGE:
                     await editable_msg.edit("Cloning.")
@@ -85,7 +92,7 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 await editable_msg.delete()
             else:
                 if not update:
-                    return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, retry=retry, plan=plan, specified_msg_id=msg_id)
+                    return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, retry=retry, plan=plan, specified_msg_id=msg_id, is_batch=is_batch)
                 else:
                     return await editable_msg.edit(f"❌ Failed to upload: `{msg_link}`\n\nError: {update}")
 
@@ -97,7 +104,3 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
     else:
         await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: Invalid link.')
 
-        
-async def get_bulk_msg(userbot, client, sender, to, msg_link, caption_data, i=0, plan="basic"):
-    x = await client.send_message(sender, "Processing!")
-    return await get_msg(userbot, client, sender, to, x, msg_link, caption_data, i=i, plan=plan)
