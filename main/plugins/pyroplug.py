@@ -1,8 +1,7 @@
 # Github.com/Vasusen-code
 
 import os 
-
-from main.plugins.helpers import download, upload
+from main.plugins.helpers import download, extract_tg_link, upload
 
 from pyrogram.enums import MessageMediaType
 from pyrogram import Client
@@ -14,29 +13,20 @@ def thumbnail(sender):
          return None
       
 async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, caption_data, i=0, plan="basic"):
+    if i >= 2:
+        return await editable_msg.edit("❌ Failed to save: `{msg_link}`\n\nError: Maximum retries exceeded.")
 
     file, file_size, chat, caption, thumb_path, upload_client = None, None, None, None, thumbnail(sender), client
 
     if "?single" in msg_link:
         msg_link = msg_link.split("?single")[0]
 
-    msg_id = int(msg_link.split("/")[-1]) + int(i)
+    chat, msg_id = extract_tg_link(msg_link)
     
-    if 't.me/c/' in msg_link or 't.me/b/' in msg_link:
-        if 't.me/b/' in msg_link:
-            chat = str(msg_link.split("/b/")[1].split("/")[0])
-        elif 't.me/c/' in msg_link:
-            chat = int('-100' + str(msg_link.split("/c/")[1]).split("/")[0])
+    if chat and msg_id:
         try:
             msg = await userbot.get_messages(chat, msg_id)
-            
-            if not msg.media:
-                if msg.text:
-                    await editable_msg.edit("Cloning.")
-                    await client.send_message(to, msg.text.markdown)
-                    await editable_msg.delete()
-                    return
-                
+
             if msg.media:
                 if msg.media==MessageMediaType.WEB_PAGE:
                     await editable_msg.edit("Cloning.")
@@ -53,6 +43,13 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
                         return
                     else:
                         file = update
+            elif msg.text:
+                await editable_msg.edit("Cloning.")
+                await client.send_message(to, msg.text.markdown)
+                await editable_msg.delete()
+                return
+            else:
+                return
 
             if msg.caption is not None:
                 caption = msg.caption
@@ -95,34 +92,18 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
                 await editable_msg.delete()
             else:
                 if not update:
-                    return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, i=0, plan=plan)
+                    return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, i=i, plan=plan)
                 else:
                     return await editable_msg.edit(f"❌ Failed to upload: `{msg_link}`\n\nError: {update}")
                     
         except Exception as e:
             print(e)
             return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
-            
-        await editable_msg.delete()
 
+        await editable_msg.delete()
     else:
-        await editable_msg.edit("Cloning.")
+        await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: Invalid link.')
 
-        chat =  msg_link.split("me/")[1].split("/")[0]
-
-        try:
-            msg = await client.get_messages(chat, msg_id)
-            if msg.empty:
-                group_link = f't.me/b/{chat}/{int(msg_id)}'
-                return await get_msg(userbot, client, sender, to, editable_msg, group_link, caption_data, i=0, plan=plan)
-            else:
-                await client.copy_message(to, chat, msg_id)
-        except Exception as e:
-            print(e)
-            return await editable_msg.edit(f'❌ Failed to clone: `{msg_link}`\n\nError: {str(e)}')
-        
-        await editable_msg.delete()
-     
         
 async def get_bulk_msg(userbot, client, sender, to, msg_link, caption_data, i=0, plan="basic"):
     x = await client.send_message(sender, "Processing!")

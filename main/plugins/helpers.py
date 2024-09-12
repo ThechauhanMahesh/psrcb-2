@@ -20,6 +20,26 @@ from pyrogram.enums import ChatMemberStatus
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import db
 
+# TG Link extractor -----------------------------------------------------------------------------------
+def extract_tg_link(url):
+    pattern = r"^(?:(?:https|tg):\/\/)?(?:www\.)?(?:t\.me\/|openmessage\?)(?:(?:c\/(\d+))|(\w+)|(?:user_id\=(\d+)))(?:\/|&message_id\=)(\d+)(\?single)?$"  # noqa
+    # group 1: private supergroup id, group 2: chat username,
+    # group 3: private group/chat id, group 4: message id
+    # group 5: check for download single media from media group
+    match = re.search(pattern, url.split('|', 1)[0].strip())
+    if match:
+        chat_id = None
+        msg_id = int(match.group(4))
+        #if not bool(match.group(5)):
+        if match.group(1):
+            chat_id = int("-100" + match.group(1))
+        elif match.group(2):
+            chat_id = match.group(2)
+        elif match.group(3):
+            chat_id = int(match.group(3))
+        if chat_id and msg_id:
+            return chat_id, msg_id
+    return None, None
 
 # Subscription ----------------------------------------------------------------------------------
 
@@ -205,6 +225,7 @@ async def findVideoMetadata(pathToInputVideo):
 async def download(client:Client, msg, editable_msg, file_name=None):
     file = None
     try:
+        file_name = file_name.replace(os.sep, "-")
         if file_name:
             file = await client.download_media(
                 msg,

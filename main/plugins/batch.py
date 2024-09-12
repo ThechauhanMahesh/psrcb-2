@@ -171,6 +171,12 @@ async def batch(client, message: types.Message):
     await db.rem_process(user_id)
             
 async def run_batch(userbot, client, sender, chat, link, value, caption_data, plan):
+    try: 
+        await userbot.start()
+    except Exception as e:
+        print(e)
+        await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
+        return
     for i in range(value):
         if i < 50:
             timer = 10
@@ -201,22 +207,19 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
             print(e)
             await client.send_message(sender, "✅ Batch completed.")
             break
-        try: 
-            await userbot.start()
-        except Exception as e:
-            print(e)
-            await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
-            break
         editable = await client.send_message(chat, "Processing...")
         try:
             await get_msg(userbot, client, sender, chat, editable, link, caption_data, i=i, plan=plan)
         except FloodWait as fw:
-            await client.send_message(sender, f"❌ Cancelling batch since you have floodwait of {fw.value} seconds.")
-            break
+            await client.send_message(sender, f"⚠️ Sleeping for `{fw.value+5}` seconds due to Floodwait.")
+            await asyncio.sleep(fw.value+5) #Sleep for the floodwait time + 5 seconds
+            await get_msg(userbot, client, sender, chat, editable, link, caption_data, i=i, plan=plan)
+            continue #Skip the next sleep
         except Exception as e:
             print(e)
             await client.send_message(sender, f"An error occured : {e}")
-        await userbot.stop()
         protection = await client.send_message(chat, f"⚠️ Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
         await asyncio.sleep(timer)
         await protection.delete()
+    #Stop the userbot
+    await userbot.stop()
