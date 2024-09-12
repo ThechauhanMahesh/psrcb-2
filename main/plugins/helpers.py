@@ -1,4 +1,5 @@
 #Github.com/Vasusen-code
+import logging
 import subprocess
 import shlex
 import json
@@ -20,13 +21,40 @@ from pyrogram.enums import ChatMemberStatus
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import db
 
+def rreplace(s, old, new):
+    return s[::-1].replace(old[::-1], new[::-1], 1)[::-1]
+
+def build_caption(plan, caption, caption_data):
+    if caption is not None:
+        if plan == "pro":
+            new_caption = ""
+            action = caption_data["action"]
+            string = caption_data["string"]
+            if action is not None:
+                if action == "add":
+                    new_caption = caption + f"\n\n{string}"
+                if action == "delete":
+                    new_caption = caption.replace(string, "")
+                if action == "replace":
+                    new_caption = caption.replace(string["d"], string["a"])
+                caption = new_caption
+    else:
+        if plan == "pro":
+            action = caption_data["action"]
+            if action == "add":
+                caption = caption_data["string"] or ""
+    return caption
+
 # TG Link extractor -----------------------------------------------------------------------------------
 def extract_tg_link(url):
+    if not isinstance(url, str):
+        logging.error(f"URL must be a string, {url} given.")
+        return None, None
     pattern = r"^(?:(?:https|tg):\/\/)?(?:www\.)?(?:t\.me\/|openmessage\?)(?:(?:c\/(\d+))|(\w+)|(?:user_id\=(\d+)))(?:\/|&message_id\=)(\d+)(\?single)?$"  # noqa
     # group 1: private supergroup id, group 2: chat username,
     # group 3: private group/chat id, group 4: message id
     # group 5: check for download single media from media group
-    match = re.search(pattern, url.split('|', 1)[0].strip())
+    match = re.search(pattern, url.strip())
     if match:
         chat_id = None
         msg_id = int(match.group(4))
@@ -225,7 +253,8 @@ async def findVideoMetadata(pathToInputVideo):
 async def download(client:Client, msg, editable_msg, file_name=None):
     file = None
     try:
-        file_name = file_name.replace(os.sep, "-")
+        if file_name:
+            file_name = file_name.replace(os.sep, "-")
         if file_name:
             file = await client.download_media(
                 msg,
@@ -344,6 +373,7 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
     except (ChatIdInvalid, PeerIdInvalid):
         return False, "⚠️ Check your setchat ID or add bot as admin in your setchat channel."
     except Exception as e:
+        logging.exception(e)
         if "'NoneType' object has no attribute 'name'" in str(e):
             return True, None
         if "size equals" in str(e):
@@ -380,3 +410,4 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
             except Exception as e:
                 return False, str(e)
         return False, str(e)
+    return False, None

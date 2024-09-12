@@ -74,12 +74,14 @@ class CustomBot(Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.clients = {}
+        if not os.path.isdir(PYRO_DIR):
+            os.makedirs(PYRO_DIR)
 
     def load_clients(self):
         for num, token in enumerate(UPLOADING_CLIENTS, start=1):
             try:
                 print(f"[{num}/{len(UPLOADING_CLIENTS)}] adding client")
-                client = Client(f"client2_{num}", api_id=API_ID, api_hash=API_HASH, bot_token=token, no_updates=True, workdir=PYRO_DIR)
+                client = Client(f"client_{num}", api_id=API_ID, api_hash=API_HASH, bot_token=token, no_updates=True, workdir=PYRO_DIR)
                 client.start()
                 self.clients[num] = {
                     "client": client, 
@@ -101,6 +103,8 @@ class CustomBot(Client):
             return 
 
     def release_client(self, num):
+        if isinstance(num, dict):
+            num = num.get('num')
         try:
             self.clients[num]['process_count'] -= 1
         except:
@@ -108,12 +112,12 @@ class CustomBot(Client):
 
     def start(self, **kwargs):
         super().start(**kwargs)
-        self.load_clients()
         self.username = self.get_me().username
         print(f"Bot started as {self.username}")
 
     def stop(self, **kwargs):
         super().stop(**kwargs)
+        print("Stopping all clients")
         for client in self.clients.values():
             client['client'].stop()
         print("Bot stopped")
@@ -126,3 +130,5 @@ bot = CustomBot(
     workdir=PYRO_DIR,
     workers=343
     ) # pyrogram bot
+
+bot.load_clients()

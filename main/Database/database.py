@@ -127,11 +127,14 @@ class Database:
         user = await self.col.find_one({'id':int(id)})
         return user.get('caption', None)
     
-    async def save_cache(self, msg_id, chat_id, cache_msg_id):
-        await self.cache.insert_one({"_id": f"{msg_id}_{chat_id}", "msg_id": cache_msg_id})
+    async def save_cache(self, msg_id, chat_id, cache_msg_id, caption=""):
+        try:
+            await self.cache.insert_one({"_id": f"{msg_id}_{chat_id}", "msg_id": cache_msg_id, "caption": caption})
+        except:
+            pass
     
-    async def get_cache(self, msg_id, chat_id):
+    async def get_cache(self, msg_id, chat_id) -> int | None:
         cache = await self.cache.find_one({"_id": f"{msg_id}_{chat_id}"})
-        return cache.get('file_id', None)
-      
+        return cache if cache else {}
+
 db = Database(MONGODB_URI, SESSION_NAME)

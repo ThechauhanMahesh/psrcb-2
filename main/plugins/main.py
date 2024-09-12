@@ -1,5 +1,6 @@
 # Github.com/Vasusen-code
 
+import logging
 from .. import bot as Drone
 from .. import AUTH_USERS 
 
@@ -52,17 +53,17 @@ async def clone(client, message: types.Message):
                 userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
                 await userbot.start()
             except Exception as e:
-                print(e)
+                logging.exception(e)
                 return await edit.edit(str(e))
         else:
             return await edit.edit("⚠️ Your login credentials not found.")
         await db.update_process(user_id)
         caption_data = await db.get_caption(user_id)
         try: 
-            await get_msg(userbot, client, user_id, to, edit, link, caption_data, i=0, plan=plan)
+            await get_msg(userbot, client, user_id, to, edit, link, caption_data, retry=0, plan=plan)
             await userbot.stop()
         except Exception as e:
-            print(e)
+            logging.exception(e)
             await message.reply(f"An error occurred: {e}")
             pass
         await set_timer(client, user_id, timer) 

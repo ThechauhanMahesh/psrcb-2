@@ -118,6 +118,8 @@ async def login(_, message: types.Message):
 
     try:
         contact = await Drone.ask(chat_id=user_id, text="Send me your contact number with country code(eg +1 or +91) to login.", filters=filters.text, timeout=60)
+        if not contact.text or contact.text.startswith('/'):
+            return await message.reply("Invalid input, try again.")
         number = ' '.join(str(contact.text))
 
         code_alert = await message.reply("Sending code...")

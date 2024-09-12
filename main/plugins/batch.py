@@ -6,10 +6,11 @@ Plugin for both public & private channels!
 """
 
 import asyncio
+import logging
 
 from .. import bot as Drone, AUTH_USERS
 from main.plugins.pyroplug import get_msg
-from main.plugins.helpers import get_link, set_subscription, check_subscription
+from main.plugins.helpers import extract_tg_link, get_link, rreplace, set_subscription, check_subscription
 from main.Database.database import db
 
 from pyrogram import Client, filters, types
@@ -177,6 +178,7 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
         print(e)
         await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
         return
+    _, msg_id = extract_tg_link(link)
     for i in range(value):
         if i < 50:
             timer = 10
@@ -208,15 +210,18 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
             await client.send_message(sender, "✅ Batch completed.")
             break
         editable = await client.send_message(chat, "Processing...")
+        new_link = rreplace(link, f"/{msg_id}", f"/{msg_id+i}")
         try:
-            await get_msg(userbot, client, sender, chat, editable, link, caption_data, i=i, plan=plan)
+            await get_msg(userbot, client, sender, chat, editable, new_link, caption_data, retry=0, plan=plan)
         except FloodWait as fw:
-            await client.send_message(sender, f"⚠️ Sleeping for `{fw.value+5}` seconds due to Floodwait.")
-            await asyncio.sleep(fw.value+5) #Sleep for the floodwait time + 5 seconds
-            await get_msg(userbot, client, sender, chat, editable, link, caption_data, i=i, plan=plan)
+            fw.value += 5 #Add 5 seconds to the floodwait time
+            print(f"Sleeping for {fw.value} seconds due to Floodwait.")
+            await client.send_message(sender, f"⚠️ Sleeping for `{fw.value}` seconds due to Floodwait.")
+            await asyncio.sleep(fw.value)
+            await get_msg(userbot, client, sender, chat, editable, new_link, caption_data, retry=1, plan=plan, specified_msg_id=msg_id)
             continue #Skip the next sleep
         except Exception as e:
-            print(e)
+            logging.exception(e)
             await client.send_message(sender, f"An error occured : {e}")
         protection = await client.send_message(chat, f"⚠️ Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
         await asyncio.sleep(timer)
