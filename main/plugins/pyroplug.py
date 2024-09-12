@@ -2,7 +2,8 @@
 
 import os 
 from main.plugins.helpers import download, extract_tg_link, upload
-
+from main.Database.database import db
+from main import DUMP_CHANNEL
 from pyrogram.enums import MessageMediaType
 from pyrogram import Client
 
@@ -12,11 +13,11 @@ def thumbnail(sender):
     else:
          return None
       
-async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, caption_data, i=0, plan="basic"):
+async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, caption_data, i=0, plan="basic"):
     if i >= 2:
         return await editable_msg.edit("❌ Failed to save: `{msg_link}`\n\nError: Maximum retries exceeded.")
 
-    file, file_size, chat, caption, thumb_path, upload_client = None, None, None, None, thumbnail(sender), client
+    file, file_size, chat, caption, thumb_path = None, None, None, None, thumbnail(sender)
 
     if "?single" in msg_link:
         msg_link = msg_link.split("?single")[0]
@@ -75,19 +76,22 @@ async def get_msg(userbot, client:Client, sender, to, editable_msg, msg_link, ca
 
             if file == None:
                 return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nThis link is not downloadble.')
-                
-            file_size = os.path.getsize(file)
-            
-            if file_size > 2097152000:
+
+            if os.path.getsize(file) > 2097152000:
                 if plan != "pro":
                     return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
                 else:
-                    upload_client = userbot
                     if to == sender:
-                        me = await client.get_me()
-                        to = me.username
-            
-            uploaded, update = await upload(upload_client, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
+                        to = client.username
+                    uploaded, update = await upload(userbot, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
+            else:
+                if is_exists:=db.get_cache(msg_id, chat):
+                    uploaded = await client.copy_message(chat_id=to, from_chat_id=DUMP_CHANNEL, message_id=is_exists["cache_msg_id"])
+                else:
+                    uploaded, update = await upload(client.get_client(), file, DUMP_CHANNEL, msg, editable_msg, thumb_path=thumb_path, caption=caption)
+                    if uploaded and update:
+                        await db.save_cache(msg_id, chat, uploaded.id)
+
             if uploaded:
                 await editable_msg.delete()
             else:

@@ -2,7 +2,7 @@
 #Github.com/vasusen-code
 import datetime
 import motor.motor_asyncio
-from .. import MONGODB_URI, SESSION_NAME
+from .. import MONGODB_URI, SESSION_NAME, DUMP_CHANNEL
 
 class Database:
   
@@ -12,6 +12,7 @@ class Database:
         self._client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URI)
         self.db = self._client[SESSION_NAME]
         self.col = self.db.users
+        self.cache = self.db[f"cache_{DUMP_CHANNEL}"]
 
 #collection handling---------------------------------------------------------
 
@@ -117,7 +118,7 @@ class Database:
     async def get_data(self, id):
         user = await self.col.find_one({'id':int(id)})
         return user.get('data', None)
-      
+
     async def get_process(self, id):
         user = await self.col.find_one({'id':int(id)})
         return user.get('process', None)
@@ -125,5 +126,12 @@ class Database:
     async def get_caption(self, id):
         user = await self.col.find_one({'id':int(id)})
         return user.get('caption', None)
+    
+    async def save_cache(self, msg_id, chat_id, cache_msg_id):
+        await self.cache.insert_one({"_id": f"{msg_id}_{chat_id}", "msg_id": cache_msg_id})
+    
+    async def get_cache(self, msg_id, chat_id):
+        cache = await self.cache.find_one({"_id": f"{msg_id}_{chat_id}"})
+        return cache.get('file_id', None)
       
 db = Database(MONGODB_URI, SESSION_NAME)

@@ -277,7 +277,7 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
                     thumb_path = await screenshot(file, duration)
             except Exception:
                 thumb_path = None
-            await client.send_video_note(
+            sent = await client.send_video_note(
                 chat_id=to,
                 video_note=file,
                 length=height, duration=duration, 
@@ -298,7 +298,7 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
                     thumb_path = await screenshot(file, duration)
             except Exception:
                 thumb_path = None
-            await client.send_video(
+            sent = await client.send_video(
                 chat_id=to,
                 video=file,
                 caption=caption,
@@ -314,13 +314,13 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
                 )
             )
         elif msg.media==MessageMediaType.VOICE:
-            await client.send_voice(to, file, caption=caption)
+            sent = await client.send_voice(to, file, caption=caption)
             
         elif msg.media==MessageMediaType.PHOTO:
             await editable_msg.edit("🔺 Uploading photo...")
-            await client.send_photo(to, file, caption=caption)
+            sent = await client.send_photo(to, file, caption=caption)
         else:
-            await client.send_document(
+            sent = await client.send_document(
                 to,
                 file, 
                 caption=caption,
@@ -338,7 +338,7 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
         except:
             pass
         await editable_msg.delete()
-        return True, None
+        return True, sent
     except (ChannelInvalid, ChatInvalid):
         False, "⚠️ You are not joined this channel/chat with the logged in account"
     except (ChatIdInvalid, PeerIdInvalid):
@@ -357,7 +357,7 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
         or "SaveBigFilePartRequest" in str(e) \
         or "SendMediaRequest" in str(e):
             try:
-                await client.send_document(
+                sent = await client.send_document(
                     to,
                     file, 
                     caption=caption,
@@ -376,6 +376,7 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
                         os.remove(file)
                 except:
                     pass
+                return True, sent
             except Exception as e:
                 return False, str(e)
         return False, str(e)

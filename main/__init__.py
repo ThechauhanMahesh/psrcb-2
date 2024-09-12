@@ -1,5 +1,6 @@
 #ChauhanMahesh/Vasusen/DroneBots/COL
 
+import os
 from pyrogram import Client
 from pyromod import listen
 import logging, sys, pymongo
@@ -55,18 +56,73 @@ ACCESS = int("-1001879806908")
 MONGODB_URI = "mongodb+srv://thechauhanmahesh:XgbFpSEe3pM9P45z@cluster0.mkaomd0.mongodb.net"
 AUTH_USERS = 1807573686
 SESSION_NAME = "PremiumSRCB"
+PYRO_DIR = "pyro-sessions"
+
+# list of telegram bot tokens
+UPLOADING_CLIENTS = []
+DUMP_CHANNEL = 0
 
 client = pymongo.MongoClient(MONGODB_URI)
-db = client[SESSION_NAME] 
-collection = db["users"]  
+db = client[SESSION_NAME]
+collection = db["users"]
 process = {"process":{"process":False, "batch":False}}
 collection.update_many({}, {"$set":process})
 print("All users have been set free.")
 
-bot = Client(
-    "PyrogamBot", 
-    api_hash=API_HASH, 
-    api_id=API_ID, 
+
+class CustomBot(Client):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.clients = {}
+
+    def load_clients(self):
+        for num, token in enumerate(UPLOADING_CLIENTS, start=1):
+            try:
+                print(f"[{num}/{len(UPLOADING_CLIENTS)}] adding client")
+                client = Client(f"client2_{num}", api_id=API_ID, api_hash=API_HASH, bot_token=token, no_updates=True, workdir=PYRO_DIR)
+                client.start()
+                self.clients[num] = {
+                    "client": client, 
+                    "process_count": 0,
+                    "num": num,
+                }
+            except Exception as e: 
+                print(f"[{num}/{len(UPLOADING_CLIENTS)}] error : {e}") 
+        print("All clients loaded!")
+
+    def get_client(self):
+        try:
+            sorted_clients = sorted(self.clients.values(), key=lambda x:x.get('process_count'))
+            if sorted_clients:
+                sorted_clients[0]['process_count'] += 1
+                return sorted_clients[0]
+        except: 
+            print("No clients available to use")
+            return 
+
+    def release_client(self, num):
+        try:
+            self.clients[num]['process_count'] -= 1
+        except:
+            print(f"error releasing client {num}")
+
+    def start(self, **kwargs):
+        super().start(**kwargs)
+        self.load_clients()
+        self.username = self.get_me().username
+        print(f"Bot started as {self.username}")
+
+    def stop(self, **kwargs):
+        super().stop(**kwargs)
+        for client in self.clients.values():
+            client['client'].stop()
+        print("Bot stopped")
+
+bot = CustomBot(
+    "PyrogamBot",
+    api_hash=API_HASH,
+    api_id=API_ID,
     bot_token=BOT_TOKEN,
+    workdir=PYRO_DIR,
     workers=343
     ) # pyrogram bot

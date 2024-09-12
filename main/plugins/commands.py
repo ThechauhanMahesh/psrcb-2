@@ -15,8 +15,6 @@ from pyrogram.utils import get_peer_id
 from pyrogram.raw.types import RequestPeerTypeBroadcast, RequestPeerTypeChat
 from pyrogram.raw.types import MessageActionRequestedPeer, UpdateNewMessage, MessageService
 
-from main.plugins.helpers import login_credentials, logout_credentials
-from main.Database.database import db
 from main.types import ButtonRequestPeer
 
 APIID = [API_ID, 29841594]
