@@ -48,8 +48,8 @@ async def ss(_, message: types.Message):
     await set_subscription(int(data[0]), date, int(data[2]), data[3])
     x = await db.get_data(int(data[0]))
     await edit.edit(f'{x}')
-    await Drone.send_message(int(data[0]), "Your plan is active now, send /myplan to check.")
-    return 
+    await Drone.send_message(int(data[0]), "Your plan is successfully active ✅\n\nCheck @Premium_SRCB for paid bots ⚡️")
+
 
 @Drone.on_message(filters=filters.command('caption') & filters.incoming)
 async def caption(_, message: types.Message):
