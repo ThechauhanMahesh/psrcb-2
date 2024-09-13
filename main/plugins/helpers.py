@@ -50,21 +50,22 @@ def extract_tg_link(url):
     if not isinstance(url, str):
         logging.error(f"URL must be a string, {url} given.")
         return None, None
-    pattern = r"^(?:(?:https|tg):\/\/)?(?:www\.)?(?:t\.me\/|openmessage\?)(?:(?:c\/(\d+))|(\w+)|(?:user_id\=(\d+)))(?:\/|&message_id\=)(\d+)(\?single)?$"  # noqa
+    pattern = r"^(?:(?:https|tg):\/\/)?(?:www\.)?(?:t\.me\/)?(?:(?:c\/(\d+))|(?:b\/)?(\w+)|(?:openmessage\?user_id\=(\d+)))(?:\/|&message_id\=)(\d+)(?:\/(\d+))?(\?single)?$"
     # group 1: private supergroup id, group 2: chat username,
     # group 3: private group/chat id, group 4: message id
-    # group 5: check for download single media from media group
+    # group 5: topics message id (optional)
     match = re.search(pattern, url.strip())
     if match:
         chat_id = None
         msg_id = int(match.group(4))
-        #if not bool(match.group(5)):
         if match.group(1):
             chat_id = int("-100" + match.group(1))
         elif match.group(2):
             chat_id = match.group(2)
         elif match.group(3):
             chat_id = int(match.group(3))
+        if match.group(5):
+            msg_id = int(match.group(5))
         if chat_id and msg_id:
             return chat_id, msg_id
     return None, None
