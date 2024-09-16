@@ -8,6 +8,7 @@ from datetime import date
 from datetime import datetime
 from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
+import uuid
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 
@@ -17,6 +18,7 @@ from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, Use
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid, PeerIdInvalid
 from pyrogram.errors import UserNotParticipant
 from pyrogram.enums import ChatMemberStatus
+from pyrogram.types import Message
 
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import db
@@ -249,28 +251,40 @@ async def findVideoMetadata(pathToInputVideo):
 
     return int(height), int(width), int(duration_seconds)
 
+def extract_file_name(msg: Message):
+    def get_file_ext():
+        ext = None
+        if msg.media == MessageMediaType.DOCUMENT:
+            ext = ".zip"
+        elif msg.media == MessageMediaType.VIDEO:
+            ext = ".mp4"
+        elif msg.media == MessageMediaType.AUDIO:
+            ext = ".mp3"
+        elif msg.media == MessageMediaType.VOICE:
+            ext = ".ogg"
+        elif msg.media == MessageMediaType.PHOTO:
+            ext = ".jpg"
+        return ext
+    media = msg.document or msg.video or msg.audio or msg.voice or msg.photo or msg.animation or msg.sticker or msg.video_note
+    if media:
+        file_name = media.file_name
+        if not file_name:
+            file_name = str(uuid.uuid4().hex) + (get_file_ext() or ".mp4")
+        return file_name
+
 # download ---------------------------------------------------------------------------------------------------------------
 
 async def download(client:Client, msg, editable_msg, file_name=None):
+    if file_name:
+        file_name = file_name.replace(os.sep, "-")
+    if not file_name:
+        file_name = extract_file_name(msg) or str(uuid.uuid4().hex) + ".mp4"
+        file_name = os.path.join("downloads", file_name)
     file = None
     try:
-        if file_name:
-            file_name = file_name.replace(os.sep, "-")
-        if file_name:
-            file = await client.download_media(
+        file = await client.download_media(
                 msg,
                 file_name=new_name,
-                progress=progress_for_pyrogram,
-                progress_args=(
-                    client,
-                    "**🔻 DOWNLOADING:**\n",
-                    editable_msg,
-                    time.time()
-                )
-            )
-        else:
-            file = await client.download_media(
-                msg,
                 progress=progress_for_pyrogram,
                 progress_args=(
                     client,
@@ -284,14 +298,16 @@ async def download(client:Client, msg, editable_msg, file_name=None):
         new_name = file.split("downloads/")[1].replace("/", "-")
         return await download(client, msg, editable_msg, file_name=new_name)
     except (ChannelInvalid, ChatInvalid, ChatIdInvalid, PeerIdInvalid):
-        return False, "⚠️ Invalid link"
+        return False, "⚠️ Invalid link, check your link and try again."
     except ChannelBanned:
         return False, "⚠️ You are banned from this chat"
     except ChannelPrivate:
         return False, "⚠️ You are not joined in this channel"
+    except UserNotParticipant:
+        return False, "⚠️ You are not joined in this channel"
     except Exception as e:
-        if "This message doesn't contain any downloadable media" in str(e):
-            return False, None
+        if "This message doesn't contain any downloadable" in str(e):
+            return False, "⚠️ This message doesn't contain any downloadable media."
         else:
             return False, str(e)
 

@@ -185,16 +185,6 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
         #await client.send_message(sender, "⚠️ Requested range is greater than the total files in the chat, sending till the last file.")
         value = last_msg.id - (msg_id-1)
     for i in range(value):
-        if i < 50:
-            timer = 10
-        elif i > 25 and i < 50:
-            timer = 15
-        elif i > 50 and i < 100:
-            timer = 20
-        elif i > 100:
-            timer = 25
-        if not 't.me/c/' in link and not 't.me/b/' in link:
-            timer = 5
         if (await db.get_data(sender))["plan"] == "pro":
             if not 't.me/c/' in link and not 't.me/b/' in link:
                 timer = 3
@@ -206,6 +196,17 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
                     timer = 8
                 elif i > 100:
                     timer = 10
+        else:
+            if i < 50:
+                timer = 10
+            elif i > 25 and i < 50:
+                timer = 15
+            elif i > 50 and i < 100:
+                timer = 20
+            elif i > 100:
+                timer = 25
+            if not 't.me/c/' in link and not 't.me/b/' in link:
+                timer = 5
         try:
             if not (await db.get_process(sender))["process"]:
                 await client.send_message(sender, "✅ Batch completed.")
