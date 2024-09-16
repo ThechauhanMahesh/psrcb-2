@@ -275,10 +275,10 @@ def extract_file_name(msg: Message):
 # download ---------------------------------------------------------------------------------------------------------------
 
 async def download(client:Client, msg, editable_msg, file_name=None):
-    if file_name:
-        file_name = file_name.replace(os.sep, "-")
     if not file_name:
         file_name = extract_file_name(msg) or str(uuid.uuid4().hex) + ".mp4"
+    if file_name:
+        file_name = os.path.basename(file_name).replace(os.sep, "-")
         file_name = os.path.join("downloads", file_name)
     file = None
     try:
@@ -295,7 +295,11 @@ async def download(client:Client, msg, editable_msg, file_name=None):
             )
         return True, file
     except FileNotFoundError:
-        new_name = file.split("downloads/")[1].replace("/", "-")
+        try:
+            os.remove(file_name)
+        except:
+            pass
+        new_name = os.path.basename(file_name)
         return await download(client, msg, editable_msg, file_name=new_name)
     except (ChannelInvalid, ChatInvalid, ChatIdInvalid, PeerIdInvalid):
         return False, "⚠️ Invalid link, check your link and try again."
