@@ -2,10 +2,10 @@ import math
 import os
 import time
 import json
+from main import DL_DIR
 
 FINISHED_PROGRESS_STR = "🟩"
 UN_FINISHED_PROGRESS_STR = "⬜️"
-DOWNLOAD_LOCATION = "/app"
 
 
 async def progress_for_pyrogram(
@@ -20,7 +20,7 @@ async def progress_for_pyrogram(
     diff = now - start
     if round(diff % 25.00) == 0 or current == total:
         percentage = current * 100 / total
-        status = DOWNLOAD_LOCATION + "/status.json"
+        status = os.path.join(DL_DIR, str(bot.me.id), "status.json")
         if os.path.exists(status):
             with open(status, 'r+') as f:
                 statusMsg = json.load(f)
