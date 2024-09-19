@@ -55,7 +55,9 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 else:
                     file = update
             else:
-                return
+                if is_batch:
+                    return await editable_msg.delete()
+                return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: Invalid link.')
 
             caption = build_caption(plan, msg.caption, caption_data)
 

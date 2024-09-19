@@ -290,7 +290,7 @@ async def download(client:CustomBot, msg, editable_msg, file_name=None):
         return True, file
     except FileNotFoundError:
         if file:
-            file_name = os.path.basename(file)
+            delete_file(file)
         return await download(client, msg, editable_msg, file_name=file_name)
     except (ChannelInvalid, ChatInvalid, ChatIdInvalid, PeerIdInvalid):
         return False, "⚠️ Invalid link, check your link and try again."
