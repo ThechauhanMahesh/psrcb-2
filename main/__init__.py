@@ -6,12 +6,9 @@ from pyromod import listen
 import logging, sys, pymongo
 
 logging.basicConfig(
-    level=logging.ERROR, 
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
-    handlers=[
-        logging.StreamHandler(),
-        RotatingFileHandler('bot.log', maxBytes=1000000, backupCount=4),
-    ]
+    format = "[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
+    handlers=[logging.FileHandler("log.txt", "w"), logging.StreamHandler()],
+    level=logging.ERROR
 )
 
 
