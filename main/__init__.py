@@ -136,6 +136,9 @@ class CustomBot(Client):
         super().start(**kwargs)
         self.me = self.get_me()
         self.username = self.me.username
+        user_dir = os.path.join(DL_DIR, str(self.me.id))
+        if not os.path.isdir(user_dir):
+            os.makedirs(user_dir)
         print(f"Bot started as {self.username}")
 
     def stop(self, **kwargs):
