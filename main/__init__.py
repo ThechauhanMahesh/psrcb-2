@@ -5,8 +5,12 @@ from pyrogram import Client
 from pyromod import listen
 import logging, sys, pymongo
 
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
+logging.basicConfig(
+    format = "[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
+    handlers=[logging.FileHandler("log.txt", "w"), logging.StreamHandler()],
+    level=logging.ERROR
+)
+
 
 help_text = """Help:
 
