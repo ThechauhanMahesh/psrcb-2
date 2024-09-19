@@ -9,10 +9,7 @@ from pyrogram.enums import MessageMediaType
 from pyrogram import Client
 
 def thumbnail(sender):
-    if os.path.exists(f'{sender}.jpg'):
-        return f'{sender}.jpg'
-    else:
-         return None
+    return f'{sender}.jpg' if os.path.exists(f'{sender}.jpg') else None
       
 async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, caption_data, retry=0, plan="basic", is_batch=False):
     if retry >= 3:
@@ -40,24 +37,23 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 if is_batch:
                     return await editable_msg.delete()
                 return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')
-            if msg.media:
-                if msg.media==MessageMediaType.WEB_PAGE:
-                    await editable_msg.edit("Cloning.")
-                    await client.send_message(to, msg.text.markdown)
-                    await editable_msg.delete()
-                    return
-                else:
-                    downloaded, update = await download(userbot, msg, editable_msg)
-                    if not downloaded:
-                        await editable_msg.edit(f"❌ Failed to save: `{msg_link}`\n\nError: {update}")
-                        return
-                    else:
-                        file = update
-            elif msg.text:
-                await editable_msg.edit("Cloning.")
+            if (
+                msg.media
+                and msg.media == MessageMediaType.WEB_PAGE
+                or not msg.media
+                and msg.text
+            ):
+                await editable_msg.edit(text="Cloning.")
                 await client.send_message(to, msg.text.markdown)
                 await editable_msg.delete()
                 return
+            elif msg.media:
+                downloaded, update = await download(userbot, msg, editable_msg)
+                if not downloaded:
+                    await editable_msg.edit(text=f"❌ Failed to save: `{msg_link}`\n\nError: {update}")
+                    return
+                else:
+                    file = update
             else:
                 return
 
@@ -65,16 +61,15 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
 
             await editable_msg.edit("Preparing to upload...")
 
-            if file == None:
+            if file is None:
                 return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nThis link is not downloadble.')
 
             if os.path.getsize(file) > 2097152000:
                 if plan != "pro":
                     return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
-                else:
-                    if to == sender:
-                        to = client.username
-                    uploaded, update = await upload(userbot, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
+                if to == sender:
+                    to = client.username
+                uploaded, update = await upload(userbot, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
             else:
                 up_client = client.get_client()
                 if not up_client:
@@ -92,7 +87,6 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                     return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, retry=retry, plan=plan, specified_msg_id=msg_id, is_batch=is_batch)
                 else:
                     return await editable_msg.edit(f"❌ Failed to upload: `{msg_link}`\n\nError: {update}")
-
         except Exception as e:
             logging.exception(e)
             return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')

@@ -5,14 +5,11 @@ import shlex
 import json
 from datetime import timedelta
 from datetime import date
-from datetime import datetime
 from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
 import uuid
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
-
-from pyrogram import Client
 from pyrogram.enums import MessageMediaType
 from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid, PeerIdInvalid
@@ -22,29 +19,35 @@ from pyrogram.types import Message
 
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import db
+from main import DL_DIR, CustomBot
+
+def delete_file(file):
+    try:
+        os.remove(file)
+        if os.path.isfile(file):
+            os.remove(file)
+    except:
+        pass
 
 def rreplace(s, old, new):
     return s[::-1].replace(old[::-1], new[::-1], 1)[::-1]
 
 def build_caption(plan, caption, caption_data):
-    if caption is not None:
-        if plan == "pro":
+    if plan == "pro":
+        action = caption_data["action"]
+        if caption is not None:
             new_caption = ""
-            action = caption_data["action"]
-            string = caption_data["string"]
             if action is not None:
+                string = caption_data["string"]
                 if action == "add":
                     new_caption = caption + f"\n\n{string}"
-                if action == "delete":
+                elif action == "delete":
                     new_caption = caption.replace(string, "")
-                if action == "replace":
+                elif action == "replace":
                     new_caption = caption.replace(string["d"], string["a"])
                 caption = new_caption
-    else:
-        if plan == "pro":
-            action = caption_data["action"]
-            if action == "add":
-                caption = caption_data["string"] or ""
+        elif action == "add":
+            caption = caption_data["string"] or ""
     return caption
 
 # TG Link extractor -----------------------------------------------------------------------------------
@@ -53,11 +56,7 @@ def extract_tg_link(url):
         logging.error(f"URL must be a string, {url} given.")
         return None, None
     pattern = r"^(?:(?:https|tg):\/\/)?(?:www\.)?(?:t\.me\/)?(?:(?:c\/(\d+))|(?:b\/)?(\w+)|(?:openmessage\?user_id\=(\d+)))(?:\/|&message_id\=)(\d+)(?:\/(\d+))?(\?single)?$"
-    # group 1: private supergroup id, group 2: chat username,
-    # group 3: private group/chat id, group 4: message id
-    # group 5: topics message id (optional)
-    match = re.search(pattern, url.strip())
-    if match:
+    if match := re.search(pattern, url.strip()):
         chat_id = None
         msg_id = int(match.group(4))
         if match.group(1):
@@ -83,22 +82,21 @@ async def check_subscription(id):
         return
     z = doe.split("-")
     e = int(z[0] + z[1] + z[2])
-    x = str(datetime.today()).split(" ")[0]
+    x = str(dt.now()).split(" ")[0]
     w = x.split("-")
     today = int(w[0] + w[1] + w[2])
     if today > e:
         await db.rem_data(id)
     else:
         return 
-            
+
 async def set_subscription(user_id, dos, days, plan):
     if not dos:
-        x = str(datetime.today()).split(" ")[0]
+        x = str(dt.now()).split(" ")[0]
         dos_ = x.split("-")
-        today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
     else:
         dos_ = dos.split("-")
-        today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
+    today = date(int(dos_[0]), int(dos_[1]), int(dos_[2]))
     expiry_date = today + timedelta(days=days)
     data = {"dos":str(today), "doe":str(expiry_date), "plan":plan}
     await db.update_data(user_id, data)
@@ -125,7 +123,7 @@ async def set_timer(bot, sender, t):
         
 #Forcesub -----------------------------------------------------------------------------------
 
-async def force_sub(client: Client, channel, id):
+async def force_sub(client: CustomBot, channel, id):
     s, r = False, None
     try:
         # In Pyrogram, IDs should be directly usable, so ensure 'id' is integer if not handled externally.
@@ -145,7 +143,7 @@ async def force_sub(client: Client, channel, id):
 
 #Join private chat-------------------------------------------------------------------------------------------------------------
 
-async def join(client: Client, invite_link):
+async def join(client: CustomBot, invite_link):
     try:
         await client.join_chat(invite_link)
         return "Successfully joined the Channel"
@@ -158,20 +156,15 @@ async def join(client: Client, invite_link):
     except Exception as e:
         print(e)
         return "Could not join, try joining manually."
-           
         
 #Regex---------------------------------------------------------------------------------------------------------------
 #to get the url from event
 
 def get_link(string):
     regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
-    url = re.findall(regex,string)   
+    url = re.findall(regex,string)
     try:
-        link = [x[0] for x in url][0]
-        if link:
-            return link
-        else:
-            return False
+        return link if (link := [x[0] for x in url][0]) else False
     except Exception:
         return False
     
@@ -264,27 +257,28 @@ def extract_file_name(msg: Message):
             ext = ".ogg"
         elif msg.media == MessageMediaType.PHOTO:
             ext = ".jpg"
+        else:
+            ext = ".mp4"
         return ext
     media = msg.document or msg.video or msg.audio or msg.voice or msg.photo or msg.animation or msg.sticker or msg.video_note
     if media:
-        file_name = media.file_name
-        if not file_name:
-            file_name = str(uuid.uuid4().hex) + (get_file_ext() or ".mp4")
+        file_name = getattr(media, "file_name", str(uuid.uuid4().hex) + (get_file_ext() or ".mp4"))
         return file_name
 
 # download ---------------------------------------------------------------------------------------------------------------
 
-async def download(client:Client, msg, editable_msg, file_name=None):
-    if not file_name:
-        file_name = extract_file_name(msg) or str(uuid.uuid4().hex) + ".mp4"
-    if file_name:
-        file_name = os.path.basename(file_name).replace(os.sep, "-")
-        file_name = os.path.join("downloads", file_name)
+async def download(client:CustomBot, msg, editable_msg, file_name=None):
+    # if not file_name:
+    #     file_name = extract_file_name(msg) or str(uuid.uuid4().hex) + ".mp4"
+    # if file_name:
+    #     file_name = os.path.basename(file_name).replace(os.sep, "-")
+    #     file_name = os.path.join("downloads", file_name)
     file = None
     try:
+        dl_dir = os.path.join(DL_DIR, str(client.me.id), os.sep)
         file = await client.download_media(
                 msg,
-                file_name=new_name,
+                file_name=dl_dir,
                 progress=progress_for_pyrogram,
                 progress_args=(
                     client,
@@ -295,12 +289,9 @@ async def download(client:Client, msg, editable_msg, file_name=None):
             )
         return True, file
     except FileNotFoundError:
-        try:
-            os.remove(file_name)
-        except:
-            pass
-        new_name = os.path.basename(file_name)
-        return await download(client, msg, editable_msg, file_name=new_name)
+        if file:
+            file_name = os.path.basename(file)
+        return await download(client, msg, editable_msg, file_name=file_name)
     except (ChannelInvalid, ChatInvalid, ChatIdInvalid, PeerIdInvalid):
         return False, "⚠️ Invalid link, check your link and try again."
     except ChannelBanned:
@@ -317,7 +308,7 @@ async def download(client:Client, msg, editable_msg, file_name=None):
 
 # upload ---------------------------------------------------------------------------------------------------------------
   
-async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, caption=None):
+async def upload(client:CustomBot, file, to, msg, editable_msg, thumb_path=None, caption=None):
     try:
         if msg.media==MessageMediaType.VIDEO_NOTE:
             height, width, duration = await findVideoMetadata(file)
@@ -365,7 +356,6 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
             )
         elif msg.media==MessageMediaType.VOICE:
             sent = await client.send_voice(to, file, caption=caption)
-            
         elif msg.media==MessageMediaType.PHOTO:
             await editable_msg.edit("🔺 Uploading photo...")
             sent = await client.send_photo(to, file, caption=caption)
@@ -383,11 +373,13 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
                     time.time()
                 )
             )
+        delete_file(file)
+        if thumb_path:
+            delete_file(thumb_path)
         try:
-            os.remove(file)
+            await editable_msg.delete()
         except:
             pass
-        await editable_msg.delete()
         return True, sent
     except (ChannelInvalid, ChatInvalid):
         False, "⚠️ You are not joined this channel/chat with the logged in account"
@@ -421,12 +413,9 @@ async def upload(client:Client, file, to, msg, editable_msg, thumb_path=None, ca
                         time.time()
                     )
                 )
-                try:
-                    os.remove(file)
-                    if os.path.isfile(file) == True:
-                        os.remove(file)
-                except:
-                    pass
+                delete_file(file)
+                if thumb_path:
+                    delete_file(thumb_path)
                 return True, sent
             except Exception as e:
                 return False, str(e)

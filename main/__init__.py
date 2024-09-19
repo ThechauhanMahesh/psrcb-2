@@ -65,6 +65,7 @@ MONGODB_URI = "mongodb+srv://thechauhanmahesh:XgbFpSEe3pM9P45z@cluster0.mkaomd0.
 AUTH_USERS = 1807573686
 SESSION_NAME = "PremiumSRCB"
 PYRO_DIR = "pyro-sessions"
+DL_DIR = "downloads"
 
 # list of telegram bot tokens
 UPLOADING_CLIENTS = [
@@ -90,6 +91,8 @@ class CustomBot(Client):
         self.clients = {}
         if not os.path.isdir(PYRO_DIR):
             os.makedirs(PYRO_DIR)
+        if not os.path.isdir(DL_DIR):
+            os.makedirs(DL_DIR)
 
     def load_clients(self):
         for num, token in enumerate(UPLOADING_CLIENTS, start=1):
@@ -108,8 +111,9 @@ class CustomBot(Client):
 
     def get_client(self):
         try:
-            sorted_clients = sorted(self.clients.values(), key=lambda x:x.get('process_count'))
-            if sorted_clients:
+            if sorted_clients := sorted(
+                self.clients.values(), key=lambda x: x.get('process_count')
+            ):
                 sorted_clients[0]['process_count'] += 1
                 return sorted_clients[0]
         except: 
@@ -126,7 +130,8 @@ class CustomBot(Client):
 
     def start(self, **kwargs):
         super().start(**kwargs)
-        self.username = self.get_me().username
+        self.me = self.get_me()
+        self.username = self.me.username
         print(f"Bot started as {self.username}")
 
     def stop(self, **kwargs):

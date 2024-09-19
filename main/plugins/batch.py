@@ -8,12 +8,12 @@ Plugin for both public & private channels!
 import asyncio
 import logging
 
-from .. import bot as Drone, AUTH_USERS
+from .. import CustomBot, bot as Drone, AUTH_USERS
 from main.plugins.pyroplug import get_msg
 from main.plugins.helpers import extract_tg_link, get_link, rreplace, set_subscription, check_subscription
 from main.Database.database import db
 
-from pyrogram import Client, filters, types
+from pyrogram import filters, types
 from pyrogram.errors import FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pyromod.exceptions import ListenerTimeout
@@ -53,7 +53,7 @@ async def ss(_, message: types.Message):
 
 @Drone.on_message(filters=filters.command('caption') & filters.incoming)
 async def caption(_, message: types.Message):
-    if not (await db.get_data(message.from_user.id))["plan"] == "pro":
+    if (await db.get_data(message.from_user.id))["plan"] != "pro":
         return await message.reply("⚠️ Purchase pro plan.")
     await message.reply(
         "Choose an action", 
@@ -163,7 +163,7 @@ async def batch(client, message: types.Message):
         chat = user_id
     userbot = None
     if s:
-        userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
+        userbot = CustomBot(f"sr_{user_id}", session_string=s, api_hash=h, api_id=int(i))     
     else:
         await message.reply("⚠️ Your login credentials not found.")
         return
@@ -186,7 +186,7 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
         value = last_msg.id - (msg_id-1)
     for i in range(value):
         if (await db.get_data(sender))["plan"] == "pro":
-            if not 't.me/c/' in link and not 't.me/b/' in link:
+            if 't.me/c/' not in link and 't.me/b/' not in link:
                 timer = 3
             else:
                 timer = 2
@@ -199,13 +199,11 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
         else:
             if i < 50:
                 timer = 10
-            elif i > 25 and i < 50:
-                timer = 15
             elif i > 50 and i < 100:
                 timer = 20
             elif i > 100:
                 timer = 25
-            if not 't.me/c/' in link and not 't.me/b/' in link:
+            if 't.me/c/' not in link and 't.me/b/' not in link:
                 timer = 5
         try:
             if not (await db.get_process(sender))["process"]:

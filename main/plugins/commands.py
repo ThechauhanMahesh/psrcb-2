@@ -1,10 +1,10 @@
 # Github.com/Vasusen-code
 
 import os, asyncio
-from .. import bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS
+from .. import CustomBot, bot as Drone, API_ID, API_HASH, help_text as ht, otp_text, AUTH_USERS
 
 from pyromod.exceptions import ListenerTimeout
-from pyrogram import Client, filters, types
+from pyrogram import filters, types
 from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
 
 from main.plugins.helpers import login_credentials, logout_credentials
@@ -22,13 +22,19 @@ APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
 @Drone.on_message(filters=filters.command('tutorial') & filters.incoming)
 async def tutorial(_, message: types.Message):
-    await message.reply(text="click below for tutorial.", reply_markup=InlineKeyboardMarkup(
-        [
+    await message.reply(
+        text="click below for tutorial.",
+        reply_markup=InlineKeyboardMarkup(
             [
-                InlineKeyboardButton(f"TUTORIAL", url="https://t.me/SaveRestricted_Content/14")
+                [
+                    InlineKeyboardButton(
+                        "TUTORIAL",
+                        url="https://t.me/SaveRestricted_Content/14",
+                    )
+                ]
             ]
-        ]
-    ))
+        ),
+    )
  
 @Drone.on_message(filters=filters.command('free') & filters.incoming)
 async def free(_, message: types.Message):
@@ -49,10 +55,9 @@ async def incomming(_, message: types.Message):
         tag = f'[{message.from_user.first_name}](t.me/@id{user_id})'
         await Drone.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {user_id}') 
         await message.reply("Purchase premium from @SubscriptionForBot.")
-    else:
-        if (await db.get_data(user_id))["dos"] == None:
-            tag = f'[{message.from_user.first_name}](t.me/@id{user_id})'
-            await Drone.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {user_id}') 
+    elif (await db.get_data(user_id))["dos"] is None:
+        tag = f'[{message.from_user.first_name}](t.me/@id{user_id})'
+        await Drone.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {user_id}') 
 
 @Drone.on_message(filters=filters.command('remchat') & filters.incoming)
 async def remove_chat(_, message: types.Message):
@@ -126,7 +131,7 @@ async def login(_, message: types.Message):
 
         ai = APIID[0]
         ah = APIHASH[0]
-        client = Client(f"{user_id}_account", api_id=ai, api_hash=ah, in_memory=True)
+        client = CustomBot(f"{user_id}_account", api_id=ai, api_hash=ah, in_memory=True)
         try:
             await client.connect()
         except ConnectionError:
@@ -137,7 +142,7 @@ async def login(_, message: types.Message):
             await asyncio.sleep(1)
         except FloodWait:
             await client.disconnect()
-            client = Client("my_account", api_id=APIID[-1], api_hash=APIHASH[-1])
+            client = CustomBot("my_account", api_id=APIID[-1], api_hash=APIHASH[-1])
             ai = APIID[-1]
             ah = APIHASH[-1]
             try:
