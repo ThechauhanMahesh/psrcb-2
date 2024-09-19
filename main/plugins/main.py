@@ -65,5 +65,4 @@ async def clone(client, message: types.Message):
         except Exception as e:
             logging.exception(e)
             await message.reply(f"An error occurred: {e}")
-            pass
         await set_timer(client, user_id, timer) 
