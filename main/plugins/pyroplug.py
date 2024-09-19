@@ -84,11 +84,10 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
 
             if uploaded:
                 await editable_msg.delete()
+            elif update:
+                return await editable_msg.edit(f"❌ Failed to upload: `{msg_link}`\n\nError: {update}")
             else:
-                if not update:
-                    return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, retry=retry, plan=plan, specified_msg_id=msg_id, is_batch=is_batch)
-                else:
-                    return await editable_msg.edit(f"❌ Failed to upload: `{msg_link}`\n\nError: {update}")
+                return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, retry=retry, plan=plan, specified_msg_id=msg_id, is_batch=is_batch)
         except Exception as e:
             logging.exception(e)
             return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: {str(e)}')

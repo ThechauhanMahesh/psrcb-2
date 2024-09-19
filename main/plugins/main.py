@@ -37,9 +37,6 @@ async def clone(client, message: types.Message):
     edit = await message.reply("Processing!")
     if (await db.get_process(user_id))["process"] == True:
         return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
-    timer = 10
-    if plan == "pro":
-        timer = 2
     to = await db.get_chat(user_id)
     if to is None:
         to = user_id
@@ -64,4 +61,5 @@ async def clone(client, message: types.Message):
         except Exception as e:
             logging.exception(e)
             await message.reply(f"An error occurred: {e}")
+        timer = 2 if plan == "pro" else 10
         await set_timer(client, user_id, timer) 
