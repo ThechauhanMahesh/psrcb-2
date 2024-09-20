@@ -1,7 +1,7 @@
 # Github.com/Vasusen-code
 
 import logging
-from .. import bot as Drone
+from .. import CustomBot, bot as Drone
 from .. import AUTH_USERS 
 
 from main.plugins.helpers import get_link, check_subscription, set_timer
@@ -48,7 +48,7 @@ async def clone(client, message: types.Message):
         if not s:
             return await edit.edit("⚠️ Your login credentials not found.")
         try:
-            userbot = Client("saverestricted", session_string=s, api_hash=h, api_id=int(i))     
+            userbot = CustomBot(f"sr_{user_id}", session_string=s, api_hash=h, api_id=int(i))     
             await userbot.start()
         except Exception as e:
             logging.exception(e)
