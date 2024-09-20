@@ -133,7 +133,7 @@ class CustomBot(Client):
             print(f"error releasing client {num}")
 
     async def start(self, **kwargs):
-        super().start(**kwargs)
+        await super().start(**kwargs)
         self.me = await self.get_me()
         self.username = self.me.username
         user_dir = os.path.join(DL_DIR, str(self.me.id))
@@ -142,7 +142,7 @@ class CustomBot(Client):
         print(f"Bot started as {self.username}")
 
     async def stop(self, **kwargs):
-        super().stop(**kwargs)
+        await super().stop(**kwargs)
         print("Stopping all clients")
         for client in self.clients.values():
             client['client'].stop()
