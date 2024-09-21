@@ -147,7 +147,7 @@ class CustomBot(Client):
             print("Stopping all clients")
             for client in self.clients.values():
                 client['client'].stop()
-        print("Bot stopped")
+            print("Bot stopped")
 
 bot = CustomBot(
     "PyrogamBot",
