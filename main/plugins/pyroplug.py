@@ -6,7 +6,7 @@ from main.plugins.helpers import build_caption, download, extract_tg_link, uploa
 from main.Database.database import db
 from main import DUMP_CHANNEL
 from pyrogram.enums import MessageMediaType
-from pyrogram.errors import PeerIdInvalid, MessageEmpty, MessageIdInvalid
+from pyrogram.errors import PeerIdInvalid, MessageEmpty, MessageIdInvalid, ChannelInvalid
 from pyrogram import Client
 
 def thumbnail(sender):
@@ -49,7 +49,7 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 and msg.text
             ):
                 await editable_msg.edit(text="Cloning.")
-                await client.send_message(to, msg.text.markdown)
+                await userbot.send_message(to, msg.text.markdown)
                 await editable_msg.delete()
                 return
             elif msg.media:
@@ -84,9 +84,11 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 uploaded, update = await upload(up_client["client"], file, DUMP_CHANNEL, msg, editable_msg, thumb_path=thumb_path, caption=caption)
                 if uploaded and update:
                     await db.save_cache(msg_id, chat, update.id, msg.caption.markdown if msg.caption else "")
-                    await client.copy_message(chat_id=to, from_chat_id=DUMP_CHANNEL, message_id=update.id)
+                    try:
+                        await client.copy_message(chat_id=to, from_chat_id=DUMP_CHANNEL, message_id=update.id)
+                    except (PeerIdInvalid, ChannelInvalid):
+                        return await editable_msg.edit(f"❌ Failed to save: `{msg_link}`\n\nError: Please add me to the channel [{to}]")
                 client.release_client(up_client)
-
             if uploaded:
                 await editable_msg.delete()
             elif update:

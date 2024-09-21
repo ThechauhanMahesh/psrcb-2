@@ -179,6 +179,8 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
         await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
         return
     chat_id, msg_id = extract_tg_link(link)
+    if not chat_id or not msg_id:
+        await client.send_message(sender, "⚠️ Invalid link.")
     async for last_msg in userbot.get_chat_history(chat_id = chat_id, limit=1):
         break
     if last_msg.id < (msg_id+value):
@@ -213,7 +215,7 @@ async def run_batch(userbot, client, sender, chat, link, value, caption_data, pl
             print(e)
             await client.send_message(sender, "✅ Batch completed.")
             break
-        editable = await client.send_message(chat, "Processing...")
+        editable = await client.send_message(sender, "Processing...")
         new_link = rreplace(link, f"/{msg_id}", f"/{msg_id+i}")
         try:
             await get_msg(userbot, client, sender, chat, editable, new_link, caption_data, retry=0, plan=plan, is_batch=True)

@@ -106,7 +106,7 @@ async def handle_selected_peer(client, update, _, __):
     await db.update_chat(user_id, selected_chat)
     await Drone.send_message(
         chat_id=user_id,
-        text=f"You have selected {selected_chat}",
+        text=f"You have selected {selected_chat}\n\nPlease add me to the selected chat and give me admin rights with permission to write messages.",
         reply_markup=ReplyKeyboardRemove()
     )
 

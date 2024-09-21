@@ -381,9 +381,11 @@ async def upload(client:CustomBot, file, to, msg, editable_msg, thumb_path=None,
         except:
             pass
         return True, sent
-    except (ChannelInvalid, ChatInvalid):
+    except (ChannelInvalid, ChatInvalid) as e:
+        logging.exception(e)
         False, "⚠️ You are not joined this channel/chat with the logged in account"
-    except (ChatIdInvalid, PeerIdInvalid):
+    except (ChatIdInvalid, PeerIdInvalid) as e:
+        logging.exception(e)
         return False, "⚠️ Check your setchat ID or add bot as admin in your setchat channel."
     except Exception as e:
         logging.exception(e)
