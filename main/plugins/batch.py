@@ -171,18 +171,27 @@ async def batch(client, message: types.Message):
     await run_batch(userbot, client, user_id, chat, link, value, caption_data, plan) 
     await db.rem_process(user_id)
             
-async def run_batch(userbot, client, sender, chat, link, value, caption_data, plan):
+async def run_batch(userbot: CustomBot, client: CustomBot, sender: int, chat: int, link: str, value: int, caption_data: dict, plan: str):
     try: 
         await userbot.start()
     except Exception as e:
         print(e)
-        await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
-        return
+        return await client.send_message(sender, f'{errorC}\n\n**Error:** {str(e)}')
+    # if chat != sender:
+    #     try:
+    #         await client.get_chat(chat)
+    #     except Exception as e:
+    #         print(e)
+    #         return await client.send_message(sender, "⚠️ Chat not found, please make sure you have added me in the destination chat.")
     chat_id, msg_id = extract_tg_link(link)
     if not chat_id or not msg_id:
         await client.send_message(sender, "⚠️ Invalid link.")
-    async for last_msg in userbot.get_chat_history(chat_id = chat_id, limit=1):
-        break
+    try:
+        async for last_msg in userbot.get_chat_history(chat_id = chat_id, limit=1):
+            break
+    except Exception as e:
+        logging.exception(e)
+        await client.send_message(sender, f"An error occured : {e}")
     if last_msg.id < (msg_id+value):
         #await client.send_message(sender, "⚠️ Requested range is greater than the total files in the chat, sending till the last file.")
         value = last_msg.id - (msg_id-1)
