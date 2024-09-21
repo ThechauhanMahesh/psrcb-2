@@ -135,7 +135,7 @@ class CustomBot(Client):
     async def start(self, **kwargs):
         await super().start(**kwargs)
         self.me = await self.get_me()
-        self.username = self.me.username
+        self.username = self.me.username or str(self.me.id)
         user_dir = os.path.join(DL_DIR, str(self.me.id))
         if not os.path.isdir(user_dir):
             os.makedirs(user_dir)
@@ -143,9 +143,10 @@ class CustomBot(Client):
 
     async def stop(self, **kwargs):
         await super().stop(**kwargs)
-        print("Stopping all clients")
-        for client in self.clients.values():
-            client['client'].stop()
+        if self.me.id == int(BOT_TOKEN.split(":")[0]):
+            print("Stopping all clients")
+            for client in self.clients.values():
+                client['client'].stop()
         print("Bot stopped")
 
 bot = CustomBot(
