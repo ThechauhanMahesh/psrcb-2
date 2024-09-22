@@ -1,5 +1,6 @@
 #ChauhanMahesh/Vasusen/DroneBots/COL
 
+import asyncio
 import os
 from pyrogram import Client
 from pyromod import listen
@@ -88,6 +89,10 @@ process = {"process":{"process":False, "batch":False}}
 collection.update_many({}, {"$set":process})
 print("All users have been set free.")
 
+class CustomUser(object):
+    def __init__(self, user_id):
+        self.id = user_id
+        self.username = user_id
 
 class CustomBot(Client):
     def __init__(self, *args, **kwargs):
@@ -120,7 +125,7 @@ class CustomBot(Client):
             ):
                 sorted_clients[0]['process_count'] += 1
                 return sorted_clients[0]
-        except: 
+        except:
             print("No clients available to use")
             return 
 
@@ -134,8 +139,15 @@ class CustomBot(Client):
 
     async def start(self, **kwargs):
         await super().start(**kwargs)
-        self.me = await self.get_me()
-        self.username = self.me.username or str(self.me.id)
+        try:
+            self.me = await self.get_me()
+        except:
+            await asyncio.sleep(5)
+            if user:=collection.find_one({"session": self.session_string}):
+                self.me = CustomUser(user["id"])
+            else:
+                self.me = CustomUser(int(BOT_TOKEN.split(":")[0]))
+        self.username = self.me.username or self.me.id
         user_dir = os.path.join(DL_DIR, str(self.me.id))
         if not os.path.isdir(user_dir):
             os.makedirs(user_dir)
