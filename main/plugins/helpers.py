@@ -357,7 +357,10 @@ async def upload(client:CustomBot, file, to, msg, editable_msg, thumb_path=None,
         elif msg.media==MessageMediaType.VOICE:
             sent = await client.send_voice(to, file, caption=caption)
         elif msg.media==MessageMediaType.PHOTO:
-            await editable_msg.edit("🔺 Uploading photo...")
+            try:
+                await editable_msg.edit("🔺 Uploading photo...")
+            except:
+                pass
             sent = await client.send_photo(to, file, caption=caption)
         else:
             sent = await client.send_document(
@@ -377,7 +380,7 @@ async def upload(client:CustomBot, file, to, msg, editable_msg, thumb_path=None,
         if thumb_path:
             delete_file(thumb_path)
         try:
-            await editable_msg.delete()
+            await editable_msg.edit("Finalizing the upload...")
         except:
             pass
         return True, sent
