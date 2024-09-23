@@ -14,7 +14,7 @@ from main.plugins.helpers import extract_tg_link, get_link, rreplace, set_subscr
 from main.Database.database import db
 
 from pyrogram import filters, types
-from pyrogram.errors import FloodWait
+from pyrogram.errors import FloodWait, FloodPremiumWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pyromod.exceptions import ListenerTimeout
 
@@ -228,7 +228,7 @@ async def run_batch(userbot: CustomBot, client: CustomBot, sender: int, chat: in
         new_link = rreplace(link, f"/{msg_id}", f"/{msg_id+i}")
         try:
             await get_msg(userbot, client, sender, chat, editable, new_link, caption_data, retry=0, plan=plan, is_batch=True)
-        except FloodWait as fw:
+        except (FloodWait, FloodPremiumWait) as fw:
             fw.value += 5 #Add 5 seconds to the floodwait time
             print(f"Sleeping for {fw.value} seconds due to Floodwait.")
             await client.send_message(sender, f"⚠️ Sleeping for `{fw.value}` seconds due to Floodwait.")

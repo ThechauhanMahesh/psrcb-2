@@ -5,7 +5,7 @@ from .. import CustomBot, bot as Drone, API_ID, API_HASH, help_text as ht, otp_t
 
 from pyromod.exceptions import ListenerTimeout
 from pyrogram import filters, types
-from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired 
+from pyrogram.errors import SessionPasswordNeeded, FloodWait, PhoneCodeInvalid, PhoneCodeExpired, FloodPremiumWait
 
 from main.plugins.helpers import login_credentials, logout_credentials
 from main.Database.database import db
@@ -140,7 +140,7 @@ async def login(_, message: types.Message):
         try:
             code = await client.send_code(number)
             await asyncio.sleep(1)
-        except FloodWait:
+        except (FloodWait, FloodPremiumWait) as e:
             await client.disconnect()
             client = CustomBot("my_account", api_id=APIID[-1], api_hash=APIHASH[-1])
             ai = APIID[-1]
@@ -153,7 +153,7 @@ async def login(_, message: types.Message):
             try:
                 code = await client.send_code(number)
                 await asyncio.sleep(1)
-            except FloodWait as e:
+            except (FloodWait, FloodPremiumWait) as e:
                 await code_alert.edit(f"Can't send code, you have Floodwait of {e.x} Seconds.")
                 return
             except Exception as e:

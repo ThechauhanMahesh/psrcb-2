@@ -11,7 +11,7 @@ import uuid
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from pyrogram.enums import MessageMediaType
-from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant
+from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant, FloodPremiumWait
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid, PeerIdInvalid
 from pyrogram.errors import UserNotParticipant
 from pyrogram.enums import ChatMemberStatus
@@ -151,7 +151,7 @@ async def join(client: CustomBot, invite_link):
         return "User is already a participant."
     except (InviteHashInvalid, InviteHashExpired):
         return "Could not join. Maybe your link is expired or Invalid."
-    except FloodWait:
+    except (FloodWait, FloodPremiumWait):
         return "Too many requests, try again later."
     except Exception as e:
         print(e)
