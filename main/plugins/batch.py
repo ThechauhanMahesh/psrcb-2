@@ -37,7 +37,7 @@ async def myplan(_, message: types.Message):
 
 @Drone.on_message(filters=filters.command('x') & filters.incoming)
 async def ss(_, message: types.Message):
-    if AUTH_USERS != message.from_user.id:
+    if message.from_user.id not in AUTH_USERS:
         return 
     edit = await message.reply("Processing...")
     msg = message.reply_to_message

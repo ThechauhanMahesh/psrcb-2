@@ -53,11 +53,11 @@ async def incomming(_, message: types.Message):
     if not await db.is_user_exist(user_id):
         await db.add_user(user_id)
         tag = f'[{message.from_user.first_name}](t.me/@id{user_id})'
-        await Drone.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {user_id}') 
+        await Drone.send_message(int(AUTH_USERS[0]), f'Activate the plan of {tag}\nUserID: {user_id}') 
         await message.reply("Purchase premium from @SubscriptionForBot.")
     elif (await db.get_data(user_id))["dos"] is None:
         tag = f'[{message.from_user.first_name}](t.me/@id{user_id})'
-        await Drone.send_message(int(AUTH_USERS), f'Activate the plan of {tag}\nUserID: {user_id}') 
+        await Drone.send_message(int(AUTH_USERS[0]), f'Activate the plan of {tag}\nUserID: {user_id}') 
 
 @Drone.on_message(filters=filters.command('remchat') & filters.incoming)
 async def remove_chat(_, message: types.Message):
