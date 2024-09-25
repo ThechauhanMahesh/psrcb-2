@@ -98,6 +98,14 @@ class CustomBot(Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.clients = {}
+        # TELEGRAM DESKTOP (Default)
+        self.api_id = 2040
+        self.api_hash ="b18441a1ff607e10a989891a5462e627"
+        self.system_version = "Windows 11"
+        self.app_version = "5.2.2 x64"
+        self.lang_code = "en"
+        self.system_lang_code = "en-US"
+        self.lang_pack = "tdesktop"
         if not os.path.isdir(PYRO_DIR):
             os.makedirs(PYRO_DIR)
         if not os.path.isdir(DL_DIR):
