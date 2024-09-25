@@ -11,7 +11,7 @@ from .. import CustomBot, bot as Drone
 from .. import AUTH_USERS 
 from pyrogram import Client, filters
 
-@Drone.on_message(filters.command(['exec']) & filters.user(AUTH_USERS) & ~filters.edited)
+@Drone.on_message(filters.command(['exec']) & filters.user(AUTH_USERS))
 async def execution(bot, message):
     status_message = await message.reply_text("Processing ...")
     # DELAY_BETWEEN_EDITS = 0.3
@@ -53,7 +53,7 @@ async def execution(bot, message):
 
     await status_message.delete()
     
-@Drone.on_message(filters.command(['eval']) & filters.user(AUTH_USERS) & ~filters.edited)
+@Drone.on_message(filters.command(['eval']) & filters.user(AUTH_USERS))
 async def eval(client, message):
     replied = message.reply_to_message
     status_message = await message.reply_text("Processing ...")
