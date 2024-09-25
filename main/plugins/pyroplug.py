@@ -22,11 +22,12 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
         msg_link = msg_link.split("?single")[0]
 
     chat, msg_id = extract_tg_link(msg_link)
-    if cache_file := await db.get_cache(msg_id, chat):
-        caption = build_caption(plan, caption=cache_file["caption"] or "", caption_data=caption_data)
-        await client.copy_message(chat_id=to, from_chat_id=DUMP_CHANNEL, message_id=cache_file["msg_id"], caption=caption)
-        await editable_msg.delete()
-        return
+    
+    # if cache_file := await db.get_cache(msg_id, chat):
+    #     caption = build_caption(plan, caption=cache_file["caption"] or "", caption_data=caption_data)
+    #     await client.copy_message(chat_id=to, from_chat_id=DUMP_CHANNEL, message_id=cache_file["msg_id"], caption=caption)
+    #     await editable_msg.delete()
+    #     return
 
     if chat and msg_id:
         try:
@@ -83,7 +84,7 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                     return await editable_msg.edit("❌ Failed to save: `{msg_link}`\n\nError: No clients available to use.")
                 uploaded, update = await upload(up_client["client"], file, DUMP_CHANNEL, msg, editable_msg, thumb_path=thumb_path, caption=caption)
                 if uploaded and update:
-                    await db.save_cache(msg_id, chat, update.id, msg.caption.markdown if msg.caption else "")
+                    # await db.save_cache(msg_id, chat, update.id, msg.caption.markdown if msg.caption else "")
                     try:
                         await client.copy_message(chat_id=to, from_chat_id=DUMP_CHANNEL, message_id=update.id)
                     except (PeerIdInvalid, ChannelInvalid):
