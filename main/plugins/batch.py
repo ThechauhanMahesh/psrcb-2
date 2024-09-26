@@ -18,10 +18,6 @@ from pyrogram.errors import FloodWait, FloodPremiumWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pyromod.exceptions import ListenerTimeout
 
-errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
-
-batch_link = False
-
 @Drone.on_message(filters=filters.command('cancel') & filters.incoming)
 async def cancel(_, message: types.Message):
     if not (await db.get_process(message.from_user.id))["batch"]:
