@@ -121,7 +121,7 @@ async def login(_, message: types.Message):
             await message.reply("Invalid Code, try again.")
             return
         except PhoneCodeExpired:
-            await message.reply("Code has expired, try again.")
+            await message.reply("Code has expired\n\n⚠️ Send code with space for e.g 4 5 6 7 8.")
             return
         except SessionPasswordNeeded:
             two_step = await Drone.ask(chat_id=user_id, text="Send your Two-Step Verification password.", filters=filters.text, timeout=60)
