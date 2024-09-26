@@ -6,7 +6,6 @@ from .. import CustomBot, bot as Drone
 from main.plugins.helpers import get_link, check_subscription, set_timer
 from main.Database.database import db
 from main.plugins.pyroplug import get_msg
-from main.plugins.batch import batch_link
 
 from pyrogram import Client, filters, types
 
