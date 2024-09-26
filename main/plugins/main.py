@@ -43,7 +43,7 @@ async def clone(client, message: types.Message):
         userbot = ""
         i, h, s = await db.get_credentials(user_id)
         if not s:
-            return await edit.edit("⚠️ Your login credentials not found.")
+            return await edit.edit("⚠️ /login in bot.")
         try:
             userbot = CustomBot(f"sr_{user_id}", session_string=s, api_hash=h, api_id=int(i))     
             await userbot.start()
