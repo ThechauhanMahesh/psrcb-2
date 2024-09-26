@@ -15,8 +15,6 @@ errorC = """Error: Couldn't start client by Login credentials, Please logout and
 
 @Drone.on_message(filters=filters.private & filters.incoming, group=2)
 async def clone(client, message: types.Message):
-    if batch_link:
-        return
     user_id = message.from_user.id
     try:
         link = get_link(message.text)
