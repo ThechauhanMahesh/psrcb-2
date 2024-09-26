@@ -34,9 +34,9 @@ async def clone(client, message: types.Message):
     edit = await message.reply("Processing!")
     if (await db.get_process(user_id))["process"] == True:
         return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
-    to = await db.get_chat(user_id)
-    if to is None:
-        to = user_id
+    # to = await db.get_chat(user_id)
+    # if to is None:
+    to = user_id
     if 't.me/+' in link:
         return await edit.edit("Join channel yourself manually and send message link.")
     if 't.me' in link:
