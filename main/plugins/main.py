@@ -25,12 +25,12 @@ async def clone(client, message: types.Message):
             return
     except TypeError:
         return
-    await check_subscription(user_id)
-    data = await db.get_data(user_id)
-    plan = data["plan"]
-    if data["dos"] is None:
-        await message.reply("⚠️ You are not subscribed to premium bot, pay in @SubscriptionForBot to buy.")
-        return
+    # await check_subscription(user_id)
+    # data = await db.get_data(user_id)
+    # plan = data["plan"]
+    # if data["dos"] is None:
+    #     await message.reply("⚠️ You are not subscribed to premium bot, pay in @SubscriptionForBot to buy.")
+    #     return
     edit = await message.reply("Processing!")
     if (await db.get_process(user_id))["process"] == True:
         return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
@@ -38,7 +38,7 @@ async def clone(client, message: types.Message):
     if to is None:
         to = user_id
     if 't.me/+' in link:
-        return await edit.edit("Join yourself manually.")
+        return await edit.edit("Join channel yourself manually and send message link.")
     if 't.me' in link:
         userbot = ""
         i, h, s = await db.get_credentials(user_id)
@@ -51,12 +51,12 @@ async def clone(client, message: types.Message):
             logging.exception(e)
             return await edit.edit(str(e))
         await db.update_process(user_id)
-        caption_data = await db.get_caption(user_id)
+        # caption_data = await db.get_caption(user_id)
         try: 
-            await get_msg(userbot, client, user_id, to, edit, link, caption_data, retry=0, plan=plan)
+            await get_msg(userbot, client, user_id, to, edit, link, caption_data, retry=0, plan="basic")
             await userbot.stop()
         except Exception as e:
             logging.exception(e)
             await message.reply(f"An error occurred: {e}")
-        timer = 2 if plan == "pro" else 10
+        timer = 60 # timer = 2 if plan == "pro" else 10
         await set_timer(client, user_id, timer) 
