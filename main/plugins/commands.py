@@ -20,6 +20,12 @@ from main.types import ButtonRequestPeer
 APIID = [API_ID, 29841594]
 APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
 
+@Drone.on_message(filters=filters.private & filters.incoming, group=1)
+async def incomming(_, message: types.Message):
+    user_id = message.from_user.id
+    if not await db.is_user_exist(user_id):
+        await db.add_user(user_id)
+        
 @Drone.on_message(filters=filters.command('tutorial') & filters.incoming)
 async def tutorial(_, message: types.Message):
     await message.reply(
