@@ -48,7 +48,7 @@ async def clone(client, message: types.Message):
             logging.exception(e)
             return await edit.edit(str(e))
         await db.update_process(user_id)
-        # caption_data = await db.get_caption(user_id)
+        caption_data = await db.get_caption(user_id)
         try: 
             await get_msg(userbot, client, user_id, to, edit, link, caption_data, retry=0, plan="basic")
             await userbot.stop()
