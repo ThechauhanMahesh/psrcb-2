@@ -5,7 +5,7 @@ import os
 from main.plugins.helpers import build_caption, download, extract_tg_link, upload
 from main.Database.database import db
 from main import DUMP_CHANNEL
-from pyrogram.enums import MessageMediaType
+from pyrogram.enums import MessageMediaType, ChatType
 from pyrogram.errors import PeerIdInvalid, MessageEmpty, MessageIdInvalid, ChannelInvalid
 from pyrogram import Client
 
@@ -49,11 +49,17 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 or not msg.media
                 and msg.text
             ):
-                await editable_msg.edit(text="Cloning.")
+                await editable_msg.edit(text="Cloning...")
                 await userbot.send_message(to, msg.text.markdown)
                 await editable_msg.delete()
                 return
             elif msg.media:
+                caption = build_caption(plan, msg.caption, caption_data)
+                if msg.chat.type == ChatType.CHANNEL and getattr(msg.chat, "username", None):
+                    await editable_msg.edit("Cloning..")
+                    #await msg.copy(chat_id=to, caption=caption)
+                    await client.copy_message(chat_id=to, from_chat_id=msg.chat.username, message_id=msg.id, caption=caption)
+                    return await editable_msg.delete()
                 downloaded, update = await download(userbot, msg, editable_msg)
                 if not downloaded:
                     await editable_msg.edit(text=f"❌ Failed to save: `{msg_link}`\n\nError: {update}")
@@ -64,8 +70,6 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 if is_batch:
                     return await editable_msg.delete()
                 return await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: Invalid link.')
-
-            caption = build_caption(plan, msg.caption, caption_data)
 
             await editable_msg.edit("Preparing to upload...")
 
@@ -103,4 +107,3 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
         await editable_msg.delete()
     else:
         await editable_msg.edit(f'❌ Failed to save: `{msg_link}`\n\nError: Invalid link.')
-
