@@ -57,7 +57,8 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 caption = build_caption(plan, msg.caption, caption_data)
                 if msg.chat.type == ChatType.CHANNEL and getattr(msg.chat, "username", None):
                     await editable_msg.edit("Cloning..")
-                    await msg.copy(chat_id=to, caption=caption)
+                    #await msg.copy(chat_id=to, caption=caption)
+                    await client.copy_message(chat_id=to, from_chat_id=msg.chat.id, message_id=msg.id, caption=caption)
                     return await editable_msg.delete()
                 downloaded, update = await download(userbot, msg, editable_msg)
                 if not downloaded:
