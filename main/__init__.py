@@ -112,6 +112,8 @@ class CustomBot(Client):
             os.makedirs(DL_DIR)
 
     def load_clients(self):
+        if not os.path.isdir(PYRO_DIR):
+            os.makedirs(PYRO_DIR)
         for num, token in enumerate(UPLOADING_CLIENTS, start=1):
             try:
                 print(f"[{num}/{len(UPLOADING_CLIENTS)}] adding client")
