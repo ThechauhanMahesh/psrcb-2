@@ -50,7 +50,7 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 and msg.text
             ):
                 await editable_msg.edit(text="Cloning...")
-                await userbot.send_message(to, msg.text.markdown)
+                await client.send_message(to, msg.text.markdown)
                 await editable_msg.delete()
                 return
             elif msg.media:
