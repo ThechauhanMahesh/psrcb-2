@@ -41,15 +41,10 @@ otp_text = """An OTP has been sent to your number.
 
 Please send the OTP with space, example: `1 2 3 4 5`."""
 
-"""
-muk : 5287338189:AAFAtkAu7hyActQBoK6XCmhKGAkPIZQ1e8E
-mine : 6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc
-"""
-
 # variables
 API_ID = 2992000
 API_HASH = "235b12e862d71234ea222082052822fd"
-BOT_TOKEN = "6125089272:AAEDF254YhMbUK5hhl0yFbEQTqlhgA3W0jc"
+BOT_TOKEN = "8068581394:AAHvIctKsRUOK5xgd4lnROMYYK9Kb7ihd4w"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 MONGODB_URI = "mongodb+srv://thechauhanmahesh:XgbFpSEe3pM9P45z@cluster0.mkaomd0.mongodb.net"
