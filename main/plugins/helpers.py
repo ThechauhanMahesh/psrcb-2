@@ -113,14 +113,6 @@ async def logout_credentials(sender):
     await db.rem_api_hash(sender)
     await db.rem_session(sender)
 
-#Anti-Spam---------------------------------------------------------------------------------------------------------------
-
-#Set timer to avoid spam
-async def set_timer(bot, sender, t):
-    await bot.send_message(sender, f'You can start a new process again after {t} seconds.')
-    await asyncio.sleep(int(t))
-    await db.rem_process(sender)
-
 #Forcesub -----------------------------------------------------------------------------------
 
 async def force_sub(client: CustomBot, channel, id):

@@ -7,3 +7,4 @@ dnspython
 tgcrypto
 hachoir==3.2.0
 pyromod
+APScheduler==3.10.4

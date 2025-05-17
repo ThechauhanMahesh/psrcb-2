@@ -1,9 +1,10 @@
 # Github.com/Vasusen-code
 
 import logging
-from .. import CustomBot, bot as Drone
+import time
+from .. import CustomBot, bot as Drone, TIME_LIMIT, DAILY_LIMIT
 
-from main.plugins.helpers import get_link, check_subscription, set_timer
+from main.plugins.helpers import get_link, check_subscription
 from main.Database.database import db
 from main.plugins.pyroplug import get_msg
 from main.plugins.batch import batch_link
@@ -28,12 +29,18 @@ async def clone(client, message: types.Message):
     await check_subscription(user_id)
     data = await db.get_data(user_id)
     plan = data["plan"]
-    if data["dos"] is None:
-        await message.reply("⚠️ You are not subscribed to premium bot, pay in @SubscriptionForBot to buy.")
+    if data["dos"] & plan != "free":
+        await message.reply("⚠️ You are already subscribed to premium bot, please use bot from @premium_srcb")
         return
     edit = await message.reply("Processing!")
-    if (await db.get_process(user_id))["process"] == True:
+
+    process = await db.get_process(user_id)
+    if process["process"] == True:
         return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
+    if process["used"] > DAILY_LIMIT:
+        return await edit.edit("❌ Daily limit exceeded, please try again tomorrow or upgrade your plan.")
+    if time.time() - process["time"] < TIME_LIMIT:
+        return await edit.edit("❌ Please don't spam links, wait {} seconds.".format(int(TIME_LIMIT - (time.time() - process["time"]))))
     to = await db.get_chat(user_id)
     if to is None:
         to = user_id
@@ -58,5 +65,6 @@ async def clone(client, message: types.Message):
         except Exception as e:
             logging.exception(e)
             await message.reply(f"An error occurred: {e}")
-        timer = 2 if plan == "pro" else 10
-        await set_timer(client, user_id, timer) 
+        await db.rem_process(user_id) #also updates the process time
+        await message.reply("You can start new process after {} minutes.".format(int(TIME_LIMIT/60)))
+        return

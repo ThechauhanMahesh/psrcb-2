@@ -3,8 +3,8 @@
 import asyncio
 import os
 from pyrogram import Client
-from pyromod import listen
-import logging, sys, pymongo
+from pyromod import listen # type: ignore
+import logging, sys, pymongo # type: ignore
 
 logging.basicConfig(
     format = "[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
@@ -72,6 +72,9 @@ SESSION_NAME = "PremiumSRCB"
 PYRO_DIR = "pyro-sessions"
 DL_DIR = "downloads"
 
+TIME_LIMIT = 60 * 5 # 5 minutes
+DAILY_LIMIT = 5 # 5 times
+
 # list of telegram bot tokens
 UPLOADING_CLIENTS = [
   "6757308177:AAEe364a_hMLcR4JFymFVXNYghEws7szoh8", 
@@ -82,12 +85,11 @@ UPLOADING_CLIENTS = [
 
 DUMP_CHANNEL = -1002361531247
 
+
 client = pymongo.MongoClient(MONGODB_URI)
 db = client[SESSION_NAME]
 collection = db["users"]
-process = {"process":{"process":False, "batch":False}}
-collection.update_many({}, {"$set":process})
-print("All users have been set free.")
+
 
 class CustomUser(object):
     def __init__(self, user_id):

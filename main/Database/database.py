@@ -1,8 +1,12 @@
 #Tg:ChauhanMahesh/DroneBots
 #Github.com/vasusen-code
+import asyncio
 import datetime
+import time
 import motor.motor_asyncio
 from .. import MONGODB_URI, SESSION_NAME, DUMP_CHANNEL
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 
 class Database:
   
@@ -24,11 +28,11 @@ class Database:
           api_hash=None, 
           session=None, 
           chat=None, 
-          process={"process":False, "batch":False}, 
-          data={"dos":None, "doe":None, "plan":"basic"},
+          process={"process":False, "last":0, "used":0}, 
+          data={"dos":None, "doe":None, "plan":"free"},
           caption={"action":None, "string":None},
         )
-           
+
     async def add_user(self,id):
         user = self.new_user(id)
         await self.col.insert_one(user)
@@ -86,11 +90,11 @@ class Database:
     async def rem_data(self, id):
         await self.col.update_one({'id': id}, {'$set': {'data': {"dos":None, "doe":None, "plan":"basic"}}})
     
-    async def update_process(self, id, batch=False):
-        await self.col.update_one({'id': id}, {'$set': {'process': {"process":True, "batch":batch}}})
+    async def update_process(self, id):
+        await self.col.update_one({'id': id}, {'$set': {'process': {"process":True}}, "$inc": {"process.used": 1}})
     
     async def rem_process(self, id):
-        await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "batch":False}}})
+        await self.col.update_one({'id': id}, {'$set': {'process': {"process":False, "last": time.time()}}})
 
     async def add_caption(self, id, string):
         await self.col.update_one({'id': id}, {'$set': {'caption': {"action":"add", "string":string}}})
@@ -136,5 +140,30 @@ class Database:
     async def get_cache(self, msg_id, chat_id) -> int | None:
         cache = await self.cache.find_one({"_id": f"{msg_id}_{chat_id}"})
         return cache if cache else {}
+    
+    async def reset_free_limits(self):
+        await self.col.update_many(
+                {"data.plan": "free"},
+                {'$set': {
+                    'process.used': 0,
+                    'process.process': False
+                }}
+            )
+
+    async def restart_bot(self):
+        await self.col.update_many(
+                {},
+                {'$set': {
+                    'process.process': False,
+                }}
+            )
 
 db = Database(MONGODB_URI, SESSION_NAME)
+
+#Reset processes at startup
+asyncio.run(db.restart_bot())
+#Scheduler--------------------------------------------------------------------
+#Scheduler to reset free limits at 00:00 IST
+scheduler = AsyncIOScheduler(tz="Asia/Kolkata")
+scheduler.add_job(db.reset_free_limits, "cron", hour=0)
+scheduler.start()
