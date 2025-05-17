@@ -29,7 +29,7 @@ async def clone(client, message: types.Message):
     await check_subscription(user_id)
     data = await db.get_data(user_id)
     plan = data["plan"]
-    if data["dos"] & plan != "free":
+    if data["dos"] and plan != "free":
         await message.reply("⚠️ You are already subscribed to premium bot, please use bot from @premium_srcb")
         return
     edit = await message.reply("Processing!")
