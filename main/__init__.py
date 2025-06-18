@@ -172,11 +172,11 @@ class CustomBot(Client):
 
 bot = CustomBot(
     "PyrogamBot",
-    api_hash=API_HASH,
-    api_id=API_ID,
+    #api_hash=API_HASH,
+    #api_id=API_ID,
     bot_token=BOT_TOKEN,
     workdir=PYRO_DIR,
-    workers=343
+    workers=500
     ) # pyrogram bot
 
 bot.load_clients()
