@@ -113,7 +113,7 @@ async def handle_selected_peer(client, update, _, __):
 
 @Drone.on_message(filters=filters.command('start') & filters.incoming)
 async def start(_, message: types.Message):
-    await message.reply("Send me **link** of any **public** channel message to clone it here 🔗, For **private** channel message, First **/login** then send any **message link** from your chat ✅.\n\n**SUPPORT:** @TeamDrone\n**DEV:** @MaheshChauhan") 
+    await message.reply("First /login then send link\n\nWatch /tutorial if you are new.") 
 
 @Drone.on_message(filters=filters.command('login') & filters.incoming)
 async def login(_, message: types.Message):
