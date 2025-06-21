@@ -83,17 +83,7 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                     to = client.me.id
                 uploaded, update = await upload(userbot, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
             else:
-                up_client = client.get_client()
-                if not up_client:
-                    return await editable_msg.edit("❌ Failed to save: `{msg_link}`\n\nError: No clients available to use.")
-                uploaded, update = await upload(up_client["client"], file, DUMP_CHANNEL, msg, editable_msg, thumb_path=thumb_path, caption=caption)
-                if uploaded and update:
-                    # await db.save_cache(msg_id, chat, update.id, msg.caption.markdown if msg.caption else "")
-                    try:
-                        await client.copy_message(chat_id=to, from_chat_id=DUMP_CHANNEL, message_id=update.id)
-                    except (PeerIdInvalid, ChannelInvalid):
-                        return await editable_msg.edit(f"❌ Failed to save: `{msg_link}`\n\nError: Please add me to the channel [{to}]")
-                client.release_client(up_client)
+                uploaded, update = await upload(client, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
             if uploaded:
                 await editable_msg.delete()
             elif update:
