@@ -98,10 +98,11 @@ class CustomBot(Client):
         super().__init__(*args, **kwargs)
         self.clients = {}
         # TELEGRAM DESKTOP (Default)
-        self.api_id = 2040
-        self.api_hash ="b18441a1ff607e10a989891a5462e627"
+        if not self.api_id or not self.api_hash:
+            self.api_id = 2040
+            self.api_hash ="b18441a1ff607e10a989891a5462e627"
         self.system_version = "Windows 11"
-        self.app_version = "5.2.2 x64"
+        self.app_version = "5.12.3 x64"
         self.lang_code = "en"
         self.system_lang_code = "en-US"
         self.lang_pack = "tdesktop"
@@ -172,8 +173,8 @@ class CustomBot(Client):
 
 bot = CustomBot(
     "PyrogamBot",
-    #api_hash=API_HASH,
-    #api_id=API_ID,
+    api_hash=API_HASH,
+    api_id=API_ID,
     bot_token=BOT_TOKEN,
     workdir=PYRO_DIR,
     workers=500
