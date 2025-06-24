@@ -71,6 +71,7 @@ AUTH_USERS = [1807573686, 1204927413]
 SESSION_NAME = "PremiumSRCB"
 PYRO_DIR = "pyro-sessions"
 DL_DIR = "downloads"
+ONGOING = 0
 
 # list of telegram bot tokens
 UPLOADING_CLIENTS = [
@@ -177,7 +178,7 @@ bot = CustomBot(
     api_id=API_ID,
     bot_token=BOT_TOKEN,
     workdir=PYRO_DIR,
-    workers=10
+    # workers=10
     ) # pyrogram bot
 
 bot.load_clients()
