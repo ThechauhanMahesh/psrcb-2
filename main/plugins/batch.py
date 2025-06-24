@@ -9,7 +9,7 @@ import asyncio
 import logging
 
 from .. import CustomBot, bot as Drone, AUTH_USERS
-from main.plugins.main import ONGOING
+#from main.plugins.main import ONGOING
 from main.plugins.pyroplug import get_msg
 from main.plugins.helpers import extract_tg_link, get_link, rreplace, set_subscription, check_subscription
 from main.Database.database import db
@@ -171,10 +171,10 @@ async def batch(client, message: types.Message):
     await db.update_process(user_id, batch=True)
     if ONGOING >= 10:
         return await edit.edit("This bot is full with 10/10 users, try another bot from list pinned in @Premium_SRCB")
-    ONGOING += 1
+    # ONGOING += 1
     await run_batch(userbot, client, user_id, chat, link, value, caption_data, plan) 
     await db.rem_process(user_id)
-    ONGOING -= 1
+    # ONGOING -= 1
     
 async def run_batch(userbot: CustomBot, client: CustomBot, sender: int, chat: int, link: str, value: int, caption_data: dict, plan: str):
     try: 
