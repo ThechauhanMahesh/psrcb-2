@@ -115,91 +115,91 @@ async def handle_selected_peer(client, update, _, __):
 async def start(_, message: types.Message):
     await message.reply("First /login then send link\n\nWatch /tutorial if you are new.") 
 
-# @Drone.on_message(filters=filters.command('login') & filters.incoming)
-# async def login(_, message: types.Message):
-#     number, otp, code = 0, 0, 0
-#     session, passcode, ai, ah= None, None, None, None
-#     user_id = message.from_user.id
+@Drone.on_message(filters=filters.command('login') & filters.incoming)
+async def login(_, message: types.Message):
+    number, otp, code = 0, 0, 0
+    session, passcode, ai, ah= None, None, None, None
+    user_id = message.from_user.id
 
-#     try:
-#         contact = await Drone.ask(chat_id=user_id, text="Send me your contact number with country code(eg +1 or +91) to login.", filters=filters.text, timeout=60)
-#         if not contact.text or contact.text.startswith('/'):
-#             return await message.reply("Invalid input, try again.")
-#         number = ' '.join(str(contact.text))
+    try:
+        contact = await Drone.ask(chat_id=user_id, text="Send me your contact number with country code(eg +1 or +91) to login.", filters=filters.text, timeout=60)
+        if not contact.text or contact.text.startswith('/'):
+            return await message.reply("Invalid input, try again.")
+        number = ' '.join(str(contact.text))
 
-#         code_alert = await message.reply("Sending code...")
+        code_alert = await message.reply("Sending code...")
 
-#         ai = APIID[0]
-#         ah = APIHASH[0]
-#         client = CustomBot(f"{user_id}_account", api_id=ai, api_hash=ah, in_memory=True)
-#         try:
-#             await client.connect()
-#         except ConnectionError:
-#             await client.disconnect()
-#             await client.connect()
-#         try:
-#             code = await client.send_code(number)
-#             await asyncio.sleep(1)
-#         except (FloodWait, FloodPremiumWait) as e:
-#             await client.disconnect()
-#             client = CustomBot("my_account", api_id=APIID[-1], api_hash=APIHASH[-1])
-#             ai = APIID[-1]
-#             ah = APIHASH[-1]
-#             try:
-#                 await client.connect()
-#             except ConnectionError:
-#                 await client.disconnect()
-#                 await client.connect()
-#             try:
-#                 code = await client.send_code(number)
-#                 await asyncio.sleep(1)
-#             except (FloodWait, FloodPremiumWait) as e:
-#                 await code_alert.edit(f"Can't send code, you have Floodwait of {e.x} Seconds.")
-#                 return
-#             except Exception as e:
-#                 print(e)
-#                 await code_alert.edit(f"**Error**: {str(e)}")
-#                 return
-#             await code_alert.delete()
+        ai = APIID[0]
+        ah = APIHASH[0]
+        client = CustomBot(f"{user_id}_account", api_id=ai, api_hash=ah, in_memory=True)
+        try:
+            await client.connect()
+        except ConnectionError:
+            await client.disconnect()
+            await client.connect()
+        try:
+            code = await client.send_code(number)
+            await asyncio.sleep(1)
+        except (FloodWait, FloodPremiumWait) as e:
+            await client.disconnect()
+            client = CustomBot("my_account", api_id=APIID[-1], api_hash=APIHASH[-1])
+            ai = APIID[-1]
+            ah = APIHASH[-1]
+            try:
+                await client.connect()
+            except ConnectionError:
+                await client.disconnect()
+                await client.connect()
+            try:
+                code = await client.send_code(number)
+                await asyncio.sleep(1)
+            except (FloodWait, FloodPremiumWait) as e:
+                await code_alert.edit(f"Can't send code, you have Floodwait of {e.x} Seconds.")
+                return
+            except Exception as e:
+                print(e)
+                await code_alert.edit(f"**Error**: {str(e)}")
+                return
+            await code_alert.delete()
 
-#         ask_code = await Drone.ask(chat_id=user_id, text=otp_text, filters=filters.text, timeout=60)
-#         otp = ask_code.text
-#         try:
-#             await client.sign_in(number, code.phone_code_hash, phone_code=' '.join(str(otp)))
-#         except PhoneCodeInvalid:
-#             await message.reply("Invalid Code, try again.")
-#             return
-#         except PhoneCodeExpired:
-#             await message.reply("Code has expired, try again.")
-#             return
-#         except SessionPasswordNeeded:
-#             two_step = await Drone.ask(chat_id=user_id, text="Send your Two-Step Verification password.", filters=filters.text, timeout=60)
-#             passcode = two_step.text
-#             try:
-#                 await client.check_password(passcode)
-#             except Exception as e:
-#                 await message.reply(f"**ERROR:** {str(e)}")
-#                 return
-#         except Exception as e:
-#             await message.reply(f"**ERROR:** {str(e)}")
-#             return
-#     except ListenerTimeout:
-#         return await message.reply("You took too long to respond.")
-#     try:
-#         session = await client.export_session_string()
-#     except Exception as e:
-#         await message.reply(f"**ERROR:** {str(e)}")
-#         return
+        ask_code = await Drone.ask(chat_id=user_id, text=otp_text, filters=filters.text, timeout=60)
+        otp = ask_code.text
+        try:
+            await client.sign_in(number, code.phone_code_hash, phone_code=' '.join(str(otp)))
+        except PhoneCodeInvalid:
+            await message.reply("Invalid Code, try again.")
+            return
+        except PhoneCodeExpired:
+            await message.reply("Code has expired, try again.")
+            return
+        except SessionPasswordNeeded:
+            two_step = await Drone.ask(chat_id=user_id, text="Send your Two-Step Verification password.", filters=filters.text, timeout=60)
+            passcode = two_step.text
+            try:
+                await client.check_password(passcode)
+            except Exception as e:
+                await message.reply(f"**ERROR:** {str(e)}")
+                return
+        except Exception as e:
+            await message.reply(f"**ERROR:** {str(e)}")
+            return
+    except ListenerTimeout:
+        return await message.reply("You took too long to respond.")
+    try:
+        session = await client.export_session_string()
+    except Exception as e:
+        await message.reply(f"**ERROR:** {str(e)}")
+        return
     
-#     await login_credentials(user_id, ai, ah, session) 
-#     await message.reply("✅ Login credentials saved.\n\n⚠️ click on 'yes its me' when telegram asks if is it you who logged in.")
-#     await client.disconnect()
+    await login_credentials(user_id, ai, ah, session) 
+    await message.reply("✅ Login credentials saved.\n\n⚠️ click on 'yes its me' when telegram asks if is it you who logged in.")
+    await client.disconnect()
 
-# @Drone.on_message(filters=filters.command('logout') & filters.incoming)
-# async def logout(_, message: types.Message):
-#     edit = await message.reply("Trying to logout.")
-#     await logout_credentials(message.from_user.id)
-#     await edit.edit('✅ successfully Logged out.')
+@Drone.on_message(filters=filters.command('logout') & filters.incoming)
+async def logout(_, message: types.Message):
+    edit = await message.reply("Trying to logout.")
+    await logout_credentials(message.from_user.id)
+    await edit.edit('✅ successfully Logged out.')
 
 # @Drone.on_message(filters=filters.command('logout') & filters.incoming)
 # async def help(_, message: types.Message):
