@@ -37,8 +37,8 @@ async def clone(client, message: types.Message):
     edit = await message.reply("Processing!")
     if (await db.get_process(user_id))["process"] == True:
         return await edit.edit("❌ Please don't spam links, wait until ongoing process is done.")
-    if ONGOING >= 10:
-         return await edit.edit("This bot is full with 10/10 users, try another bot from list pinned in @Premium_SRCB")
+    #if ONGOING >= 10:
+         #return await edit.edit("This bot is full with 10/10 users, try another bot from list pinned in @Premium_SRCB")
     to = await db.get_chat(user_id)
     if to is None:
         to = user_id
@@ -56,7 +56,7 @@ async def clone(client, message: types.Message):
             logging.exception(e)
             return await edit.edit(str(e))
         await db.update_process(user_id)
-        ONGOING += 1
+        #ONGOING += 1
         caption_data = await db.get_caption(user_id)
         try: 
             await get_msg(userbot, client, user_id, to, edit, link, caption_data, retry=0, plan=plan)
@@ -66,4 +66,4 @@ async def clone(client, message: types.Message):
             await message.reply(f"An error occurred: {e}")
         timer = 2 if plan == "pro" else 10
         await set_timer(client, user_id, timer) 
-        ONGOING -= 1
+        #ONGOING -= 1
