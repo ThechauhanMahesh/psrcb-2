@@ -177,7 +177,7 @@ bot = CustomBot(
     api_id=API_ID,
     bot_token=BOT_TOKEN,
     workdir=PYRO_DIR,
-    workers=500
+    workers=10
     ) # pyrogram bot
 
 bot.load_clients()
