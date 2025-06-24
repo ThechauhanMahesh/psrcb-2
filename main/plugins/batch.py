@@ -169,8 +169,8 @@ async def batch(client, message: types.Message):
         await message.reply("⚠️ Your login credentials not found.")
         return
     await db.update_process(user_id, batch=True)
-    if ONGOING >= 10:
-        return await edit.edit("This bot is full with 10/10 users, try another bot from list pinned in @Premium_SRCB")
+    # if ONGOING >= 10:
+        # return await edit.edit("This bot is full with 10/10 users, try another bot from list pinned in @Premium_SRCB")
     # ONGOING += 1
     await run_batch(userbot, client, user_id, chat, link, value, caption_data, plan) 
     await db.rem_process(user_id)
