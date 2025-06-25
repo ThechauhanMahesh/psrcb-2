@@ -14,11 +14,8 @@ message = "Send me the message link you want to start saving from, as a reply to
      
 errorC = """Error: Couldn't start client by Login credentials, Please logout and login again."""
 
-ONGOING = 0
-
 @Drone.on_message(filters=filters.private & filters.incoming, group=2)
 async def clone(client, message: types.Message):
-    global ONGOING
     if batch_link:
         return
     user_id = message.from_user.id
@@ -28,6 +25,8 @@ async def clone(client, message: types.Message):
             return
     except TypeError:
         return
+    if batch_not_allowed != True:
+         await message.reply("⚠️ This bot is only for batch, use bots with [Single] tag from @premium_srcb for single links.")
     await check_subscription(user_id)
     data = await db.get_data(user_id)
     plan = data["plan"]
