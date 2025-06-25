@@ -26,7 +26,7 @@ async def clone(client, message: types.Message):
     except TypeError:
         return
     if batch_not_allowed != True:
-         await message.reply("⚠️ This bot is only for batch, use bots with [Single] tag from @premium_srcb for single links.")
+         return await message.reply("⚠️ This bot is only for batch, use bots with [Single] tag from @premium_srcb for single links.")
     await check_subscription(user_id)
     data = await db.get_data(user_id)
     plan = data["plan"]
