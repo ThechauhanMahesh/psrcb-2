@@ -1,7 +1,7 @@
 # Github.com/Vasusen-code
 
 import logging
-from .. import CustomBot, bot as Drone
+from .. import CustomBot, bot as Drone, batch_not_allowed
 
 from main.plugins.helpers import get_link, check_subscription, set_timer
 from main.Database.database import db
