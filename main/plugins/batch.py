@@ -8,7 +8,7 @@ Plugin for both public & private channels!
 import asyncio
 import logging
 
-from .. import CustomBot, bot as Drone, AUTH_USERS
+from .. import CustomBot, bot as Drone, AUTH_USERS, batch_not_allowed
 #from main.plugins.main import ONGOING
 from main.plugins.pyroplug import get_msg
 from main.plugins.helpers import extract_tg_link, get_link, rreplace, set_subscription, check_subscription
@@ -111,6 +111,8 @@ async def replace(_, cb: CallbackQuery):
 
 @Drone.on_message(filters=filters.command('batch') & filters.incoming & filters.private)
 async def batch(client, message: types.Message):
+    if batch_not_allowed:
+        return await message.reply("⚠️ Use bots with [Batch] tag from @premium_srcb to use batch")
     global batch_link
     user_id = message.from_user.id
     data = await db.get_data(user_id)
