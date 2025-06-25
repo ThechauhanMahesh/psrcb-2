@@ -12,45 +12,25 @@ logging.basicConfig(
     level=logging.ERROR
 )
 
-
-help_text = """Help:
-
-**FOR PUBLIC CHANNEL:**
-- Send me direct link of message. 
-
-**FOR PRIVATE CHANNEL:**
-- Login 
-- Then send Link of message of any channel you've joined.
-
-#FAQ 
-
-- If bot says “Have you joined the channel?” Then just login again in bot and try.
-
-- If bot says “Please don't spam links, wait until ongoing process is done.” then send /free command in bot and try after 10 minutes. 
-
-- if bot says “Login credentials not found” the just login again
-
-- If bot shows error containing “AUTH_KEY_DUPLICATED” in it then login again.
-
-- if you batch is stuck then use /cancel 
-
-#Note : Don't use the /free command unnecessarily.
 """
+Js :
 
-otp_text = """An OTP has been sent to your number. 
-
-Please send the OTP with space, example: `1 2 3 4 5`."""
-
-
-"""
 API_ID= 23396174
 API_HASH= "7a138e917e0d16e102d7bc74fa8828c0"
 
 API_ID= 20261016
-API_HASH= 23240f2a7b2e08a801e8a5b3d787fc9e
+API_HASH= "23240f2a7b2e08a801e8a5b3d787fc9e"
 
 API_ID = 27427306
-API_HASH = 12a0c2a67e79cbf8284aa5e2cbd3ad04
+API_HASH = "12a0c2a67e79cbf8284aa5e2cbd3ad04"
+
+Jb:
+
+API_ID = 28938535
+API_HASH = "7b3be0a2d8c16bc23d340da4748b12ae"
+
+API_ID = 10355467
+API_HASH = "d86087c1892f818da03d68c3eaba765c" 
 
 """
 
@@ -77,14 +57,16 @@ AUTH_USERS = [1807573686, 1204927413]
 SESSION_NAME = "PremiumSRCB"
 PYRO_DIR = "pyro-sessions"
 DL_DIR = "downloads"
+batch_not_allowed = False
+
+DUMP_CHANNEL = -1002892267641
+
 
 # list of telegram bot tokens
 UPLOADING_CLIENTS = [
   "7382442840:AAELkZn7Ytl4v1H2v3xEnLZn_0d0iD8045E",
   "7985855882:AAEJ_iXQ9WnV2TjPGoul4nTfkzv8JFvX8yQ",
   "8068044337:AAGnVTzVBEsyqeZvT9As2AwRd48KUuvTYLc"]
- 
-DUMP_CHANNEL = -1002892267641
 
 client = pymongo.MongoClient(MONGODB_URI)
 db = client[SESSION_NAME]
@@ -186,3 +168,32 @@ bot = CustomBot(
     ) # pyrogram bot
 
 bot.load_clients()
+
+help_text = """Help:
+
+**FOR PUBLIC CHANNEL:**
+- Send me direct link of message. 
+
+**FOR PRIVATE CHANNEL:**
+- Login 
+- Then send Link of message of any channel you've joined.
+
+#FAQ 
+
+- If bot says “Have you joined the channel?” Then just login again in bot and try.
+
+- If bot says “Please don't spam links, wait until ongoing process is done.” then send /free command in bot and try after 10 minutes. 
+
+- if bot says “Login credentials not found” the just login again
+
+- If bot shows error containing “AUTH_KEY_DUPLICATED” in it then login again.
+
+- if you batch is stuck then use /cancel 
+
+#Note : Don't use the /free command unnecessarily.
+"""
+
+otp_text = """An OTP has been sent to your number. 
+
+Please send the OTP with space, example: `1 2 3 4 5`."""
+
