@@ -57,7 +57,7 @@ AUTH_USERS = [1807573686, 1204927413]
 SESSION_NAME = "PremiumSRCB"
 PYRO_DIR = "pyro-sessions"
 DL_DIR = "downloads"
-batch_not_allowed = False
+batch_not_allowed = True
 
 DUMP_CHANNEL = -1002892267641
 
