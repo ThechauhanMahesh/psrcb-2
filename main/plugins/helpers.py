@@ -19,7 +19,21 @@ from pyrogram.types import Message
 
 from main.plugins.progress import progress_for_pyrogram
 from main.Database.database import db
-from main import DL_DIR, CustomBot
+from main import DL_DIR, SPLIT_SIZE, CustomBot
+
+
+AUDIO_SUFFIXES = ("MP3", "M4A", "M4B", "FLAC", "WAV", "AIF", "OGG", "AAC", "DTS", "MID", "AMR", "MKA")
+VIDEO_SUFFIXES = ("M4V", "MP4", "MOV", "FLV", "WMV", "3GP", "MPG", "WEBM", "MKV", "AVI")
+
+
+def check_is_streamable(file_path:str) -> bool:
+    return file_path.upper().endswith(VIDEO_SUFFIXES)
+
+def check_is_audio(file_path:str) -> bool:
+    return file_path.upper().endswith(AUDIO_SUFFIXES)
+
+def ffmpeg_split(file_path:str) -> bool:
+    return check_is_streamable(file_path) or check_is_audio(file_path)
 
 def delete_file(file):
     try:
@@ -189,18 +203,11 @@ async def screenshot(video, duration):
            f"{out}",
            "-y"
           ]
-    process = await asyncio.create_subprocess_exec(
-        *cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE
-    )
-    stdout, stderr = await process.communicate()
-    x = stderr.decode().strip()
-    y = stdout.decode().strip()
+    await run_comman_d(cmd)
     if os.path.isfile(out):
         return out
     else:
-        None       
+        None
 
 # metadata ---------------------------------------------------------------------------------------------------------------
  
@@ -243,6 +250,134 @@ async def findVideoMetadata(pathToInputVideo):
         return 90, 90, 0
 
     return int(height), int(width), int(duration_seconds)
+
+async def split_large_files(path, size=None, file_=None, dirpath=None, split_size=SPLIT_SIZE, listener=None, start_time=0, i=1, inLoop=False, noMap=False):
+    if listener == 'cancelled' or listener is not None and listener.returncode == -9:
+        return False, None
+    if file_ == None:
+        file_ = os.path.basename(path)
+    if size is None:
+        size = os.path.getsize(path)
+    if dirpath is None:
+        working_directory = os.path.dirname(os.path.abspath(path))
+        dirpath = os.path.join(working_directory, str(time.time()))
+        os.makedirs(dirpath)
+    parts = -(-size // SPLIT_SIZE)
+    if size <= 4600870912:
+        if not inLoop:
+            split_size = ((size + parts - 1) // parts) + 1000
+    if ffmpeg_split(path):
+        duration = (await findVideoMetadata(path))[2]
+        base_name, extension = os.path.splitext(file_)
+        split_size -= 1000000
+        while i <= parts or start_time < duration - 4:
+            parted_name = f"{base_name}.part{i:03}{extension}"
+            out_path = os.path.join(dirpath, parted_name)
+            cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-ss", str(start_time),
+                    "-i", path, "-fs", str(split_size), "-map_chapters", "-1", "-async", "1",
+                    "-strict", "-2","-c", "copy", out_path]
+            if not noMap:
+                cmd.insert(10, '-map')
+                cmd.insert(11, '0')
+            if listener == 'cancelled' or listener is not None and listener.returncode == -9:
+                return False, None
+            listener = await asyncio.create_subprocess_exec(*cmd, stderr=asyncio.subprocess.PIPE)
+            code = await listener.wait()
+            if code == -9:
+                return False, None
+            elif code != 0:
+                err = (await listener.stderr.read()).decode().strip()
+                try:
+                    os.remove(out_path)
+                except:
+                    pass
+                if not noMap:
+                    logging.warning(
+                        f"{err}. Retrying without map, -map 0 not working in all situations. Path: {path}")
+                    return await split_large_files(path, size, file_, dirpath, split_size, listener, start_time, i, True, True)
+                else:
+                    logging.warning(
+                        f"{err}. Unable to split this video, if it's size less than {SPLIT_SIZE} will be uploaded as it is. Path: {path}")
+                return False, None
+            out_size = os.path.getsize(out_path)
+            if out_size > SPLIT_SIZE:
+                dif = out_size - SPLIT_SIZE
+                split_size -= dif + 5000000
+                os.remove(out_path)
+                return await split_large_files(path, size, file_, dirpath, split_size, listener, start_time, i, True, noMap)
+            lpd = (await findVideoMetadata(path))[2]
+            if lpd == 0:
+                logging.error(
+                    f'Something went wrong while splitting, mostly file is corrupted. Path: {path}')
+                break
+            elif duration == lpd:
+                if not noMap:
+                    logging.warning(f"Retrying without map. -map 0 not working in all situations. Path: {path}")
+                    try:
+                        os.remove(out_path)
+                    except:
+                        pass
+                    return split_large_files(path, size, file_, dirpath, split_size, listener, start_time, i, True, True)
+                else:
+                    logging.warning(f"This file has been splitted with default stream and audio, so you will only see one part with less size from orginal one because it doesn't have all streams and audios. This happens mostly with MKV videos. noMap={noMap}. Path: {path}")
+                    break
+            elif lpd <= 3:
+                os.remove(out_path)
+                break
+            start_time += lpd - 3
+            i += 1
+    else:
+        out_path = os.path.join(dirpath, f"{file_}.")
+        listener = await asyncio.create_subprocess_exec("split", "--numeric-suffixes=1", "--suffix-length=3",
+                                                       f"--bytes={split_size}", path, out_path, stderr=asyncio.subprocess.PIPE)
+        code = await listener.wait()
+        if code == -9:
+            return False, None
+        elif code != 0:
+            err = (await listener.stderr.read()).decode().strip()
+            logging.error(err)
+    return True, dirpath
+
+
+async def cult_small_video(video_file, out_put_file_name, start_time, end_time):
+    file_genertor_command = [
+        "ffmpeg",
+        "-hide_banner",
+        "-i",
+        video_file,
+        "-ss",
+        start_time,
+        "-to",
+        end_time,
+        "-fs",
+        str(SPLIT_SIZE),
+        "-async",
+        "1",
+        "-strict",
+        "-2",
+        "-c",
+        "copy",
+        out_put_file_name,
+    ]
+
+    t_response, e_response = await run_comman_d(file_genertor_command)
+    logging.info(t_response)
+    return out_put_file_name
+
+
+async def run_comman_d(command_list):
+    process = await asyncio.create_subprocess_exec(
+        *command_list,
+        # stdout must a pipe to be accessible as process.stdout
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    # Wait for the subprocess to finish
+    stdout, stderr = await process.communicate()
+    e_response = stderr.decode().strip()
+    t_response = stdout.decode().strip()
+    return t_response, e_response
+
 
 def extract_file_name(msg: Message):
     def get_file_ext():
@@ -309,6 +444,26 @@ async def download(client:CustomBot, msg, editable_msg, file_name=None):
 # upload ---------------------------------------------------------------------------------------------------------------
   
 async def upload(client:CustomBot, file, to, msg, editable_msg, thumb_path=None, caption=None):
+
+    if not client.me.is_premium and os.path.getsize(file) > SPLIT_SIZE:
+        try:
+            await editable_msg.edit("🔺 Splitting the file...")
+        except:
+            pass
+        ikOk, dirpath = await split_large_files(file, size=os.path.getsize(file), file_=os.path.basename(file))
+        if not ikOk:
+            return False, "⚠️ Unable to split the file, try again later."
+        for file in os.listdir(dirpath):
+            file_path = os.path.join(dirpath, file)
+            if not os.path.isfile(file_path):
+                continue
+            try:
+                sent = await upload(client, file_path, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)
+            except Exception as e:
+                logging.exception(e)
+                return False, str(e)
+            return True, sent
+
     try:
         if msg.media==MessageMediaType.VIDEO_NOTE:
             height, width, duration = await findVideoMetadata(file)

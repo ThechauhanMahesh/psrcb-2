@@ -78,7 +78,7 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
 
             if os.path.getsize(file) > 2097152000:
                 if plan != "pro":
-                    return await editable_msg.edit("Buy pro plan and telegram premium to upload file size over 2Gb.")
+                    return await editable_msg.edit("Buy pro plan to upload file size over 2Gb.")
                 if to == sender:
                     to = client.me.id
                 uploaded, update = await upload(userbot, file, to, msg, editable_msg, thumb_path=thumb_path, caption=caption)

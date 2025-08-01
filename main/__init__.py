@@ -61,6 +61,8 @@ batch_not_allowed = True
 
 DUMP_CHANNEL = -1002892267641
 
+SPLIT_SIZE = 2097152000 # 2 GB
+
 
 # list of telegram bot tokens
 UPLOADING_CLIENTS = []
