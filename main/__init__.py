@@ -59,7 +59,7 @@ PYRO_DIR = "pyro-sessions"
 DL_DIR = "downloads"
 batch_not_allowed = False
 
-DUMP_CHANNEL = -1002892267641
+DUMP_CHANNEL = -1002651267079
 
 SPLIT_SIZE = 2097152000 # 2 GB
 
