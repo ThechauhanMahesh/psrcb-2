@@ -47,9 +47,9 @@ JB
 
 
 # variables
-API_ID = 28938535
-API_HASH = "7b3be0a2d8c16bc23d340da4748b12ae"
-BOT_TOKEN = "7592623182:AAG8g-Ez5aniRSG0k_VPRkFzDwgiOcfEaf4"
+API_ID = 27427306
+API_HASH = "12a0c2a67e79cbf8284aa5e2cbd3ad04"
+BOT_TOKEN = "7730983772:AAEDch6rs1r24Ved-nt1Okf37LlqXE2rowU"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 MONGODB_URI = "mongodb+srv://thechauhanmahesh:XgbFpSEe3pM9P45z@cluster0.mkaomd0.mongodb.net"
