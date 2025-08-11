@@ -13,7 +13,7 @@ from hachoir.parser import createParser
 from pyrogram.enums import MessageMediaType
 from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant, FloodPremiumWait
 from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid, PeerIdInvalid
-from pyrogram.errors import UserNotParticipant
+from pyrogram.errors import UserNotParticipant, MessageNotModified
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import Message
 
@@ -539,6 +539,9 @@ async def upload(client:CustomBot, file, to, msg, editable_msg, thumb_path=None,
         except:
             pass
         return True, sent
+    except (MessageNotModified, FloodPremiumWait, FloodWait):
+        # If the message is not modified, it means the upload was successful but no changes were made to the message.
+        return True, None
     except (ChannelInvalid, ChatInvalid) as e:
         logging.exception(e)
         False, "⚠️ You are not joined this channel/chat with the logged in account"

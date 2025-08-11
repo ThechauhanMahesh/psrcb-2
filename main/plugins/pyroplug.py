@@ -6,7 +6,7 @@ from main.plugins.helpers import build_caption, download, extract_tg_link, uploa
 from main.Database.database import db
 from main import DUMP_CHANNEL
 from pyrogram.enums import MessageMediaType, ChatType
-from pyrogram.errors import PeerIdInvalid, MessageEmpty, MessageIdInvalid, ChannelInvalid
+from pyrogram.errors import PeerIdInvalid, MessageEmpty, MessageIdInvalid, ChannelInvalid, MessageNotModified, FloodPremiumWait, FloodWait
 from pyrogram import Client
 
 def thumbnail(sender):
@@ -49,20 +49,29 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                 or not msg.media
                 and msg.text
             ):
-                await editable_msg.edit(text="Cloning...")
+                try:
+                    await editable_msg.edit(text="Cloning...")
+                except (MessageNotModified, FloodPremiumWait, FloodWait):
+                    pass
                 await client.send_message(to, msg.text.markdown)
                 await editable_msg.delete()
                 return
             elif msg.media:
                 caption = build_caption(plan, msg.caption, caption_data)
                 if msg.chat.type == ChatType.CHANNEL and getattr(msg.chat, "username", None):
-                    await editable_msg.edit("Cloning..")
+                    try:
+                        await editable_msg.edit("Cloning..")
+                    except (MessageNotModified, FloodPremiumWait, FloodWait):
+                        pass
                     #await msg.copy(chat_id=to, caption=caption)
                     await client.copy_message(chat_id=to, from_chat_id=msg.chat.username, message_id=msg.id, caption=caption)
                     return await editable_msg.delete()
                 downloaded, update = await download(userbot, msg, editable_msg)
                 if not downloaded:
-                    await editable_msg.edit(text=f"❌ Failed to save: `{msg_link}`\n\nError: {update}")
+                    try:
+                        await editable_msg.edit(text=f"❌ Failed to save: `{msg_link}`\n\nError: {update}")
+                    except (MessageNotModified, FloodPremiumWait, FloodWait):
+                        pass
                     return
                 else:
                     file = update
