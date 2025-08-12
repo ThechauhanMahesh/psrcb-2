@@ -94,6 +94,7 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
             else:
                 up_client = client.get_client()
                 if not up_client:
+                    logging.error("No clients available to use for upload.")
                     return await editable_msg.edit("❌ Failed to save: `{msg_link}`\n\nError: No clients available to use.")
                 uploaded, update = await upload(up_client["client"], file, DUMP_CHANNEL, msg, editable_msg, thumb_path=thumb_path, caption=caption)
                 if uploaded and update:
@@ -101,11 +102,13 @@ async def get_msg(userbot, client: Client, sender, to, editable_msg, msg_link, c
                     try:
                         await client.copy_message(chat_id=to, from_chat_id=DUMP_CHANNEL, message_id=update.id)
                     except (PeerIdInvalid, ChannelInvalid):
+                        logging.error(f"Failed to copy message to {to} from {DUMP_CHANNEL}.")
                         return await editable_msg.edit(f"❌ Failed to save: `{msg_link}`\n\nError: Please add me to the channel [{to}]")
                 client.release_client(up_client)
             if uploaded:
                 await editable_msg.delete()
             elif update:
+                logging.error(f"Failed to upload file: {update}")
                 return await editable_msg.edit(f"❌ Failed to upload: `{msg_link}`\n\nError: {update}")
             else:
                 return await get_msg(userbot, client, sender, to, editable_msg, msg_link, caption_data, retry=retry, plan=plan, is_batch=is_batch)
