@@ -59,7 +59,7 @@ PYRO_DIR = "pyro-sessions"
 DL_DIR = "downloads"
 batch_not_allowed = False
 
-DUMP_CHANNEL = -1002651267079
+DUMP_CHANNEL = -1002337633568
 
 SPLIT_SIZE = 2097152000 # 2 GB
 
@@ -73,9 +73,9 @@ if batch_not_allowed:
         "7382442840:AAGK9b7M14IbSQHXm7EzLYzOPwPqYngvppA"]
 else:
     UPLOADING_CLIENTS = [
-        "7424086573:AAHdmAJyM8bS0Lqk2V2Y1e2SVbPFJnRlOOE",
-        "7418708792:AAHPbkpibhfE4chJRUmacErpB1Z3zyBuJDY",
-        "7368658954:AAGQQDUbBil4h7WvChhS__0cTxRt7qzdPt0"]
+        "8476409594:AAFEECEl8mL6vMfzrOy00nNOtdMylFgHF3o",
+        "8479948058:AAFaWv7L1ASe9i6GkC2Lm2vF6znj2r0GLnM",
+        "8372445295:AAGotaL76PVotFFgv-Tss2LLaW4kX7iQ8OI"]
 
 
 client = pymongo.MongoClient(MONGODB_URI)
