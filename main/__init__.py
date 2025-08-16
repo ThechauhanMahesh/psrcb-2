@@ -3,6 +3,7 @@
 import asyncio
 import os
 from pyrogram import Client
+from pyrogram.types import LinkPreviewOptions
 from pyromod import listen
 import logging, sys, pymongo
 
@@ -103,6 +104,9 @@ class CustomBot(Client):
         self.lang_code = "en"
         self.system_lang_code = "en-US"
         self.lang_pack = "tdesktop"
+        self.link_preview_options = LinkPreviewOptions(
+            is_disabled=True,  # Disable link previews
+        )
         if not os.path.isdir(PYRO_DIR):
             os.makedirs(PYRO_DIR)
         if not os.path.isdir(DL_DIR):

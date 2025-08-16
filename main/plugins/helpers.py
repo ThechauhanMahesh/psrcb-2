@@ -486,7 +486,7 @@ async def upload(client:CustomBot, file, to, msg, editable_msg, thumb_path=None,
                     time.time()
                 )
             )
-        elif msg.media==MessageMediaType.VIDEO and msg.video.mime_type in ["video/mp4", "video/x-matroska"]:
+        elif msg.media==MessageMediaType.VIDEO:
             height, width, duration = await findVideoMetadata(file)
             print(f'd: {duration}, w: {width}, h:{height}')
             try:
@@ -501,6 +501,7 @@ async def upload(client:CustomBot, file, to, msg, editable_msg, thumb_path=None,
                 supports_streaming=True,
                 height=height, width=width, duration=duration, 
                 thumb=thumb_path,
+                mime_type=msg.video.mime_type,
                 progress=progress_for_pyrogram,
                 progress_args=(
                     client,
