@@ -48,9 +48,9 @@ JB
 
 
 # variables
-API_ID= 20261016
-API_HASH= "23240f2a7b2e08a801e8a5b3d787fc9e"
-BOT_TOKEN = "7903237240:AAFT_XFw3Z8Z8xHc93si816V9eTrwZ6vUGQ"
+API_ID = 27427306
+API_HASH = "12a0c2a67e79cbf8284aa5e2cbd3ad04"
+BOT_TOKEN = "7730983772:AAEDch6rs1r24Ved-nt1Okf37LlqXE2rowU"
 FORCESUB = int("-1001711957758")
 ACCESS = int("-1001879806908")
 MONGODB_URI = "mongodb+srv://thechauhanmahesh:XgbFpSEe3pM9P45z@cluster0.mkaomd0.mongodb.net"
@@ -58,7 +58,7 @@ AUTH_USERS = [1807573686, 1204927413]
 SESSION_NAME = "PremiumSRCB"
 PYRO_DIR = "pyro-sessions"
 DL_DIR = "downloads"
-batch_not_allowed = True
+batch_not_allowed = False
 
 DUMP_CHANNEL = -1002337633568
 
