@@ -166,7 +166,7 @@ async def batch(client, message: types.Message):
         chat = user_id
     userbot = None
     if s:
-        userbot = CustomBot(f"sr_{user_id}", session_string=s, api_hash=h, api_id=int(i))     
+        userbot = CustomBot(f"sr_{user_id}", session_string=s)     
     else:
         await message.reply("⚠️ Your login credentials not found.")
         return

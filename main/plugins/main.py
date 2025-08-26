@@ -49,7 +49,7 @@ async def clone(client, message: types.Message):
         if not s:
             return await edit.edit("⚠️ Your login credentials not found.")
         try:
-            userbot = CustomBot(f"sr_{user_id}", session_string=s, api_hash=h, api_id=int(i))     
+            userbot = CustomBot(f"sr_{user_id}", session_string=s)     
             await userbot.start()
         except Exception as e:
             logging.exception(e)

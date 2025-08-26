@@ -254,7 +254,7 @@ async def findVideoMetadata(pathToInputVideo):
 async def split_large_files(path, size=None, file_=None, dirpath=None, split_size=SPLIT_SIZE, listener=None, start_time=0, i=1, inLoop=False, noMap=False):
     if listener == 'cancelled' or listener is not None and listener.returncode == -9:
         return False, None
-    if file_ == None:
+    if file_ in None:
         file_ = os.path.basename(path)
     if size is None:
         size = os.path.getsize(path)
@@ -324,7 +324,7 @@ async def split_large_files(path, size=None, file_=None, dirpath=None, split_siz
             elif lpd <= 3:
                 os.remove(out_path)
                 break
-            start_time += lpd - 3
+            start_time += lpd - 5
             i += 1
     else:
         out_path = os.path.join(dirpath, f"{file_}.")

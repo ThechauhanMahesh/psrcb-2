@@ -17,9 +17,6 @@ from pyrogram.raw.types import MessageActionRequestedPeer, UpdateNewMessage, Mes
 
 from main.types import ButtonRequestPeer
 
-APIID = [API_ID, 29841594]
-APIHASH = [API_HASH, "1674d13f3308faa1479b445cdbaaad2b"]
-
 @Drone.on_message(filters=filters.command('tutorial') & filters.incoming)
 async def tutorial(_, message: types.Message):
     await message.reply(
@@ -129,9 +126,7 @@ async def login(_, message: types.Message):
 
         code_alert = await message.reply("Sending code...")
 
-        ai = APIID[0]
-        ah = APIHASH[0]
-        client = CustomBot(f"{user_id}_account", api_id=ai, api_hash=ah, in_memory=True)
+        client = CustomBot(f"{user_id}_account", in_memory=True)
         try:
             await client.connect()
         except ConnectionError:
@@ -142,9 +137,7 @@ async def login(_, message: types.Message):
             await asyncio.sleep(1)
         except (FloodWait, FloodPremiumWait) as e:
             await client.disconnect()
-            client = CustomBot("my_account", api_id=APIID[-1], api_hash=APIHASH[-1])
-            ai = APIID[-1]
-            ah = APIHASH[-1]
+            client = CustomBot("my_account")
             try:
                 await client.connect()
             except ConnectionError:
