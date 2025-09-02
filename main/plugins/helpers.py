@@ -403,14 +403,13 @@ def extract_file_name(msg: Message):
 # download ---------------------------------------------------------------------------------------------------------------
 
 async def download(client:CustomBot, msg, editable_msg, file_name=None):
-    # if not file_name:
-    #     file_name = extract_file_name(msg) or str(uuid.uuid4().hex) + ".mp4"
-    # if file_name:
-    #     file_name = os.path.basename(file_name).replace(os.sep, "-")
-    #     file_name = os.path.join("downloads", file_name)
+    if not file_name:
+        file_name = extract_file_name(msg) or str(uuid.uuid4().hex) + ".mp4"
+    if file_name:
+        file_name = os.path.basename(file_name).replace(os.sep, "-")
     file = None
     try:
-        dl_dir = os.path.join(DL_DIR, str(client.me.id), os.sep)
+        dl_dir = os.path.join(DL_DIR, str(client.me.id), file_name)
         file = await client.download_media(
                 msg,
                 file_name=dl_dir,
